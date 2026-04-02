@@ -313,7 +313,7 @@
     <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-5">
       <div>
         <label>GET (kcal)</label>
-        <input id="s2-get" type="number" min="800" placeholder="Auto" class="inp" />
+        <input id="s2-get" type="number" min="1200" placeholder="Auto" class="inp" />
       </div>
       <div>
         <label>Peso (kg)</label>
@@ -743,7 +743,7 @@ function calcTDEE() {
   let valid = true;
 
   [['s1-age', age, 10, 100], ['s1-weight', weight, 30, 300], ['s1-height', height, 100, 250]].forEach(([id, v, min, max]) => {
-    const bad = isNaN(v) || v <= 0 || v < min || v > max;
+    const bad = isNaN(v) || v < min || v > max;
     setInputError(id, bad);
     if (bad) valid = false;
   });
@@ -795,7 +795,7 @@ function calcMacros() {
   const strat  = $('s2-strategy').value;
 
   let valid = true;
-  [['s2-get', get, 800, 10000], ['s2-weight', weight, 30, 300]].forEach(([id, v, min, max]) => {
+  [['s2-get', get, 1200, 10000], ['s2-weight', weight, 30, 300]].forEach(([id, v, min, max]) => {
     const bad = isNaN(v) || v < min || v > max;
     setInputError(id, bad);
     if (bad) valid = false;
@@ -891,7 +891,7 @@ function buildDoughnut(ctx, data) {
         legend: { display: false },
         tooltip: {
           callbacks: {
-            label: (ctx) => ` ${ctx.label}: ${fmt(ctx.raw)} kcal`
+            label: (item) => ` ${item.label}: ${fmt(item.raw)} kcal`
           }
         }
       },
