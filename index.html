@@ -1,0 +1,977 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GN TEAM — Engine Metabólico</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              bg:    '#09090b',
+              card:  '#18181b',
+              red:   '#dc2626',
+              'red-hover': '#b91c1c',
+              border:'#27272a',
+              muted: '#71717a',
+              text:  '#fafafa',
+            }
+          },
+          fontFamily: {
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    /* ── base ─────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; }
+    html { background: #09090b; }
+    body { background: #09090b; color: #fafafa; font-family: 'Inter', system-ui, sans-serif; }
+
+    /* ── scrollbar ───────────────────────────────────── */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: #18181b; }
+    ::-webkit-scrollbar-thumb { background: #3f3f46; border-radius: 3px; }
+
+    /* ── glass card ──────────────────────────────────── */
+    .card {
+      background: #18181b;
+      border: 1px solid #27272a;
+      border-radius: 1rem;
+      padding: 1.75rem;
+    }
+
+    /* ── inputs ──────────────────────────────────────── */
+    .inp {
+      width: 100%;
+      background: #09090b;
+      border: 1px solid #3f3f46;
+      border-radius: .5rem;
+      color: #fafafa;
+      padding: .55rem .85rem;
+      font-size: .9rem;
+      transition: border-color .2s;
+      outline: none;
+    }
+    .inp:focus { border-color: #dc2626; }
+    .inp.error { border-color: #f87171; }
+    label { display: block; margin-bottom: .35rem; font-size: .8rem; font-weight: 500; color: #a1a1aa; letter-spacing: .04em; text-transform: uppercase; }
+
+    /* ── buttons ─────────────────────────────────────── */
+    .btn-primary {
+      display: inline-flex; align-items: center; justify-content: center; gap: .5rem;
+      background: #dc2626; color: #fff; font-weight: 700; font-size: .9rem;
+      padding: .65rem 1.5rem; border-radius: .5rem; border: none; cursor: pointer;
+      transition: background .2s, transform .1s;
+      width: 100%;
+    }
+    .btn-primary:hover:not(:disabled) { background: #b91c1c; }
+    .btn-primary:active:not(:disabled) { transform: scale(.97); }
+    .btn-primary.success { background: #16a34a; }
+
+    /* ── result boxes ─────────────────────────────────── */
+    .result-box {
+      background: #09090b;
+      border: 1px solid #27272a;
+      border-radius: .75rem;
+      padding: 1rem 1.25rem;
+      text-align: center;
+    }
+    .result-label { font-size: .72rem; font-weight: 600; color: #71717a; text-transform: uppercase; letter-spacing: .08em; }
+    .result-value { font-size: 1.6rem; font-weight: 800; color: #dc2626; line-height: 1.2; }
+    .result-unit  { font-size: .8rem; color: #71717a; }
+
+    /* ── tabs ─────────────────────────────────────────── */
+    .tab-btn {
+      padding: .5rem 1.25rem; border-radius: .4rem; font-size: .85rem; font-weight: 600;
+      cursor: pointer; transition: background .2s, color .2s;
+      background: transparent; color: #71717a; border: 1px solid transparent;
+    }
+    .tab-btn.active { background: #dc2626; color: #fff; border-color: #dc2626; }
+    .tab-btn:hover:not(.active) { color: #fafafa; border-color: #3f3f46; }
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+
+    /* ── macro bar ──────────────────────────────────────*/
+    .macro-bar-wrap { height: 8px; background: #27272a; border-radius: 9999px; overflow: hidden; }
+    .macro-bar { height: 100%; border-radius: 9999px; transition: width .5s ease; }
+
+    /* ── highlight glow ──────────────────────────────── */
+    .glow { box-shadow: 0 0 0 2px #dc262640; }
+
+    /* ── section divider ─────────────────────────────── */
+    .section-title {
+      font-size: 1.4rem; font-weight: 800; color: #fafafa;
+    }
+    .section-title span { color: #dc2626; }
+
+    /* ── navbar blur ─────────────────────────────────── */
+    .navbar {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 50;
+      background: rgba(9,9,11,.85); backdrop-filter: blur(12px);
+      border-bottom: 1px solid #27272a;
+    }
+
+    /* ── hero gradient ───────────────────────────────── */
+    .hero-gradient {
+      background: radial-gradient(ellipse 80% 50% at 50% -20%, #dc262618 0%, transparent 70%);
+    }
+
+    /* ── chart container ─────────────────────────────── */
+    .chart-wrap { position: relative; max-width: 220px; margin: 0 auto; }
+
+    /* ── separator ───────────────────────────────────── */
+    .sep { border-color: #27272a; }
+
+    /* ── tooltip ─────────────────────────────────────── */
+    .tooltip-wrap { position: relative; display: inline-block; }
+    .tooltip-wrap .tip {
+      visibility: hidden; opacity: 0; transition: opacity .2s;
+      position: absolute; bottom: calc(100% + 6px); left: 50%; transform: translateX(-50%);
+      background: #3f3f46; color: #fafafa; font-size: .72rem; padding: .3rem .6rem;
+      border-radius: .3rem; white-space: nowrap; pointer-events: none; z-index: 10;
+    }
+    .tooltip-wrap:hover .tip { visibility: visible; opacity: 1; }
+
+    /* ── example card ────────────────────────────────── */
+    .ex-profile { display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; }
+    .ex-avatar {
+      width: 48px; height: 48px; border-radius: 9999px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.3rem; font-weight: 800; background: #27272a; flex-shrink: 0;
+    }
+
+    /* ── fade-in animation ───────────────────────────── */
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+    .fade-up { animation: fadeUp .4s ease both; }
+
+    /* ── responsive grid ─────────────────────────────── */
+    @media (max-width: 640px) {
+      .card { padding: 1.25rem; }
+      .result-value { font-size: 1.3rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════
+     NAVBAR
+═══════════════════════════════════════════════════ -->
+<nav class="navbar">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 flex items-center justify-between h-14">
+    <a href="#" class="flex items-center gap-2 no-underline">
+      <span class="text-xl font-black tracking-tight">
+        <span style="color:#dc2626">GN</span><span class="text-white"> TEAM</span>
+      </span>
+      <span class="hidden sm:inline text-xs font-semibold text-zinc-500 border border-zinc-700 rounded px-1.5 py-0.5 ml-1">ENGINE</span>
+    </a>
+    <div class="flex items-center gap-1">
+      <a href="#calculadora" class="tab-btn text-sm">Calculadora</a>
+      <a href="#exemplos"    class="tab-btn text-sm">Exemplos</a>
+    </div>
+  </div>
+</nav>
+
+<!-- ═══════════════════════════════════════════════════
+     HERO
+═══════════════════════════════════════════════════ -->
+<section class="hero-gradient pt-28 pb-16 px-4 text-center" id="top">
+  <div class="max-w-3xl mx-auto">
+    <div class="inline-flex items-center gap-2 bg-zinc-800 border border-zinc-700 rounded-full px-3 py-1 text-xs font-semibold text-zinc-400 mb-6">
+      <span class="w-2 h-2 rounded-full bg-red-600 animate-pulse inline-block"></span>
+      Plataforma de Performance Nutricional
+    </div>
+    <h1 class="text-4xl sm:text-6xl font-black tracking-tight leading-tight mb-4">
+      Engine<br><span style="color:#dc2626">Metabólico</span>
+    </h1>
+    <p class="text-zinc-400 text-base sm:text-lg max-w-xl mx-auto leading-relaxed">
+      Calcule <strong class="text-white">calorias</strong>, <strong class="text-white">macronutrientes</strong>
+      e <strong class="text-white">hidratação</strong> com precisão científica — tudo integrado e automático.
+    </p>
+    <div class="mt-8 flex flex-wrap justify-center gap-4 text-sm text-zinc-500">
+      <span class="flex items-center gap-1.5"><span class="text-red-500">■</span> Fórmula Mifflin-St Jeor</span>
+      <span class="flex items-center gap-1.5"><span class="text-red-500">■</span> Macros Automatizados</span>
+      <span class="flex items-center gap-1.5"><span class="text-red-500">■</span> Hidratação Personalizada</span>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════
+     CALCULADORA
+═══════════════════════════════════════════════════ -->
+<section id="calculadora" class="max-w-6xl mx-auto px-4 sm:px-6 pb-24">
+
+  <!-- ── Step indicator ─────────────────────────────── -->
+  <div class="flex items-center gap-0 mb-10 overflow-x-auto pb-1">
+    <div class="step-indicator flex items-center gap-2 whitespace-nowrap">
+      <div class="w-7 h-7 rounded-full bg-red-600 flex items-center justify-center text-xs font-bold text-white">1</div>
+      <span class="text-sm font-semibold text-white">Gasto Energético</span>
+    </div>
+    <div class="flex-1 h-px bg-zinc-700 mx-3 min-w-4"></div>
+    <div class="step-indicator flex items-center gap-2 whitespace-nowrap">
+      <div class="w-7 h-7 rounded-full bg-zinc-700 flex items-center justify-center text-xs font-bold text-zinc-400" id="step2-circle">2</div>
+      <span class="text-sm font-semibold text-zinc-500" id="step2-label">Macronutrientes</span>
+    </div>
+    <div class="flex-1 h-px bg-zinc-700 mx-3 min-w-4"></div>
+    <div class="step-indicator flex items-center gap-2 whitespace-nowrap">
+      <div class="w-7 h-7 rounded-full bg-zinc-700 flex items-center justify-center text-xs font-bold text-zinc-400" id="step3-circle">3</div>
+      <span class="text-sm font-semibold text-zinc-500" id="step3-label">Hidratação</span>
+    </div>
+  </div>
+
+  <!-- ═══════════════════
+       SIM 1 — TDEE
+  ══════════════════════ -->
+  <div class="card mb-6 fade-up" id="sim1-card">
+    <div class="flex items-start justify-between mb-5">
+      <div>
+        <p class="text-xs font-bold text-red-500 uppercase tracking-widest mb-1">Simulador 01</p>
+        <h2 class="section-title">Gasto <span>Energético</span></h2>
+        <p class="text-zinc-500 text-sm mt-1">Calcula sua TMB e GET com base no perfil físico.</p>
+      </div>
+      <span class="text-2xl">🔥</span>
+    </div>
+
+    <div class="grid grid-cols-2 sm:grid-cols-3 gap-4 mb-5">
+      <div>
+        <label>Sexo</label>
+        <select id="s1-sex" class="inp">
+          <option value="M">Masculino</option>
+          <option value="F">Feminino</option>
+        </select>
+      </div>
+      <div>
+        <label>Idade (anos)</label>
+        <input id="s1-age" type="number" min="10" max="100" placeholder="Ex: 25" class="inp" />
+      </div>
+      <div>
+        <label>Peso (kg)</label>
+        <input id="s1-weight" type="number" min="30" max="300" step="0.1" placeholder="Ex: 80" class="inp" />
+      </div>
+      <div>
+        <label>Altura (cm)</label>
+        <input id="s1-height" type="number" min="100" max="250" placeholder="Ex: 175" class="inp" />
+      </div>
+      <div class="col-span-2 sm:col-span-2">
+        <label>Nível de Atividade (PAL)</label>
+        <select id="s1-pal" class="inp">
+          <option value="1.2">Sedentário — sem exercício</option>
+          <option value="1.375">Levemente ativo — 1–3x/sem</option>
+          <option value="1.55" selected>Moderadamente ativo — 3–5x/sem</option>
+          <option value="1.725">Muito ativo — 6–7x/sem</option>
+          <option value="1.9">Extremamente ativo — 2x/dia</option>
+        </select>
+      </div>
+    </div>
+
+    <button id="s1-btn" class="btn-primary" onclick="calcTDEE()">
+      Calcular Gasto Energético
+    </button>
+
+    <div id="s1-error" class="hidden mt-3 text-sm text-red-400 font-medium"></div>
+
+    <div id="s1-results" class="hidden mt-6">
+      <hr class="sep mb-6" />
+      <div class="grid grid-cols-2 gap-4">
+        <div class="result-box">
+          <p class="result-label">TMB</p>
+          <p class="result-value" id="r-tmb">—</p>
+          <p class="result-unit">kcal/dia</p>
+        </div>
+        <div class="result-box glow">
+          <p class="result-label">GET — Manutenção</p>
+          <p class="result-value" id="r-get">—</p>
+          <p class="result-unit">kcal/dia</p>
+        </div>
+      </div>
+      <p class="text-xs text-zinc-600 mt-4 text-center">↓ Valores propagados automaticamente para os simuladores abaixo</p>
+    </div>
+  </div>
+
+  <!-- ═══════════════════
+       SIM 2 — MACROS
+  ══════════════════════ -->
+  <div class="card mb-6 fade-up" id="sim2-card">
+    <div class="flex items-start justify-between mb-5">
+      <div>
+        <p class="text-xs font-bold text-red-500 uppercase tracking-widest mb-1">Simulador 02</p>
+        <h2 class="section-title">Macro<span>nutrientes</span></h2>
+        <p class="text-zinc-500 text-sm mt-1">Distribui proteínas, gorduras e carboidratos conforme sua estratégia.</p>
+      </div>
+      <span class="text-2xl">⚡</span>
+    </div>
+
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-5">
+      <div>
+        <label>GET (kcal)</label>
+        <input id="s2-get" type="number" min="800" placeholder="Auto" class="inp" />
+      </div>
+      <div>
+        <label>Peso (kg)</label>
+        <input id="s2-weight" type="number" min="30" step="0.1" placeholder="Auto" class="inp" />
+      </div>
+      <div class="col-span-2">
+        <label>Estratégia</label>
+        <select id="s2-strategy" class="inp" onchange="onStrategyChange()">
+          <option value="-0.20">Cutting — −20% calorias</option>
+          <option value="-0.10">Recomposição — −10% calorias</option>
+          <option value="0.10">Bulking — +10% calorias</option>
+          <option value="custom">Custom</option>
+        </select>
+      </div>
+      <div>
+        <label>Proteína (g/kg)</label>
+        <input id="s2-prot" type="number" min="0.5" max="4" step="0.1" value="2.2" class="inp" />
+      </div>
+      <div>
+        <label>Gordura (g/kg)</label>
+        <input id="s2-fat" type="number" min="0.3" max="3" step="0.1" value="1.0" class="inp" />
+      </div>
+      <div id="s2-custom-wrap" class="hidden col-span-2">
+        <label>Ajuste calórico (%)</label>
+        <input id="s2-custom-pct" type="number" min="-50" max="50" placeholder="Ex: -15" class="inp" />
+      </div>
+    </div>
+
+    <button id="s2-btn" class="btn-primary" onclick="calcMacros()">
+      Calcular Macros
+    </button>
+
+    <div id="s2-error" class="hidden mt-3 text-sm text-red-400 font-medium"></div>
+
+    <div id="s2-results" class="hidden mt-6">
+      <hr class="sep mb-6" />
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6">
+        <div class="result-box col-span-2 sm:col-span-1">
+          <p class="result-label">Calorias Alvo</p>
+          <p class="result-value" id="r-kcal">—</p>
+          <p class="result-unit">kcal/dia</p>
+        </div>
+        <div class="result-box">
+          <p class="result-label">Proteína</p>
+          <p class="result-value" id="r-prot">—</p>
+          <p class="result-unit">gramas/dia</p>
+        </div>
+        <div class="result-box">
+          <p class="result-label">Gordura</p>
+          <p class="result-value" id="r-fat">—</p>
+          <p class="result-unit">gramas/dia</p>
+        </div>
+        <div class="result-box">
+          <p class="result-label">Carboidrato</p>
+          <p class="result-value" id="r-carb">—</p>
+          <p class="result-unit">gramas/dia</p>
+        </div>
+      </div>
+
+      <!-- Macro bars + chart -->
+      <div class="flex flex-col sm:flex-row gap-6 items-center">
+        <div class="flex-1 w-full space-y-3">
+          <div>
+            <div class="flex justify-between text-xs text-zinc-400 mb-1">
+              <span>Proteína</span><span id="pct-prot">—%</span>
+            </div>
+            <div class="macro-bar-wrap"><div class="macro-bar bg-red-600" id="bar-prot" style="width:0%"></div></div>
+          </div>
+          <div>
+            <div class="flex justify-between text-xs text-zinc-400 mb-1">
+              <span>Carboidrato</span><span id="pct-carb">—%</span>
+            </div>
+            <div class="macro-bar-wrap"><div class="macro-bar bg-blue-500" id="bar-carb" style="width:0%"></div></div>
+          </div>
+          <div>
+            <div class="flex justify-between text-xs text-zinc-400 mb-1">
+              <span>Gordura</span><span id="pct-fat">—%</span>
+            </div>
+            <div class="macro-bar-wrap"><div class="macro-bar bg-yellow-500" id="bar-fat" style="width:0%"></div></div>
+          </div>
+        </div>
+        <div class="chart-wrap">
+          <canvas id="macroChart" width="220" height="220"></canvas>
+          <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;pointer-events:none">
+            <p class="text-xs text-zinc-500">Total</p>
+            <p class="text-base font-black text-white" id="chart-center-kcal">—</p>
+            <p class="text-xs text-zinc-500">kcal</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════
+       SIM 3 — HYDRATION
+  ══════════════════════ -->
+  <div class="card fade-up" id="sim3-card">
+    <div class="flex items-start justify-between mb-5">
+      <div>
+        <p class="text-xs font-bold text-red-500 uppercase tracking-widest mb-1">Simulador 03</p>
+        <h2 class="section-title">Hidra<span>tação</span></h2>
+        <p class="text-zinc-500 text-sm mt-1">Calcule sua necessidade hídrica diária com base no treino e clima.</p>
+      </div>
+      <span class="text-2xl">💧</span>
+    </div>
+
+    <div class="grid grid-cols-2 sm:grid-cols-3 gap-4 mb-5">
+      <div>
+        <label>Peso (kg)</label>
+        <input id="s3-weight" type="number" min="30" step="0.1" placeholder="Auto" class="inp" />
+      </div>
+      <div>
+        <label>Tempo de Treino (h)</label>
+        <input id="s3-train" type="number" min="0" max="6" step="0.25" value="1" class="inp" />
+      </div>
+      <div>
+        <label>Clima</label>
+        <select id="s3-climate" class="inp">
+          <option value="35">Frio — 35 ml/kg</option>
+          <option value="40" selected>Temperado — 40 ml/kg</option>
+          <option value="45">Quente — 45 ml/kg</option>
+          <option value="50">Muito quente — 50 ml/kg</option>
+        </select>
+      </div>
+    </div>
+
+    <button id="s3-btn" class="btn-primary" onclick="calcHydration()">
+      Calcular Hidratação
+    </button>
+
+    <div id="s3-error" class="hidden mt-3 text-sm text-red-400 font-medium"></div>
+
+    <div id="s3-results" class="hidden mt-6">
+      <hr class="sep mb-6" />
+      <div class="grid grid-cols-3 gap-4">
+        <div class="result-box">
+          <p class="result-label">Base</p>
+          <p class="result-value" id="r-hyd-base">—</p>
+          <p class="result-unit">litros/dia</p>
+        </div>
+        <div class="result-box">
+          <p class="result-label">Treino</p>
+          <p class="result-value" id="r-hyd-train">—</p>
+          <p class="result-unit">litros/treino</p>
+        </div>
+        <div class="result-box glow">
+          <p class="result-label">Total</p>
+          <p class="result-value" id="r-hyd-total">—</p>
+          <p class="result-unit">litros/dia</p>
+        </div>
+      </div>
+      <!-- water glasses visual -->
+      <div class="mt-5">
+        <p class="text-xs text-zinc-500 mb-2 text-center">Equivalente em copos de 250ml</p>
+        <div id="glasses-display" class="flex flex-wrap justify-center gap-1.5"></div>
+      </div>
+    </div>
+  </div>
+
+</section>
+
+<!-- ═══════════════════════════════════════════════════
+     EXEMPLOS
+═══════════════════════════════════════════════════ -->
+<section id="exemplos" class="max-w-6xl mx-auto px-4 sm:px-6 pb-28">
+  <div class="mb-8 text-center">
+    <p class="text-xs font-bold text-red-500 uppercase tracking-widest mb-2">Casos Reais</p>
+    <h2 class="text-3xl font-black">Exemplos <span style="color:#dc2626">Práticos</span></h2>
+    <p class="text-zinc-500 text-sm mt-2">Veja como o Engine Metabólico se aplica a diferentes objetivos.</p>
+  </div>
+
+  <!-- Tabs -->
+  <div class="flex gap-2 mb-6 justify-center flex-wrap">
+    <button class="tab-btn active" onclick="showTab('ex-cutting', this)">🔻 Emagrecimento</button>
+    <button class="tab-btn" onclick="showTab('ex-recomp', this)">⚖️ Recomposição</button>
+    <button class="tab-btn" onclick="showTab('ex-bulk', this)">📈 Hipertrofia</button>
+  </div>
+
+  <!-- ── Cutting ──────────────────────── -->
+  <div id="ex-cutting" class="tab-panel active fade-up">
+    <div class="card">
+      <div class="ex-profile">
+        <div class="ex-avatar" style="background:#dc262620;color:#dc2626">M</div>
+        <div>
+          <p class="font-bold text-white">Carlos, 28 anos</p>
+          <p class="text-zinc-500 text-sm">Masculino · 90 kg · 178 cm · Moderadamente Ativo</p>
+        </div>
+        <span class="ml-auto text-xs font-bold text-red-500 bg-red-950 border border-red-900 rounded px-2 py-1">CUTTING</span>
+      </div>
+      <hr class="sep mb-5" />
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6">
+        <div class="result-box">
+          <p class="result-label">TMB</p>
+          <p class="result-value">1.893</p>
+          <p class="result-unit">kcal</p>
+        </div>
+        <div class="result-box">
+          <p class="result-label">GET</p>
+          <p class="result-value">2.934</p>
+          <p class="result-unit">kcal</p>
+        </div>
+        <div class="result-box glow">
+          <p class="result-label">Alvo (−20%)</p>
+          <p class="result-value">2.347</p>
+          <p class="result-unit">kcal</p>
+        </div>
+        <div class="result-box">
+          <p class="result-label">Déficit</p>
+          <p class="result-value">−587</p>
+          <p class="result-unit">kcal</p>
+        </div>
+      </div>
+      <div class="flex flex-col sm:flex-row gap-6 items-center">
+        <div class="flex-1 w-full space-y-3">
+          <div>
+            <div class="flex justify-between text-xs text-zinc-400 mb-1"><span>Proteína — 198g</span><span>33.8%</span></div>
+            <div class="macro-bar-wrap"><div class="macro-bar bg-red-600" style="width:33.8%"></div></div>
+          </div>
+          <div>
+            <div class="flex justify-between text-xs text-zinc-400 mb-1"><span>Carboidrato — 235g</span><span>40.1%</span></div>
+            <div class="macro-bar-wrap"><div class="macro-bar bg-blue-500" style="width:40.1%"></div></div>
+          </div>
+          <div>
+            <div class="flex justify-between text-xs text-zinc-400 mb-1"><span>Gordura — 90g</span><span>34.5%</span></div>
+            <div class="macro-bar-wrap"><div class="macro-bar bg-yellow-500" style="width:34.5%"></div></div>
+          </div>
+        </div>
+        <div class="chart-wrap"><canvas id="exChart1" width="200" height="200"></canvas></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Recomp ──────────────────────── -->
+  <div id="ex-recomp" class="tab-panel">
+    <div class="card">
+      <div class="ex-profile">
+        <div class="ex-avatar" style="background:#3b82f620;color:#3b82f6">F</div>
+        <div>
+          <p class="font-bold text-white">Ana, 25 anos</p>
+          <p class="text-zinc-500 text-sm">Feminino · 65 kg · 165 cm · Moderadamente Ativa</p>
+        </div>
+        <span class="ml-auto text-xs font-bold text-blue-400 bg-blue-950 border border-blue-900 rounded px-2 py-1">RECOMP</span>
+      </div>
+      <hr class="sep mb-5" />
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6">
+        <div class="result-box">
+          <p class="result-label">TMB</p>
+          <p class="result-value">1.434</p>
+          <p class="result-unit">kcal</p>
+        </div>
+        <div class="result-box">
+          <p class="result-label">GET</p>
+          <p class="result-value">2.223</p>
+          <p class="result-unit">kcal</p>
+        </div>
+        <div class="result-box glow">
+          <p class="result-label">Alvo (−10%)</p>
+          <p class="result-value">2.001</p>
+          <p class="result-unit">kcal</p>
+        </div>
+        <div class="result-box">
+          <p class="result-label">Déficit</p>
+          <p class="result-value">−222</p>
+          <p class="result-unit">kcal</p>
+        </div>
+      </div>
+      <div class="flex flex-col sm:flex-row gap-6 items-center">
+        <div class="flex-1 w-full space-y-3">
+          <div>
+            <div class="flex justify-between text-xs text-zinc-400 mb-1"><span>Proteína — 143g</span><span>28.6%</span></div>
+            <div class="macro-bar-wrap"><div class="macro-bar bg-red-600" style="width:28.6%"></div></div>
+          </div>
+          <div>
+            <div class="flex justify-between text-xs text-zinc-400 mb-1"><span>Carboidrato — 225g</span><span>44.9%</span></div>
+            <div class="macro-bar-wrap"><div class="macro-bar bg-blue-500" style="width:44.9%"></div></div>
+          </div>
+          <div>
+            <div class="flex justify-between text-xs text-zinc-400 mb-1"><span>Gordura — 65g</span><span>29.2%</span></div>
+            <div class="macro-bar-wrap"><div class="macro-bar bg-yellow-500" style="width:29.2%"></div></div>
+          </div>
+        </div>
+        <div class="chart-wrap"><canvas id="exChart2" width="200" height="200"></canvas></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Bulking ──────────────────────── -->
+  <div id="ex-bulk" class="tab-panel">
+    <div class="card">
+      <div class="ex-profile">
+        <div class="ex-avatar" style="background:#22c55e20;color:#22c55e">M</div>
+        <div>
+          <p class="font-bold text-white">Rafael, 22 anos</p>
+          <p class="text-zinc-500 text-sm">Masculino · 75 kg · 182 cm · Muito Ativo</p>
+        </div>
+        <span class="ml-auto text-xs font-bold text-green-400 bg-green-950 border border-green-900 rounded px-2 py-1">BULK</span>
+      </div>
+      <hr class="sep mb-5" />
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6">
+        <div class="result-box">
+          <p class="result-label">TMB</p>
+          <p class="result-value">1.853</p>
+          <p class="result-unit">kcal</p>
+        </div>
+        <div class="result-box">
+          <p class="result-label">GET</p>
+          <p class="result-value">3.196</p>
+          <p class="result-unit">kcal</p>
+        </div>
+        <div class="result-box glow">
+          <p class="result-label">Alvo (+10%)</p>
+          <p class="result-value">3.516</p>
+          <p class="result-unit">kcal</p>
+        </div>
+        <div class="result-box">
+          <p class="result-label">Superávit</p>
+          <p class="result-value">+320</p>
+          <p class="result-unit">kcal</p>
+        </div>
+      </div>
+      <div class="flex flex-col sm:flex-row gap-6 items-center">
+        <div class="flex-1 w-full space-y-3">
+          <div>
+            <div class="flex justify-between text-xs text-zinc-400 mb-1"><span>Proteína — 165g</span><span>18.8%</span></div>
+            <div class="macro-bar-wrap"><div class="macro-bar bg-red-600" style="width:18.8%"></div></div>
+          </div>
+          <div>
+            <div class="flex justify-between text-xs text-zinc-400 mb-1"><span>Carboidrato — 479g</span><span>54.5%</span></div>
+            <div class="macro-bar-wrap"><div class="macro-bar bg-blue-500" style="width:54.5%"></div></div>
+          </div>
+          <div>
+            <div class="flex justify-between text-xs text-zinc-400 mb-1"><span>Gordura — 97g</span><span>24.8%</span></div>
+            <div class="macro-bar-wrap"><div class="macro-bar bg-yellow-500" style="width:24.8%"></div></div>
+          </div>
+        </div>
+        <div class="chart-wrap"><canvas id="exChart3" width="200" height="200"></canvas></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════
+     FOOTER
+═══════════════════════════════════════════════════ -->
+<footer class="border-t border-zinc-800 py-8 text-center text-zinc-600 text-sm px-4">
+  <p class="font-black text-base mb-1">
+    <span style="color:#dc2626">GN</span><span class="text-white"> TEAM</span>
+    <span class="text-zinc-600 font-normal"> · Engine Metabólico</span>
+  </p>
+  <p>Plataforma de cálculo nutricional para performance e saúde.</p>
+  <p class="mt-1 text-xs text-zinc-700">Os cálculos têm fins educativos. Consulte um profissional de saúde.</p>
+</footer>
+
+<!-- ═══════════════════════════════════════════════════
+     JAVASCRIPT
+═══════════════════════════════════════════════════ -->
+<script>
+/* ──────────────────────────────────────────────────────
+   UTILITIES
+────────────────────────────────────────────────────── */
+function $(id) { return document.getElementById(id); }
+function numVal(id) { return parseFloat($(id).value); }
+
+function showError(errId, msg) {
+  const el = $(errId);
+  el.textContent = msg;
+  el.classList.remove('hidden');
+}
+function hideError(errId) { $(errId).classList.add('hidden'); }
+
+function markSuccess(btnId) {
+  const btn = $(btnId);
+  btn.textContent = 'Calculado ✔';
+  btn.classList.add('success');
+  setTimeout(() => {
+    btn.textContent = btn.dataset.label;
+    btn.classList.remove('success');
+  }, 2500);
+}
+
+function setInputError(id, hasError) {
+  const el = $(id);
+  if (hasError) el.classList.add('error');
+  else el.classList.remove('error');
+}
+
+function fmt(n, dec = 0) {
+  if (isNaN(n) || n === null) return '—';
+  return n.toLocaleString('pt-BR', { minimumFractionDigits: dec, maximumFractionDigits: dec });
+}
+
+/* store original button labels */
+document.addEventListener('DOMContentLoaded', () => {
+  ['s1-btn','s2-btn','s3-btn'].forEach(id => {
+    const el = $(id);
+    if (el) el.dataset.label = el.textContent.trim();
+  });
+  initExampleCharts();
+  activateSteps(0);
+});
+
+/* step indicators */
+function activateSteps(completed) {
+  const steps = [
+    { circle: 'step2-circle', label: 'step2-label' },
+    { circle: 'step3-circle', label: 'step3-label' },
+  ];
+  steps.forEach((s, i) => {
+    const done = i < completed;
+    $(s.circle).className = `w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold ${done ? 'bg-red-600 text-white' : 'bg-zinc-700 text-zinc-400'}`;
+    $(s.label).className = `text-sm font-semibold ${done ? 'text-white' : 'text-zinc-500'}`;
+  });
+}
+
+/* ──────────────────────────────────────────────────────
+   SIMULATOR 1 — TDEE (Mifflin-St Jeor)
+────────────────────────────────────────────────────── */
+function calcTDEE() {
+  hideError('s1-error');
+
+  const sex    = $('s1-sex').value;
+  const age    = numVal('s1-age');
+  const weight = numVal('s1-weight');
+  const height = numVal('s1-height');
+  const pal    = numVal('s1-pal');
+
+  let valid = true;
+
+  [['s1-age', age, 10, 100], ['s1-weight', weight, 30, 300], ['s1-height', height, 100, 250]].forEach(([id, v, min, max]) => {
+    const bad = isNaN(v) || v <= 0 || v < min || v > max;
+    setInputError(id, bad);
+    if (bad) valid = false;
+  });
+
+  if (!valid) {
+    showError('s1-error', '⚠ Preencha todos os campos com valores válidos.');
+    return;
+  }
+
+  /* Mifflin-St Jeor */
+  let tmb;
+  if (sex === 'M') {
+    tmb = 10 * weight + 6.25 * height - 5 * age + 5;
+  } else {
+    tmb = 10 * weight + 6.25 * height - 5 * age - 161;
+  }
+  const get = tmb * pal;
+
+  $('r-tmb').textContent = fmt(Math.round(tmb));
+  $('r-get').textContent = fmt(Math.round(get));
+  $('s1-results').classList.remove('hidden');
+
+  /* propagate to sim2 and sim3 */
+  $('s2-get').value    = Math.round(get);
+  $('s2-weight').value = weight;
+  $('s3-weight').value = weight;
+
+  markSuccess('s1-btn');
+  activateSteps(2);
+}
+
+/* ──────────────────────────────────────────────────────
+   SIMULATOR 2 — MACROS
+────────────────────────────────────────────────────── */
+let macroChartInstance = null;
+
+function onStrategyChange() {
+  const val = $('s2-strategy').value;
+  $('s2-custom-wrap').classList.toggle('hidden', val !== 'custom');
+}
+
+function calcMacros() {
+  hideError('s2-error');
+
+  const get    = numVal('s2-get');
+  const weight = numVal('s2-weight');
+  const protPg = numVal('s2-prot');
+  const fatPg  = numVal('s2-fat');
+  const strat  = $('s2-strategy').value;
+
+  let valid = true;
+  [['s2-get', get, 800, 10000], ['s2-weight', weight, 30, 300]].forEach(([id, v, min, max]) => {
+    const bad = isNaN(v) || v < min || v > max;
+    setInputError(id, bad);
+    if (bad) valid = false;
+  });
+
+  if (isNaN(protPg) || protPg < 0.5 || protPg > 4)  { setInputError('s2-prot', true); valid = false; } else setInputError('s2-prot', false);
+  if (isNaN(fatPg)  || fatPg  < 0.3 || fatPg  > 3)  { setInputError('s2-fat',  true); valid = false; } else setInputError('s2-fat',  false);
+
+  if (!valid) {
+    showError('s2-error', '⚠ Verifique os campos destacados com valores inválidos.');
+    return;
+  }
+
+  let pct;
+  if (strat === 'custom') {
+    pct = numVal('s2-custom-pct') / 100;
+    if (isNaN(pct) || pct < -0.5 || pct > 0.5) {
+      showError('s2-error', '⚠ O ajuste custom deve estar entre −50% e +50%.');
+      return;
+    }
+  } else {
+    pct = parseFloat(strat);
+  }
+
+  const targetKcal = Math.round(get * (1 + pct));
+  const protG = Math.round(weight * protPg);
+  const fatG  = Math.round(weight * fatPg);
+  const protKcal = protG * 4;
+  const fatKcal  = fatG  * 9;
+  const carbKcal = targetKcal - protKcal - fatKcal;
+
+  if (carbKcal < 0) {
+    showError('s2-error', '⚠ Carboidratos ficaram negativos. Reduza proteína ou gordura, ou aumente as calorias alvo.');
+    return;
+  }
+
+  const carbG = Math.round(carbKcal / 4);
+  const totalKcal = protKcal + fatKcal + carbKcal;
+
+  const pctProt = ((protKcal / totalKcal) * 100).toFixed(1);
+  const pctCarb = ((carbKcal / totalKcal) * 100).toFixed(1);
+  const pctFat  = ((fatKcal  / totalKcal) * 100).toFixed(1);
+
+  $('r-kcal').textContent = fmt(targetKcal);
+  $('r-prot').textContent = fmt(protG);
+  $('r-fat').textContent  = fmt(fatG);
+  $('r-carb').textContent = fmt(carbG);
+
+  /* bars */
+  $('bar-prot').style.width = pctProt + '%';
+  $('bar-carb').style.width = pctCarb + '%';
+  $('bar-fat').style.width  = pctFat  + '%';
+  $('pct-prot').textContent = pctProt + '%';
+  $('pct-carb').textContent = pctCarb + '%';
+  $('pct-fat').textContent  = pctFat  + '%';
+
+  /* chart */
+  $('chart-center-kcal').textContent = fmt(targetKcal);
+  renderMacroChart('macroChart', [protKcal, carbKcal, fatKcal], false);
+
+  $('s2-results').classList.remove('hidden');
+  markSuccess('s2-btn');
+  activateSteps(2);
+}
+
+function renderMacroChart(canvasId, data, isExample) {
+  const ctx = $(canvasId).getContext('2d');
+
+  if (canvasId === 'macroChart') {
+    if (macroChartInstance) macroChartInstance.destroy();
+    macroChartInstance = buildDoughnut(ctx, data);
+  } else {
+    buildDoughnut(ctx, data);
+  }
+}
+
+function buildDoughnut(ctx, data) {
+  return new Chart(ctx, {
+    type: 'doughnut',
+    data: {
+      labels: ['Proteína', 'Carboidrato', 'Gordura'],
+      datasets: [{
+        data,
+        backgroundColor: ['#dc2626','#3b82f6','#eab308'],
+        borderColor: '#18181b',
+        borderWidth: 3,
+        hoverOffset: 6,
+      }]
+    },
+    options: {
+      cutout: '68%',
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: (ctx) => ` ${ctx.label}: ${fmt(ctx.raw)} kcal`
+          }
+        }
+      },
+      animation: { animateRotate: true, duration: 600 }
+    }
+  });
+}
+
+/* ──────────────────────────────────────────────────────
+   SIMULATOR 3 — HYDRATION
+────────────────────────────────────────────────────── */
+function calcHydration() {
+  hideError('s3-error');
+
+  const weight  = numVal('s3-weight');
+  const train   = numVal('s3-train');
+  const climate = numVal('s3-climate');
+
+  let valid = true;
+  if (isNaN(weight) || weight < 30 || weight > 300) { setInputError('s3-weight', true); valid = false; } else setInputError('s3-weight', false);
+  if (isNaN(train)  || train  < 0  || train  > 6)  { setInputError('s3-train',  true); valid = false; } else setInputError('s3-train',  false);
+
+  if (!valid) {
+    showError('s3-error', '⚠ Verifique os campos com valores inválidos.');
+    return;
+  }
+
+  const baseL  = (weight * climate) / 1000;          // litros base
+  const trainL = train * 0.5;                         // 500ml/h
+  const totalL = baseL + trainL;
+
+  $('r-hyd-base').textContent  = fmt(baseL, 2);
+  $('r-hyd-train').textContent = fmt(trainL, 2);
+  $('r-hyd-total').textContent = fmt(totalL, 2);
+
+  /* glasses visual */
+  const glasses = Math.round(totalL / 0.25);
+  const glassesEl = $('glasses-display');
+  glassesEl.innerHTML = '';
+  for (let i = 0; i < Math.min(glasses, 20); i++) {
+    const g = document.createElement('span');
+    g.textContent = '🥛';
+    g.style.fontSize = '1.3rem';
+    g.title = `Copo ${i + 1}`;
+    glassesEl.appendChild(g);
+  }
+  if (glasses > 20) {
+    const more = document.createElement('span');
+    more.textContent = `+${glasses - 20} copos`;
+    more.className = 'text-xs text-zinc-500 self-center';
+    glassesEl.appendChild(more);
+  }
+
+  $('s3-results').classList.remove('hidden');
+  markSuccess('s3-btn');
+}
+
+/* ──────────────────────────────────────────────────────
+   EXAMPLE TABS
+────────────────────────────────────────────────────── */
+function showTab(tabId, btn) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  $(tabId).classList.add('active');
+  btn.classList.add('active');
+  $(tabId).classList.add('fade-up');
+  setTimeout(() => $(tabId).classList.remove('fade-up'), 400);
+}
+
+/* ──────────────────────────────────────────────────────
+   EXAMPLE CHARTS
+────────────────────────────────────────────────────── */
+function initExampleCharts() {
+  /* Carlos — Cutting: prot 198g=792kcal, carb 235g=940kcal, fat 90g=810kcal */
+  buildDoughnut($('exChart1').getContext('2d'), [792, 940, 810]);
+  /* Ana — Recomp: prot 143g=572kcal, carb 225g=900kcal, fat 65g=585kcal */
+  buildDoughnut($('exChart2').getContext('2d'), [572, 900, 585]);
+  /* Rafael — Bulk: prot 165g=660kcal, carb 479g=1916kcal, fat 97g=873kcal */
+  buildDoughnut($('exChart3').getContext('2d'), [660, 1916, 873]);
+}
+</script>
+</body>
+</html>
