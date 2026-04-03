@@ -324,6 +324,7 @@
         <select id="s2-strategy" class="inp" onchange="onStrategyChange()">
           <option value="-0.20">Cutting — −20% calorias</option>
           <option value="-0.10">Recomposição — −10% calorias</option>
+          <option value="0.00">Manutenção — 0% calorias</option>
           <option value="0.10">Bulking — +10% calorias</option>
           <option value="custom">Custom</option>
         </select>
@@ -500,6 +501,7 @@
         <div>
           <p class="font-bold text-white">Carlos, 28 anos</p>
           <p class="text-zinc-500 text-sm">Masculino · 90 kg · 178 cm · Moderadamente Ativo</p>
+          <p class="text-zinc-600 text-xs mt-0.5">Proteína 2,2 g/kg · Gordura 1,0 g/kg</p>
         </div>
         <span class="ml-auto text-xs font-bold text-red-500 bg-red-950 border border-red-900 rounded px-2 py-1">CUTTING</span>
       </div>
@@ -507,38 +509,38 @@
       <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6">
         <div class="result-box">
           <p class="result-label">TMB</p>
-          <p class="result-value">1.893</p>
+          <p class="result-value">1.878</p>
           <p class="result-unit">kcal</p>
         </div>
         <div class="result-box">
           <p class="result-label">GET</p>
-          <p class="result-value">2.934</p>
+          <p class="result-value">2.910</p>
           <p class="result-unit">kcal</p>
         </div>
         <div class="result-box glow">
           <p class="result-label">Alvo (−20%)</p>
-          <p class="result-value">2.347</p>
+          <p class="result-value">2.328</p>
           <p class="result-unit">kcal</p>
         </div>
         <div class="result-box">
           <p class="result-label">Déficit</p>
-          <p class="result-value">−587</p>
+          <p class="result-value">−582</p>
           <p class="result-unit">kcal</p>
         </div>
       </div>
       <div class="flex flex-col sm:flex-row gap-6 items-center">
         <div class="flex-1 w-full space-y-3">
           <div>
-            <div class="flex justify-between text-xs text-zinc-400 mb-1"><span>Proteína — 198g</span><span>33.8%</span></div>
-            <div class="macro-bar-wrap"><div class="macro-bar bg-red-600" style="width:33.8%"></div></div>
+            <div class="flex justify-between text-xs text-zinc-400 mb-1"><span>Proteína — 198g</span><span>34.0%</span></div>
+            <div class="macro-bar-wrap"><div class="macro-bar bg-red-600" style="width:34.0%"></div></div>
           </div>
           <div>
-            <div class="flex justify-between text-xs text-zinc-400 mb-1"><span>Carboidrato — 235g</span><span>40.1%</span></div>
-            <div class="macro-bar-wrap"><div class="macro-bar bg-blue-500" style="width:40.1%"></div></div>
+            <div class="flex justify-between text-xs text-zinc-400 mb-1"><span>Carboidrato — 182g</span><span>31.2%</span></div>
+            <div class="macro-bar-wrap"><div class="macro-bar bg-blue-500" style="width:31.2%"></div></div>
           </div>
           <div>
-            <div class="flex justify-between text-xs text-zinc-400 mb-1"><span>Gordura — 90g</span><span>34.5%</span></div>
-            <div class="macro-bar-wrap"><div class="macro-bar bg-yellow-500" style="width:34.5%"></div></div>
+            <div class="flex justify-between text-xs text-zinc-400 mb-1"><span>Gordura — 90g</span><span>34.8%</span></div>
+            <div class="macro-bar-wrap"><div class="macro-bar bg-yellow-500" style="width:34.8%"></div></div>
           </div>
         </div>
         <div class="chart-wrap"><canvas id="exChart1" width="200" height="200"></canvas></div>
@@ -554,6 +556,7 @@
         <div>
           <p class="font-bold text-white">Ana, 25 anos</p>
           <p class="text-zinc-500 text-sm">Feminino · 65 kg · 165 cm · Moderadamente Ativa</p>
+          <p class="text-zinc-600 text-xs mt-0.5">Proteína 2,2 g/kg · Gordura 1,0 g/kg</p>
         </div>
         <span class="ml-auto text-xs font-bold text-blue-400 bg-blue-950 border border-blue-900 rounded px-2 py-1">RECOMP</span>
       </div>
@@ -561,38 +564,38 @@
       <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6">
         <div class="result-box">
           <p class="result-label">TMB</p>
-          <p class="result-value">1.434</p>
+          <p class="result-value">1.395</p>
           <p class="result-unit">kcal</p>
         </div>
         <div class="result-box">
           <p class="result-label">GET</p>
-          <p class="result-value">2.223</p>
+          <p class="result-value">2.163</p>
           <p class="result-unit">kcal</p>
         </div>
         <div class="result-box glow">
           <p class="result-label">Alvo (−10%)</p>
-          <p class="result-value">2.001</p>
+          <p class="result-value">1.947</p>
           <p class="result-unit">kcal</p>
         </div>
         <div class="result-box">
           <p class="result-label">Déficit</p>
-          <p class="result-value">−222</p>
+          <p class="result-value">−216</p>
           <p class="result-unit">kcal</p>
         </div>
       </div>
       <div class="flex flex-col sm:flex-row gap-6 items-center">
         <div class="flex-1 w-full space-y-3">
           <div>
-            <div class="flex justify-between text-xs text-zinc-400 mb-1"><span>Proteína — 143g</span><span>28.6%</span></div>
-            <div class="macro-bar-wrap"><div class="macro-bar bg-red-600" style="width:28.6%"></div></div>
+            <div class="flex justify-between text-xs text-zinc-400 mb-1"><span>Proteína — 143g</span><span>29.4%</span></div>
+            <div class="macro-bar-wrap"><div class="macro-bar bg-red-600" style="width:29.4%"></div></div>
           </div>
           <div>
-            <div class="flex justify-between text-xs text-zinc-400 mb-1"><span>Carboidrato — 225g</span><span>44.9%</span></div>
-            <div class="macro-bar-wrap"><div class="macro-bar bg-blue-500" style="width:44.9%"></div></div>
+            <div class="flex justify-between text-xs text-zinc-400 mb-1"><span>Carboidrato — 198g</span><span>40.6%</span></div>
+            <div class="macro-bar-wrap"><div class="macro-bar bg-blue-500" style="width:40.6%"></div></div>
           </div>
           <div>
-            <div class="flex justify-between text-xs text-zinc-400 mb-1"><span>Gordura — 65g</span><span>29.2%</span></div>
-            <div class="macro-bar-wrap"><div class="macro-bar bg-yellow-500" style="width:29.2%"></div></div>
+            <div class="flex justify-between text-xs text-zinc-400 mb-1"><span>Gordura — 65g</span><span>30.0%</span></div>
+            <div class="macro-bar-wrap"><div class="macro-bar bg-yellow-500" style="width:30.0%"></div></div>
           </div>
         </div>
         <div class="chart-wrap"><canvas id="exChart2" width="200" height="200"></canvas></div>
@@ -608,6 +611,7 @@
         <div>
           <p class="font-bold text-white">Rafael, 22 anos</p>
           <p class="text-zinc-500 text-sm">Masculino · 75 kg · 182 cm · Muito Ativo</p>
+          <p class="text-zinc-600 text-xs mt-0.5">Proteína 2,2 g/kg · Gordura 1,0 g/kg</p>
         </div>
         <span class="ml-auto text-xs font-bold text-green-400 bg-green-950 border border-green-900 rounded px-2 py-1">BULK</span>
       </div>
@@ -615,38 +619,38 @@
       <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6">
         <div class="result-box">
           <p class="result-label">TMB</p>
-          <p class="result-value">1.853</p>
+          <p class="result-value">1.783</p>
           <p class="result-unit">kcal</p>
         </div>
         <div class="result-box">
           <p class="result-label">GET</p>
-          <p class="result-value">3.196</p>
+          <p class="result-value">3.075</p>
           <p class="result-unit">kcal</p>
         </div>
         <div class="result-box glow">
           <p class="result-label">Alvo (+10%)</p>
-          <p class="result-value">3.516</p>
+          <p class="result-value">3.383</p>
           <p class="result-unit">kcal</p>
         </div>
         <div class="result-box">
           <p class="result-label">Superávit</p>
-          <p class="result-value">+320</p>
+          <p class="result-value">+308</p>
           <p class="result-unit">kcal</p>
         </div>
       </div>
       <div class="flex flex-col sm:flex-row gap-6 items-center">
         <div class="flex-1 w-full space-y-3">
           <div>
-            <div class="flex justify-between text-xs text-zinc-400 mb-1"><span>Proteína — 165g</span><span>18.8%</span></div>
-            <div class="macro-bar-wrap"><div class="macro-bar bg-red-600" style="width:18.8%"></div></div>
+            <div class="flex justify-between text-xs text-zinc-400 mb-1"><span>Proteína — 165g</span><span>19.5%</span></div>
+            <div class="macro-bar-wrap"><div class="macro-bar bg-red-600" style="width:19.5%"></div></div>
           </div>
           <div>
-            <div class="flex justify-between text-xs text-zinc-400 mb-1"><span>Carboidrato — 479g</span><span>54.5%</span></div>
-            <div class="macro-bar-wrap"><div class="macro-bar bg-blue-500" style="width:54.5%"></div></div>
+            <div class="flex justify-between text-xs text-zinc-400 mb-1"><span>Carboidrato — 512g</span><span>60.5%</span></div>
+            <div class="macro-bar-wrap"><div class="macro-bar bg-blue-500" style="width:60.5%"></div></div>
           </div>
           <div>
-            <div class="flex justify-between text-xs text-zinc-400 mb-1"><span>Gordura — 97g</span><span>24.8%</span></div>
-            <div class="macro-bar-wrap"><div class="macro-bar bg-yellow-500" style="width:24.8%"></div></div>
+            <div class="flex justify-between text-xs text-zinc-400 mb-1"><span>Gordura — 75g</span><span>20.0%</span></div>
+            <div class="macro-bar-wrap"><div class="macro-bar bg-yellow-500" style="width:20.0%"></div></div>
           </div>
         </div>
         <div class="chart-wrap"><canvas id="exChart3" width="200" height="200"></canvas></div>
@@ -772,7 +776,7 @@ function calcTDEE() {
   $('s3-weight').value = weight;
 
   markSuccess('s1-btn');
-  activateSteps(2);
+  activateSteps(1);
 }
 
 /* ──────────────────────────────────────────────────────
@@ -933,7 +937,7 @@ function calcHydration() {
   glassesEl.innerHTML = '';
   for (let i = 0; i < Math.min(glasses, 20); i++) {
     const g = document.createElement('span');
-    g.textContent = '🥛';
+    g.textContent = '💧';
     g.style.fontSize = '1.3rem';
     g.title = `Copo ${i + 1}`;
     glassesEl.appendChild(g);
@@ -965,12 +969,12 @@ function showTab(tabId, btn) {
    EXAMPLE CHARTS
 ────────────────────────────────────────────────────── */
 function initExampleCharts() {
-  /* Carlos — Cutting: prot 198g=792kcal, carb 235g=940kcal, fat 90g=810kcal */
-  buildDoughnut($('exChart1').getContext('2d'), [792, 940, 810]);
-  /* Ana — Recomp: prot 143g=572kcal, carb 225g=900kcal, fat 65g=585kcal */
-  buildDoughnut($('exChart2').getContext('2d'), [572, 900, 585]);
-  /* Rafael — Bulk: prot 165g=660kcal, carb 479g=1916kcal, fat 97g=873kcal */
-  buildDoughnut($('exChart3').getContext('2d'), [660, 1916, 873]);
+  /* Carlos — Cutting: prot 198g=792kcal, carb 182g=726kcal, fat 90g=810kcal  → total 2328 kcal */
+  buildDoughnut($('exChart1').getContext('2d'), [792, 726, 810]);
+  /* Ana — Recomp: prot 143g=572kcal, carb 198g=790kcal, fat 65g=585kcal  → total 1947 kcal */
+  buildDoughnut($('exChart2').getContext('2d'), [572, 790, 585]);
+  /* Rafael — Bulk: prot 165g=660kcal, carb 512g=2048kcal, fat 75g=675kcal → total 3383 kcal */
+  buildDoughnut($('exChart3').getContext('2d'), [660, 2048, 675]);
 }
 </script>
 </body>
