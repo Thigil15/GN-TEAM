@@ -14,7 +14,7 @@
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
       rel="stylesheet"
     />
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <style>
       :root {
         color-scheme: dark;
@@ -458,7 +458,11 @@
 
       @media (max-width: 820px) {
         .nav {
-          display: none;
+          display: flex;
+          gap: 0.7rem;
+          max-width: 48vw;
+          overflow-x: auto;
+          white-space: nowrap;
         }
 
         .stats,
@@ -764,6 +768,14 @@
     <script>
       const qs = (id) => document.getElementById(id);
       let macroChartInstance = null;
+      const MIFFLIN_WEIGHT_FACTOR = 10;
+      const MIFFLIN_HEIGHT_FACTOR = 6.25;
+      const MIFFLIN_AGE_FACTOR = 5;
+      const MALE_OFFSET = 5;
+      const FEMALE_OFFSET = 161;
+      const KCAL_PER_GRAM_PROTEIN = 4;
+      const KCAL_PER_GRAM_CARB = 4;
+      const KCAL_PER_GRAM_FAT = 9;
 
       const goalMap = {
         cut: { pct: -0.2, text: "Déficit moderado (10–25%) para emagrecimento." },
@@ -815,8 +827,8 @@
           return;
         }
 
-        const baseTmb = 10 * weight + 6.25 * height - 5 * age;
-        const tmb = sex === "M" ? baseTmb + 5 : baseTmb - 161;
+        const baseTmb = MIFFLIN_WEIGHT_FACTOR * weight + MIFFLIN_HEIGHT_FACTOR * height - MIFFLIN_AGE_FACTOR * age;
+        const tmb = sex === "M" ? baseTmb + MALE_OFFSET : baseTmb - FEMALE_OFFSET;
         const get = tmb * activity;
         const target = Math.round(get * (1 + goalMap[goal].pct));
 
@@ -877,8 +889,8 @@
 
         const protG = Math.round(weight * protKg);
         const fatG = Math.round(weight * fatKg);
-        const protKcal = protG * 4;
-        const fatKcal = fatG * 9;
+        const protKcal = protG * KCAL_PER_GRAM_PROTEIN;
+        const fatKcal = fatG * KCAL_PER_GRAM_FAT;
         const carbKcal = kcal - protKcal - fatKcal;
 
         if (carbKcal < 0) {
@@ -888,7 +900,7 @@
           return;
         }
 
-        const carbG = Math.round(carbKcal / 4);
+        const carbG = Math.round(carbKcal / KCAL_PER_GRAM_CARB);
         const totalKcal = protKcal + fatKcal + carbKcal;
 
         const pctProt = ((protKcal / totalKcal) * 100).toFixed(1);
