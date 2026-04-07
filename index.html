@@ -562,7 +562,7 @@
                 <select id="c1-activity" class="field">
                   <option value="">Escolha</option>
                   <option value="1.2">1,2 · Sedentário</option>
-                  <option value="1.3">1,3 · Treina 3–5x/semana</option>
+                  <option value="1.3">1,3 · Trabalho sentado + treina 3–5x/semana</option>
                   <option value="1.4">1,4 · Trabalho em pé / treino pesado</option>
                   <option value="1.5">1,5 · Rotina ativa + treino regular</option>
                   <option value="1.65">1,6–1,7 · Atleta ou trabalho físico intenso</option>
@@ -573,7 +573,7 @@
                 <select id="c1-goal" class="field">
                   <option value="">Selecione</option>
                   <option value="cut">Emagrecimento · déficit 10–25%</option>
-                  <option value="recomp">Recomposição · manutenção/déficit leve</option>
+                  <option value="recomp">Manutenção / falso magro · manutenção ou déficit leve</option>
                   <option value="bulk">Hipertrofia · superávit 5–15%</option>
                 </select>
               </div>
@@ -767,7 +767,7 @@
 
       const goalMap = {
         cut: { pct: -0.2, text: "Déficit moderado (10–25%) para emagrecimento." },
-        recomp: { pct: -0.1, text: "Manutenção ou déficit leve para recomposição corporal." },
+        recomp: { pct: -0.1, text: "Manutenção ou déficit leve (~10%) para recomposição / falso magro." },
         bulk: { pct: 0.1, text: "Superávit controlado (5–15%) para hipertrofia." },
       };
 
@@ -789,9 +789,9 @@
         qs("c1-error").classList.add("hidden");
 
         const sex = qs("c1-sex").value;
-        const age = Number.parseFloat(qs("c1-age").value);
+        const age = Number.parseInt(qs("c1-age").value, 10);
         const weight = Number.parseFloat(qs("c1-weight").value);
-        const height = Number.parseFloat(qs("c1-height").value);
+        const height = Number.parseInt(qs("c1-height").value, 10);
         const activity = Number.parseFloat(qs("c1-activity").value);
         const goal = qs("c1-goal").value;
 
@@ -881,7 +881,7 @@
         const carbKcal = kcal - protKcal - fatKcal;
 
         if (carbKcal < 0) {
-          qs("c2-error").textContent = "Carboidratos negativos. Aumente calorias ou reduza proteína/gordura.";
+          qs("c2-error").textContent = "Carboidratos ficaram negativos. Aumente calorias ou reduza proteína/gordura.";
           qs("c2-error").classList.remove("hidden");
           qs("c2-results").classList.add("hidden");
           return;
