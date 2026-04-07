@@ -6,180 +6,116 @@
   <title>Blueprint Metabólico · GN TEAM</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            night: '#050505',
-            surface: '#0b0b0f',
-            panel: '#0f0f14',
-            border: '#1f1f24',
-            accent: '#ff1d25',
-            accent2: '#ff5964',
-            muted: '#c3c6cc',
-            text: '#f7f7f7'
-          },
-          fontFamily: {
-            sans: ['"Space Grotesk"', 'Poppins', 'system-ui', 'sans-serif']
-          },
-          boxShadow: {
-            glow: '0 20px 70px rgba(255,29,37,0.24)',
-            card: '0 18px 40px rgba(0,0,0,0.45)'
-          }
-        }
-      }
-    }
-  </script>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <style>
-    :root {
-      color-scheme: dark;
-      --notice-h: 64px;
-    }
+    :root { color-scheme: dark; }
     * { box-sizing: border-box; }
     body {
       margin: 0;
-      background:
-        radial-gradient(110% 70% at 12% 8%, rgba(255,29,37,0.16), transparent 45%),
-        radial-gradient(90% 70% at 88% 12%, rgba(255,89,100,0.12), transparent 50%),
-        linear-gradient(180deg, #050505 0%, #08080c 50%, #050505 100%);
-      color: #f7f7f7;
-      font-family: "Space Grotesk", Poppins, system-ui, sans-serif;
+      background: #0a0a0a;
+      color: #e8e8e8;
+      font-family: "Inter", system-ui, sans-serif;
       line-height: 1.6;
     }
-    .wrap { max-width: 1200px; margin: 0 auto; padding: 0 1.25rem; }
-    .notice-bar {
-      position: fixed; top: 0; left: 0; right: 0; height: var(--notice-h);
-      background: linear-gradient(90deg, #ff1d25, #b00012);
-      color: #fff;
+    .wrap { max-width: 1100px; margin: 0 auto; padding: 0 1.5rem; }
+    .site-nav {
+      position: sticky; top: 0;
+      background: #0a0a0a;
+      border-bottom: 1px solid #1c1c1c;
+      z-index: 50;
+      height: 60px;
       display: flex; align-items: center;
-      z-index: 70;
-      border-bottom: 1px solid #ff5964;
-      box-shadow: 0 14px 32px rgba(255,29,37,0.28);
     }
-    .notice-inner { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
-    .notice-chip { display: inline-flex; align-items: center; gap: .4rem; background: rgba(255,255,255,0.12); color: #fff; border-radius: 999px; padding: .25rem .75rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
-    .notice-title { font-weight: 800; margin: 0; font-size: 1rem; }
-    .notice-sub { margin: .15rem 0 0; color: rgba(255,255,255,0.9); font-size: .9rem; }
-    .notice-pin { font-size: .85rem; color: rgba(255,255,255,0.92); white-space: nowrap; }
-    .nav-blur {
-      position: fixed; top: var(--notice-h); left: 0; right: 0; height: 72px;
-      background: rgba(8,8,10,0.9); border-bottom: 1px solid #1f1f24;
-      backdrop-filter: blur(12px); z-index: 60;
-      box-shadow: 0 18px 45px rgba(0,0,0,0.45);
-    }
-    main { padding-top: calc(var(--notice-h) + 96px); }
+    .nav-inner { display: flex; align-items: center; justify-content: space-between; width: 100%; }
+    .nav-logo { font-weight: 800; font-size: 1rem; color: #e8e8e8; text-decoration: none; letter-spacing: -.01em; }
+    .nav-logo span { color: #e02020; }
+    .nav-links { display: flex; gap: 2rem; }
+    .nav-links a { font-size: .875rem; color: #666; text-decoration: none; transition: color .15s; }
+    .nav-links a:hover { color: #e8e8e8; }
+    main { padding: 4rem 0; }
     .card {
-      background: linear-gradient(160deg, #0b0b0f, #0f0f14);
-      border: 1px solid #1f1f24;
-      border-radius: 18px;
+      background: #111;
+      border: 1px solid #1c1c1c;
+      border-radius: 12px;
       padding: 1.5rem;
-      box-shadow: 0 18px 40px rgba(0,0,0,0.5);
     }
-    .card.glow { box-shadow: 0 20px 60px rgba(255,29,37,0.18); }
     .card.ghost {
-      background: rgba(255,255,255,0.02);
-      border: 1px dashed #2a2a31;
+      background: transparent;
+      border: 1px solid #1c1c1c;
     }
     .pill {
-      display: inline-flex; align-items: center; gap: .35rem;
-      padding: .4rem .85rem; border-radius: 999px;
-      border: 1px solid #24242c; background: rgba(255,255,255,0.03);
-      font-size: .85rem; color: #f7f7f7; letter-spacing: .04em;
+      display: inline-flex; align-items: center; gap: .4rem;
+      padding: .3rem .75rem; border-radius: 999px;
+      border: 1px solid #1c1c1c;
+      font-size: .8rem; color: #888; letter-spacing: .02em;
     }
     .btn-primary {
-      display: inline-flex; align-items: center; justify-content: center; gap: .55rem;
-      background: linear-gradient(120deg, #ff1d25, #ff5964);
-      color: #fff; font-weight: 800; padding: 1rem 1.2rem;
-      border-radius: 12px; width: 100%; border: none; cursor: pointer;
-      transition: transform .12s ease, box-shadow .2s ease, filter .2s ease;
-      box-shadow: 0 12px 35px rgba(255,29,37,0.35);
+      display: inline-flex; align-items: center; justify-content: center; gap: .5rem;
+      background: #e02020;
+      color: #fff; font-weight: 700; font-size: .9rem;
+      padding: .8rem 1.25rem;
+      border-radius: 8px; width: 100%; border: none; cursor: pointer;
+      transition: background .15s;
     }
-    .btn-primary:hover { transform: translateY(-1px); filter: brightness(1.06); }
+    .btn-primary:hover { background: #c01a1a; }
     .btn-secondary {
       display: inline-flex; align-items: center; justify-content: center; gap: .5rem;
-      background: rgba(255,255,255,0.02); color: #f7f7f7; border: 1px solid #2a2a34;
-      padding: .95rem 1.2rem; border-radius: 12px; width: 100%; cursor: pointer;
-      transition: border-color .2s ease, color .2s ease, background .2s ease;
+      background: transparent; color: #aaa; border: 1px solid #2a2a2a;
+      padding: .8rem 1.25rem; border-radius: 8px; width: 100%; cursor: pointer;
+      font-size: .9rem;
+      transition: border-color .15s, color .15s;
     }
-    .btn-secondary:hover { border-color: #ff1d25; color: #ff5964; background: rgba(255,255,255,0.04); }
-    label { display: block; font-size: .78rem; font-weight: 700; color: #c3c6cc; letter-spacing: .05em; text-transform: uppercase; margin-bottom: .35rem; }
+    .btn-secondary:hover { border-color: #444; color: #e8e8e8; }
+    label { display: block; font-size: .78rem; font-weight: 600; color: #777; letter-spacing: .04em; text-transform: uppercase; margin-bottom: .4rem; }
     .inp {
-      width: 100%; background: #0b0b10; color: #f7f7f7;
-      border: 1px solid #2a2a34; border-radius: 10px;
-      padding: .8rem .95rem; font-size: .95rem;
-      transition: border-color .2s ease, box-shadow .2s ease;
+      width: 100%; background: #0f0f0f; color: #e8e8e8;
+      border: 1px solid #222; border-radius: 8px;
+      padding: .75rem 1rem; font-size: .95rem;
+      transition: border-color .15s;
       outline: none;
     }
-    .inp:focus { border-color: #ff1d25; box-shadow: 0 0 0 2px rgba(255,29,37,.3); }
-    .inp.error { border-color: #ff6b6b; box-shadow: 0 0 0 2px rgba(255,107,107,.25); }
-    .section-heading { font-size: 1.6rem; font-weight: 900; margin-bottom: .4rem; }
-    .section-sub { color: #c3c6cc; max-width: 900px; }
-    .grid-auto { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 1rem; }
-    .tag { font-size: .85rem; font-weight: 800; color: #ff5964; letter-spacing: .08em; text-transform: uppercase; }
-    .divider { height: 1px; background: #16161d; margin: 3rem 0; }
-    .halo {
-      position: absolute; width: 320px; height: 320px; border-radius: 50%;
-      background: radial-gradient(circle, rgba(255,29,37,0.18), transparent 60%);
-      filter: blur(10px); opacity: .75; pointer-events: none;
-    }
-    .halo.alt { background: radial-gradient(circle, rgba(255,89,100,0.16), transparent 60%); }
-    .section-shell { position: relative; padding: 4rem 0 2rem; }
-    .hero-title { font-size: clamp(2.6rem, 4vw, 3.4rem); line-height: 1.1; margin: 0 0 .5rem; }
-    .lead { color: #c3c6cc; font-size: 1.05rem; }
-    .step-card { background: rgba(255,255,255,0.03); border: 1px solid #22222b; border-radius: 12px; padding: .9rem; }
-    .step-card strong { color: #ff5964; display: block; }
-    .mini-stat { display: grid; grid-template-columns: auto 1fr; gap: .2rem .65rem; align-items: center; }
-    .mini-stat span:first-child { width: 12px; height: 12px; border-radius: 999px; background: linear-gradient(120deg, #ff1d25, #ff5964); display: inline-block; }
-    .info-bar { display: flex; gap: .7rem; flex-wrap: wrap; }
-    .info-chip { padding: .55rem .8rem; border-radius: 10px; background: rgba(255,255,255,0.03); border: 1px solid #1f1f24; color: #c3c6cc; font-weight: 600; }
-    .callout { border: 1px solid #ff1d25; background: linear-gradient(140deg, rgba(255,29,37,0.14), rgba(0,0,0,0.6)); border-radius: 14px; padding: 1.25rem; }
-    .progress-bar { height: 10px; border-radius: 999px; background: #1f1f24; overflow: hidden; }
-    .progress-fill { height: 100%; background: linear-gradient(120deg, #ff1d25, #ff5964); }
-    footer { border-top: 1px solid #16161d; padding: 1.5rem 0 2.5rem; text-align: center; color: #c3c6cc; font-size: .9rem; }
+    .inp:focus { border-color: #e02020; }
+    .inp.error { border-color: #e05050; }
+    .section-heading { font-size: 1.5rem; font-weight: 800; margin-bottom: .35rem; letter-spacing: -.02em; }
+    .section-sub { color: #777; max-width: 680px; font-size: .95rem; }
+    .grid-auto { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: .75rem; }
+    .tag { font-size: .75rem; font-weight: 700; color: #e02020; letter-spacing: .08em; text-transform: uppercase; }
+    .divider { height: 1px; background: #161616; margin: 3rem 0; }
+    .section-shell { padding: 3rem 0; }
+    .hero-title { font-size: clamp(2rem, 4vw, 3rem); line-height: 1.1; margin: 0 0 .75rem; font-weight: 800; letter-spacing: -.03em; }
+    .lead { color: #888; font-size: 1rem; }
+    .step-card { background: #111; border: 1px solid #1c1c1c; border-radius: 10px; padding: .9rem; }
+    .step-card strong { color: #e02020; display: block; font-size: .875rem; margin-bottom: .2rem; }
+    .step-card span { color: #888; font-size: .875rem; }
+    .info-bar { display: flex; gap: .5rem; flex-wrap: wrap; }
+    .info-chip { padding: .4rem .75rem; border-radius: 6px; background: #111; border: 1px solid #1c1c1c; color: #777; font-size: .8rem; }
+    .callout { border: 1px solid #2a1a1a; background: #130a0a; border-radius: 10px; padding: 1.25rem; }
+    .mini-stat { display: flex; align-items: flex-start; gap: .5rem; margin-bottom: .5rem; }
+    .mini-stat-dot { width: 6px; height: 6px; border-radius: 50%; background: #e02020; flex-shrink: 0; margin-top: .45rem; }
+    footer { border-top: 1px solid #161616; padding: 2rem 0; text-align: center; color: #555; font-size: .85rem; }
     @media (max-width: 900px) {
       .hero-grid { grid-template-columns: 1fr; }
-      .nav-actions { display: none; }
-      .notice-inner { flex-direction: column; align-items: flex-start; }
-      .notice-pin { display: none; }
+      .nav-links { display: none; }
     }
     @media (max-width: 640px) {
-      .card { padding: 1.1rem; border-radius: 14px; }
-      .section-heading { font-size: 1.35rem; }
+      .section-heading { font-size: 1.25rem; }
       .btn-primary, .btn-secondary { width: 100%; }
-      main { padding-top: calc(var(--notice-h) + 86px); }
     }
   </style>
 </head>
 <body>
 
-  <div class="notice-bar">
-    <div class="wrap notice-inner">
-      <div class="flex items-center gap-3">
-        <span class="notice-chip">Aviso importante</span>
-        <div>
-          <p class="notice-title">Conteúdo educativo – não substitui nutricionista.</p>
-          <p class="notice-sub">Os cálculos e exemplos são informativos. Para prescrição individualizada e ajustes finos, consulte um nutricionista.</p>
-        </div>
-      </div>
-      <span class="notice-pin">Fixado em toda a página</span>
-    </div>
-  </div>
-
   <!-- NAV -->
-  <header class="nav-blur">
-    <div class="wrap h-full flex items-center justify-between">
-      <a class="flex items-center gap-2 font-black tracking-tight text-lg no-underline text-white" href="#top">
-        <span class="text-accent">GN</span> TEAM · Blueprint Metabólico
-      </a>
-      <nav class="hidden md:flex items-center gap-3 text-sm nav-actions">
-        <a href="#calculadoras" class="text-muted hover:text-white">Calculadoras</a>
-        <a href="#tmb" class="text-muted hover:text-white">TMB & GET</a>
-        <a href="#macros" class="text-muted hover:text-white">Macros</a>
-        <a href="#regras" class="text-muted hover:text-white">Regras</a>
+  <header class="site-nav">
+    <div class="wrap nav-inner">
+      <a class="nav-logo" href="#top"><span>GN</span> TEAM · Blueprint Metabólico</a>
+      <nav class="nav-links">
+        <a href="#calculadoras">Calculadoras</a>
+        <a href="#tmb">TMB & GET</a>
+        <a href="#macros">Macros</a>
+        <a href="#regras">Regras</a>
       </nav>
     </div>
   </header>
@@ -187,88 +123,53 @@
   <main class="wrap" id="top">
     <!-- HERO -->
     <section class="section-shell">
-      <div class="halo" style="top:-90px;left:-140px;"></div>
-      <div class="halo alt" style="top:-70px;right:-120px;"></div>
-
-      <div class="grid lg:grid-cols-2 gap-10 hero-grid items-start">
+      <div class="grid lg:grid-cols-2 gap-12 hero-grid items-start">
         <div>
-          <div class="pill mb-4">
-            <span class="w-2 h-2 bg-gradient-to-r from-accent to-accent2 rounded-full inline-block"></span>
-            Roteiro guiado · GN TEAM
-          </div>
-          <h1 class="hero-title font-black">
+          <div class="pill mb-5">Roteiro guiado · GN TEAM</div>
+          <h1 class="hero-title">
             Dieta sem adivinhação: TMB, GET e macros prontos para usar.
           </h1>
-          <p class="lead mb-5">
+          <p class="lead mb-6">
             Tudo em português claro, com avisos de segurança e botões de limpar para testar cenários. Ideal para quem é leigo e quer passos visuais.
           </p>
-          <div class="grid sm:grid-cols-3 gap-3 mb-4">
+          <div class="grid sm:grid-cols-3 gap-3 mb-5">
             <div class="step-card">
               <strong>1. Informe</strong>
               <span>Sexo, idade, peso e altura reais.</span>
             </div>
             <div class="step-card">
               <strong>2. Ajuste</strong>
-              <span>Escolha atividade e objetivo (cortar, manter, ganhar).</span>
+              <span>Escolha atividade e objetivo.</span>
             </div>
             <div class="step-card">
               <strong>3. Aplique</strong>
-              <span>Receba calorias e macros sem termos complicados.</span>
+              <span>Receba calorias e macros.</span>
             </div>
           </div>
-          <div class="info-bar mb-4">
-            <div class="info-chip">Explicações curtas em cada passo</div>
-            <div class="info-chip">Campos validados antes de calcular</div>
-            <div class="info-chip">Cores só em vermelho, preto e branco</div>
+          <div class="info-bar mb-6">
+            <div class="info-chip">Explicações em cada passo</div>
+            <div class="info-chip">Campos validados</div>
+            <div class="info-chip">Botões de limpar</div>
           </div>
           <div class="flex flex-col sm:flex-row gap-3">
             <a href="#calculadoras" class="btn-primary text-center no-underline">Começar agora</a>
-            <a href="#macros" class="btn-secondary no-underline">Ver exemplos</a>
+            <a href="#exemplos" class="btn-secondary no-underline">Ver exemplos</a>
           </div>
-          <p class="text-xs text-muted mt-4">Material educativo — consulte um nutricionista para prescrição individual.</p>
+          <p class="text-xs mt-4" style="color:#555;">Material educativo — consulte um nutricionista para prescrição individual.</p>
         </div>
-        <div class="card glow relative overflow-hidden">
-          <div class="absolute inset-0 opacity-20 pointer-events-none" style="background: radial-gradient(circle at 25% 20%, rgba(255,29,37,.25), transparent 50%), radial-gradient(circle at 80% 0%, rgba(255,89,100,.18), transparent 45%);"></div>
-          <div class="relative space-y-3">
-            <p class="tag mb-1">Blueprint visual</p>
-            <h2 class="text-2xl font-bold">Você vai sair com</h2>
-            <ul class="space-y-2 text-muted">
-              <li>✔️ TMB pelo método Mifflin-St Jeor.</li>
-              <li>✔️ GET com fator atividade explicado.</li>
-              <li>✔️ Caloria alvo já ajustada ao objetivo.</li>
-              <li>✔️ Macros convertidos em gramas com gráfico.</li>
-              <li>✔️ Regras simples para hidratação, sono e ajustes.</li>
-            </ul>
-            <div class="grid sm:grid-cols-2 gap-3 mt-4">
-              <div class="callout">
-                <p class="text-sm font-semibold text-accent">Pronto para copiar</p>
-                <p class="text-muted text-sm">Copie os números, repita o cálculo sempre que mudar peso ou rotina.</p>
-              </div>
-              <div class="card ghost">
-                <div class="mini-stat">
-                  <span></span>
-                  <p class="text-sm text-muted">Faixas seguras e mensagens de erro claras.</p>
-                </div>
-                <div class="mini-stat">
-                  <span></span>
-                  <p class="text-sm text-muted">Botões de limpar em cada calculadora.</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- AVISO -->
-    <section class="section-shell" id="aviso">
-      <div class="callout shadow-glow">
-        <div class="flex flex-col md:flex-row md:items-center gap-3">
-          <div class="text-3xl">⚠️</div>
-          <div>
-            <p class="tag mb-1">Aviso importante</p>
-            <h3 class="text-xl font-bold mb-1 text-white">Conteúdo educativo – não substitui nutricionista.</h3>
-            <p class="text-muted">Os cálculos e exemplos são para fins informativos. Para prescrição individualizada, avaliação clínica e ajustes finos, consulte um nutricionista.</p>
+        <div class="card">
+          <p class="tag mb-3">O que você vai ter</p>
+          <ul class="space-y-3" style="color:#888; font-size:.9rem;">
+            <li class="flex items-start gap-2"><span style="color:#e02020; flex-shrink:0;">✓</span> TMB pelo método Mifflin-St Jeor.</li>
+            <li class="flex items-start gap-2"><span style="color:#e02020; flex-shrink:0;">✓</span> GET com fator atividade explicado.</li>
+            <li class="flex items-start gap-2"><span style="color:#e02020; flex-shrink:0;">✓</span> Caloria alvo ajustada ao objetivo.</li>
+            <li class="flex items-start gap-2"><span style="color:#e02020; flex-shrink:0;">✓</span> Macros em gramas com gráfico visual.</li>
+            <li class="flex items-start gap-2"><span style="color:#e02020; flex-shrink:0;">✓</span> Regras para hidratação, sono e ajustes.</li>
+          </ul>
+          <div class="divider" style="margin: 1.25rem 0;"></div>
+          <div class="callout">
+            <p class="text-sm font-semibold mb-1" style="color:#e02020;">Aviso importante</p>
+            <p style="color:#888; font-size:.85rem;">Conteúdo educativo – não substitui nutricionista. Para prescrição individualizada, consulte um profissional.</p>
           </div>
         </div>
       </div>
@@ -276,28 +177,20 @@
 
     <!-- CALCULADORAS -->
     <section class="section-shell" id="calculadoras">
-      <div class="flex items-start justify-between mb-4">
-        <div>
-          <p class="tag mb-1">Ferramentas rápidas</p>
-          <h2 class="section-heading">Calculadoras interativas</h2>
-          <p class="section-sub">TMB + GET com ajuste por objetivo e distribuição de macros com validações amigáveis. Preencha, calcule e use o botão de limpar sempre que quiser recomeçar.</p>
-        </div>
-        <div class="hidden md:block text-right text-sm text-muted">
-          <p>Resultados em português e já prontos para aplicar.</p>
-          <p class="text-white font-semibold">Limpe os campos para testar novos cenários.</p>
-        </div>
+      <div class="mb-6">
+        <p class="tag mb-1">Ferramentas</p>
+        <h2 class="section-heading">Calculadoras interativas</h2>
+        <p class="section-sub">TMB + GET com ajuste por objetivo e distribuição de macros. Preencha e calcule.</p>
       </div>
 
       <div class="grid md:grid-cols-2 gap-5">
         <!-- TMB / GET -->
-        <div class="card shadow-card">
-          <div class="flex items-start justify-between mb-4">
-            <div>
-              <p class="tag text-accent">TMB · GET</p>
-              <h3 class="text-xl font-bold">Calculadora de TMB + GET</h3>
-              <p class="text-muted text-sm">Usa Mifflin-St Jeor, fator atividade e ajuste por objetivo.</p>
-            </div>
-            <span class="text-2xl">🔥</span>
+        <div class="card">
+          <div class="mb-4">
+            <p class="tag mb-1">TMB · GET</p>
+            <h3 class="text-xl font-bold" style="letter-spacing:-.02em;">Calculadora de TMB + GET</h3>
+            <p style="color:#777; font-size:.875rem;">Fórmula Mifflin-St Jeor, fator atividade e objetivo.</p>
+          </div>
           </div>
 
           <div class="grid grid-cols-2 gap-3 mb-3">
@@ -352,34 +245,31 @@
           <div id="c1-results" class="hidden mt-5 space-y-3">
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
               <div class="card ghost">
-                <p class="text-xs uppercase text-muted font-semibold tracking-[.18em] mb-1">TMB</p>
+                <p class="text-xs uppercase font-semibold tracking-[.18em] mb-1">TMB</p>
                 <p class="text-2xl font-black" id="r-tmb">—</p>
-                <p class="text-muted text-sm">kcal/dia</p>
+                <p class="text-sm" style="color:#666;">kcal/dia</p>
               </div>
               <div class="card ghost">
-                <p class="text-xs uppercase text-muted font-semibold tracking-[.18em] mb-1">GET</p>
+                <p class="text-xs uppercase font-semibold tracking-[.18em] mb-1">GET</p>
                 <p class="text-2xl font-black" id="r-get">—</p>
-                <p class="text-muted text-sm">kcal/dia (manutenção)</p>
+                <p class="text-sm" style="color:#666;">kcal/dia (manutenção)</p>
               </div>
-              <div class="card ghost shadow-glow">
-                <p class="text-xs uppercase text-muted font-semibold tracking-[.18em] mb-1">Caloria sugerida</p>
-                <p class="text-2xl font-black text-accent2" id="r-target">—</p>
-                <p class="text-muted text-sm" id="r-goal-text"></p>
+              <div class="card ghost">
+                <p class="text-xs uppercase font-semibold tracking-[.18em] mb-1" style="color:#666;">Caloria sugerida</p>
+                <p class="text-2xl font-black" style="color:#e02020;" id="r-target">—</p>
+                <p class="text-sm" style="color:#666;" id="r-goal-text"></p>
               </div>
             </div>
-            <p class="text-xs text-muted">Copiaremos o peso e as calorias sugeridas para a calculadora de macros automaticamente.</p>
+            <p class="text-xs" style="color:#555;">Copiaremos o peso e as calorias sugeridas para a calculadora de macros automaticamente.</p>
           </div>
         </div>
 
         <!-- MACROS -->
-        <div class="card shadow-card" id="macros">
-          <div class="flex items-start justify-between mb-4">
-            <div>
-              <p class="tag text-accent2">Macros</p>
-              <h3 class="text-xl font-bold">Calculadora de macronutrientes</h3>
-              <p class="text-muted text-sm">Converta calorias alvo em proteína, gordura e carboidrato.</p>
-            </div>
-            <span class="text-2xl">⚡</span>
+        <div class="card" id="macros">
+          <div class="mb-4">
+            <p class="tag mb-1">Macros</p>
+            <h3 class="text-xl font-bold" style="letter-spacing:-.02em;">Calculadora de macronutrientes</h3>
+            <p style="color:#777; font-size:.875rem;">Converta calorias alvo em proteína, gordura e carboidrato.</p>
           </div>
 
           <div class="grid grid-cols-2 gap-3 mb-3">
@@ -410,42 +300,42 @@
           <div id="c2-results" class="hidden mt-5 space-y-3">
             <div class="grid grid-cols-1 sm:grid-cols-4 gap-3">
               <div class="card ghost">
-                <p class="text-xs uppercase text-muted font-semibold tracking-[.18em] mb-1">Calorias</p>
+                <p class="text-xs uppercase font-semibold tracking-[.18em] mb-1" style="color:#666;">Calorias</p>
                 <p class="text-2xl font-black" id="res-kcal">—</p>
-                <p class="text-muted text-sm">kcal/dia</p>
+                <p class="text-sm" style="color:#666;">kcal/dia</p>
               </div>
               <div class="card ghost">
-                <p class="text-xs uppercase text-muted font-semibold tracking-[.18em] mb-1">Proteína</p>
+                <p class="text-xs uppercase font-semibold tracking-[.18em] mb-1" style="color:#666;">Proteína</p>
                 <p class="text-2xl font-black" id="res-prot">—</p>
-                <p class="text-muted text-sm" id="res-prot-kcal">— kcal</p>
+                <p class="text-sm" style="color:#666;" id="res-prot-kcal">— kcal</p>
               </div>
               <div class="card ghost">
-                <p class="text-xs uppercase text-muted font-semibold tracking-[.18em] mb-1">Gordura</p>
+                <p class="text-xs uppercase font-semibold tracking-[.18em] mb-1" style="color:#666;">Gordura</p>
                 <p class="text-2xl font-black" id="res-fat">—</p>
-                <p class="text-muted text-sm" id="res-fat-kcal">— kcal</p>
+                <p class="text-sm" style="color:#666;" id="res-fat-kcal">— kcal</p>
               </div>
-              <div class="card ghost shadow-glow">
-                <p class="text-xs uppercase text-muted font-semibold tracking-[.18em] mb-1">Carboidrato</p>
-                <p class="text-2xl font-black text-accent2" id="res-carb">—</p>
-                <p class="text-muted text-sm" id="res-carb-kcal">— kcal</p>
+              <div class="card ghost">
+                <p class="text-xs uppercase font-semibold tracking-[.18em] mb-1" style="color:#666;">Carboidrato</p>
+                <p class="text-2xl font-black" style="color:#e02020;" id="res-carb">—</p>
+                <p class="text-sm" style="color:#666;" id="res-carb-kcal">— kcal</p>
               </div>
             </div>
 
             <div class="grid md:grid-cols-2 gap-4 items-center">
-              <div class="space-y-2 text-sm text-muted">
+              <div class="space-y-2 text-sm" style="color:#777;">
                 <div class="flex justify-between"><span>Proteína</span><span id="pct-prot">—%</span></div>
-                <div class="h-2 rounded-full bg-[#1f1f24] overflow-hidden"><div id="bar-prot" class="h-full rounded-full bg-gradient-to-r from-accent to-accent2" style="width:0%"></div></div>
+                <div class="h-1.5 rounded-full overflow-hidden" style="background:#1c1c1c;"><div id="bar-prot" class="h-full rounded-full" style="width:0%;background:#e02020;"></div></div>
                 <div class="flex justify-between"><span>Carboidrato</span><span id="pct-carb">—%</span></div>
-                <div class="h-2 rounded-full bg-[#1f1f24] overflow-hidden"><div id="bar-carb" class="h-full rounded-full bg-white/80" style="width:0%"></div></div>
+                <div class="h-1.5 rounded-full overflow-hidden" style="background:#1c1c1c;"><div id="bar-carb" class="h-full rounded-full" style="width:0%;background:#e8e8e8;"></div></div>
                 <div class="flex justify-between"><span>Gordura</span><span id="pct-fat">—%</span></div>
-                <div class="h-2 rounded-full bg-[#1f1f24] overflow-hidden"><div id="bar-fat" class="h-full rounded-full bg-[#a8232a]" style="width:0%"></div></div>
+                <div class="h-1.5 rounded-full overflow-hidden" style="background:#1c1c1c;"><div id="bar-fat" class="h-full rounded-full" style="width:0%;background:#555;"></div></div>
               </div>
               <div class="relative flex justify-center">
                 <canvas id="macroChart" width="220" height="220"></canvas>
                 <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-                  <p class="text-xs text-muted">Total</p>
+                  <p class="text-xs" style="color:#666;">Total</p>
                   <p class="text-lg font-black" id="chart-center-kcal">—</p>
-                  <p class="text-xs text-muted">kcal</p>
+                  <p class="text-xs" style="color:#666;">kcal</p>
                 </div>
               </div>
             </div>
@@ -464,22 +354,22 @@
 
       <div class="grid md:grid-cols-3 gap-4">
         <div class="card">
-          <p class="text-sm font-semibold mb-2 text-accent">Mulheres</p>
+          <p class="text-sm font-semibold mb-2" style="color:#e02020;">Mulheres</p>
           <p class="font-mono text-sm leading-relaxed">
             TMB = (10 × peso kg) + (6,25 × altura cm) − (5 × idade) − 161
           </p>
-          <p class="text-muted text-sm mt-2">Use peso, altura e idade reais. A TMB é só o ponto de partida.</p>
+          <p class="text-sm mt-2" style="color:#666;">Use peso, altura e idade reais. A TMB é só o ponto de partida.</p>
         </div>
         <div class="card">
-          <p class="text-sm font-semibold mb-2 text-accent2">Homens</p>
+          <p class="text-sm font-semibold mb-2" style="color:#e8e8e8;">Homens</p>
           <p class="font-mono text-sm leading-relaxed">
             TMB = (10 × peso kg) + (6,25 × altura cm) − (5 × idade) + 5
           </p>
-          <p class="text-muted text-sm mt-2">Não é quanto comer: é a base para multiplicar pelo fator atividade.</p>
+          <p class="text-sm mt-2" style="color:#666;">Não é quanto comer: é a base para multiplicar pelo fator atividade.</p>
         </div>
-        <div class="card bg-gradient-to-br from-[#131319] to-[#0d0d11] border border-[#1f1f24] shadow-glow">
+        <div class="card">
           <p class="text-sm font-semibold mb-2">Checklist rápido</p>
-          <ul class="space-y-2 text-muted text-sm">
+          <ul class="space-y-2 text-sm" style="color:#666;">
             <li>• TMB não considera treino.</li>
             <li>• Escolha dados atuais, não o “ideal”.</li>
             <li>• Próximo passo: multiplicar pelo fator atividade.</li>
@@ -494,38 +384,38 @@
         <div class="card">
           <p class="tag mb-1">Fator atividade</p>
           <h3 class="text-xl font-bold mb-2">Quanto você se move no dia?</h3>
-          <p class="text-muted text-sm mb-4">Escolha o fator que mais se aproxima da rotina real — não do ideal.</p>
+          <p class="text-sm mb-4" style="color:#666;">Escolha o fator que mais se aproxima da rotina real — não do ideal.</p>
           <div class="grid-auto">
-            <div class="p-3 rounded-xl bg-[#0b0b11] border border-[#1f1f2a]">
+            <div class="p-3 rounded-lg border" style="background:#111; border-color:#1c1c1c;">
               <p class="font-semibold">1,2</p>
-              <p class="text-muted text-sm">Totalmente sedentário</p>
+              <p class="text-sm" style="color:#666;">Totalmente sedentário</p>
             </div>
-            <div class="p-3 rounded-xl bg-[#0b0b11] border border-[#1f1f2a]">
+            <div class="p-3 rounded-lg border" style="background:#111; border-color:#1c1c1c;">
               <p class="font-semibold">1,3</p>
-              <p class="text-muted text-sm">Trabalha sentado + treina 3–5x</p>
+              <p class="text-sm" style="color:#666;">Trabalha sentado + treina 3–5x</p>
             </div>
-            <div class="p-3 rounded-xl bg-[#0b0b11] border border-[#1f1f2a]">
+            <div class="p-3 rounded-lg border" style="background:#111; border-color:#1c1c1c;">
               <p class="font-semibold">1,4</p>
-              <p class="text-muted text-sm">Trabalho em pé ou treino pesado</p>
+              <p class="text-sm" style="color:#666;">Trabalho em pé ou treino pesado</p>
             </div>
-            <div class="p-3 rounded-xl bg-[#0b0b11] border border-[#1f1f2a]">
+            <div class="p-3 rounded-lg border" style="background:#111; border-color:#1c1c1c;">
               <p class="font-semibold">1,5</p>
-              <p class="text-muted text-sm">Trabalho ativo + treino regular</p>
+              <p class="text-sm" style="color:#666;">Trabalho ativo + treino regular</p>
             </div>
-            <div class="p-3 rounded-xl bg-[#0b0b11] border border-[#1f1f2a]">
+            <div class="p-3 rounded-lg border" style="background:#111; border-color:#1c1c1c;">
               <p class="font-semibold">1,6 – 1,7</p>
-              <p class="text-muted text-sm">Atleta ou trabalho físico intenso</p>
+              <p class="text-sm" style="color:#666;">Atleta ou trabalho físico intenso</p>
             </div>
           </div>
         </div>
         <div class="card">
           <p class="tag mb-1">GET</p>
           <h3 class="text-xl font-bold mb-2">Gasto Energético Total</h3>
-          <p class="text-muted text-sm">GET = TMB × fator atividade. Representa as calorias médias para manter o peso. É a base para criar déficit ou superávit de forma estratégica.</p>
-          <div class="mt-4 p-4 rounded-xl bg-gradient-to-r from-[#1f1f2a] to-[#161621] border border-[#2a2a37]">
-            <p class="text-sm font-semibold">Regra visual</p>
+          <p class="text-sm" style="color:#666;">GET = TMB × fator atividade. Representa as calorias médias para manter o peso. É a base para criar déficit ou superávit de forma estratégica.</p>
+          <div class="mt-4 p-4 rounded-lg border" style="background:#111; border-color:#1c1c1c;">
+            <p class="text-sm font-semibold">Fórmula</p>
             <p class="text-lg font-black">GET = TMB × atividade</p>
-            <p class="text-muted text-sm mt-2">Depois de calcular, ajuste calorias conforme o objetivo.</p>
+            <p class="text-sm mt-1" style="color:#666;">Depois de calcular, ajuste calorias conforme o objetivo.</p>
           </div>
         </div>
       </div>
@@ -537,19 +427,19 @@
       <h2 class="section-heading">Ajuste calórico por objetivo</h2>
       <div class="grid md:grid-cols-3 gap-4 mt-4">
         <div class="card">
-          <p class="text-sm font-semibold text-accent mb-1">Emagrecimento</p>
+          <p class="text-sm font-semibold mb-1" style="color:#e02020;">Emagrecimento</p>
           <p class="text-lg font-bold">Déficit de 10% a 25%</p>
-          <p class="text-muted text-sm mt-2">Déficits exagerados derrubam metabolismo e massa magra.</p>
+          <p class="text-sm mt-2" style="color:#666;">Déficits exagerados derrubam metabolismo e massa magra.</p>
         </div>
         <div class="card">
-          <p class="text-sm font-semibold text-accent2 mb-1">Manutenção / Falso magro</p>
+          <p class="text-sm font-semibold mb-1" style="color:#e8e8e8;">Manutenção / Falso magro</p>
           <p class="text-lg font-bold">Manutenção ou déficit leve (~10%)</p>
-          <p class="text-muted text-sm mt-2">Permite recompor: reduzir gordura mantendo performance.</p>
+          <p class="text-sm mt-2" style="color:#666;">Permite recompor: reduzir gordura mantendo performance.</p>
         </div>
         <div class="card">
-          <p class="text-sm font-semibold text-white mb-1">Hipertrofia</p>
+          <p class="text-sm font-semibold mb-1" style="color:#aaa;">Hipertrofia</p>
           <p class="text-lg font-bold">Superávit de 5% a 15%</p>
-          <p class="text-muted text-sm mt-2">Superávit controlado para ganhar músculo com mínima gordura.</p>
+          <p class="text-sm mt-2" style="color:#666;">Superávit controlado para ganhar músculo com mínima gordura.</p>
         </div>
       </div>
     </section>
@@ -558,31 +448,38 @@
     <section class="section-shell">
       <p class="tag mb-1">Macronutrientes</p>
       <h2 class="section-heading">Faixas recomendadas (g/kg)</h2>
-      <div class="card mt-4 overflow-hidden">
-        <div class="grid grid-cols-4 gap-3 text-sm font-semibold text-muted uppercase tracking-[.14em] pb-2 border-b border-[#1f1f2a]">
-          <div></div><div class="text-white">Proteína</div><div class="text-white">Carboidrato</div><div class="text-white">Gordura</div>
-        </div>
-        <div class="divide-y divide-[#1f1f2a]">
-          <div class="grid grid-cols-4 gap-3 py-3 items-center">
-            <p class="font-bold text-accent">Emagrecimento</p>
-            <p>1,8 – 2,4 g/kg</p>
-            <p>1,5 – 3,0 g/kg</p>
-            <p>0,6 – 0,9 g/kg</p>
-          </div>
-          <div class="grid grid-cols-4 gap-3 py-3 items-center">
-            <p class="font-bold text-accent2">Falso magro / definição</p>
-            <p>2,0 – 2,6 g/kg</p>
-            <p>2,5 – 4,5 g/kg</p>
-            <p>0,8 – 1,0 g/kg</p>
-          </div>
-          <div class="grid grid-cols-4 gap-3 py-3 items-center">
-            <p class="font-bold text-white">Hipertrofia</p>
-            <p>1,8 – 2,2 g/kg</p>
-            <p>4,0 – 6,0 g/kg</p>
-            <p>0,8 – 1,2 g/kg</p>
-          </div>
-        </div>
-        <p class="text-xs text-muted mt-3">Gordura nunca deve ser zerada: é essencial para hormônios e saúde metabólica.</p>
+      <div class="card mt-4 overflow-x-auto">
+        <table class="w-full text-sm">
+          <thead>
+            <tr class="border-b" style="border-color:#1c1c1c;">
+              <th class="text-left pb-2 font-semibold" style="color:#555;text-transform:uppercase;letter-spacing:.06em;font-size:.75rem;"></th>
+              <th class="text-left pb-2 font-semibold" style="color:#aaa;text-transform:uppercase;letter-spacing:.06em;font-size:.75rem;">Proteína</th>
+              <th class="text-left pb-2 font-semibold" style="color:#aaa;text-transform:uppercase;letter-spacing:.06em;font-size:.75rem;">Carboidrato</th>
+              <th class="text-left pb-2 font-semibold" style="color:#aaa;text-transform:uppercase;letter-spacing:.06em;font-size:.75rem;">Gordura</th>
+            </tr>
+          </thead>
+          <tbody style="color:#888;">
+            <tr class="border-b" style="border-color:#1c1c1c;">
+              <td class="py-3 font-semibold" style="color:#e02020;">Emagrecimento</td>
+              <td class="py-3">1,8 – 2,4 g/kg</td>
+              <td class="py-3">1,5 – 3,0 g/kg</td>
+              <td class="py-3">0,6 – 0,9 g/kg</td>
+            </tr>
+            <tr class="border-b" style="border-color:#1c1c1c;">
+              <td class="py-3 font-semibold" style="color:#e8e8e8;">Falso magro</td>
+              <td class="py-3">2,0 – 2,6 g/kg</td>
+              <td class="py-3">2,5 – 4,5 g/kg</td>
+              <td class="py-3">0,8 – 1,0 g/kg</td>
+            </tr>
+            <tr>
+              <td class="py-3 font-semibold" style="color:#aaa;">Hipertrofia</td>
+              <td class="py-3">1,8 – 2,2 g/kg</td>
+              <td class="py-3">4,0 – 6,0 g/kg</td>
+              <td class="py-3">0,8 – 1,2 g/kg</td>
+            </tr>
+          </tbody>
+        </table>
+        <p class="text-xs mt-3" style="color:#555;">Gordura nunca deve ser zerada: é essencial para hormônios e saúde metabólica.</p>
       </div>
     </section>
 
@@ -592,31 +489,31 @@
         <div class="card">
           <p class="tag mb-1">Passo a passo</p>
           <h3 class="text-xl font-bold mb-2">Como transformar calorias em gramas</h3>
-          <ul class="space-y-2 text-muted text-sm">
+          <ul class="space-y-2 text-sm" style="color:#666;">
             <li>1️⃣ Proteína = 4 kcal/g</li>
             <li>2️⃣ Carboidrato = 4 kcal/g</li>
             <li>3️⃣ Gordura = 9 kcal/g</li>
             <li>Ordem correta: proteína → gordura → carboidrato fecha a conta.</li>
           </ul>
         </div>
-        <div class="card bg-gradient-to-br from-[#0f0f16] to-[#0c0c12] border border-[#2a2a37] shadow-glow">
+        <div class="card">
           <p class="tag mb-2">Exemplo resumido</p>
-          <p class="text-sm text-muted mb-3">Pessoa 70 kg · objetivo emagrecimento</p>
+          <p class="text-sm mb-3" style="color:#666;">Pessoa 70 kg · objetivo emagrecimento</p>
           <div class="grid grid-cols-2 gap-3 text-sm">
-            <div class="p-3 rounded-xl bg-[#0b0b11] border border-[#1f1f2a]">
-              <p class="text-muted">Calorias</p>
+            <div class="p-3 rounded-lg border" style="background:#0f0f0f; border-color:#1c1c1c;">
+              <p style="color:#666;">Calorias</p>
               <p class="text-lg font-black">1.480 kcal</p>
             </div>
-            <div class="p-3 rounded-xl bg-[#0b0b11] border border-[#1f1f2a]">
-              <p class="text-muted">Proteína</p>
+            <div class="p-3 rounded-lg border" style="background:#0f0f0f; border-color:#1c1c1c;">
+              <p style="color:#666;">Proteína</p>
               <p class="text-lg font-black">140 g</p>
             </div>
-            <div class="p-3 rounded-xl bg-[#0b0b11] border border-[#1f1f2a]">
-              <p class="text-muted">Gordura</p>
+            <div class="p-3 rounded-lg border" style="background:#0f0f0f; border-color:#1c1c1c;">
+              <p style="color:#666;">Gordura</p>
               <p class="text-lg font-black">56 g</p>
             </div>
-            <div class="p-3 rounded-xl bg-[#0b0b11] border border-[#1f1f2a]">
-              <p class="text-muted">Carboidrato</p>
+            <div class="p-3 rounded-lg border" style="background:#0f0f0f; border-color:#1c1c1c;">
+              <p style="color:#666;">Carboidrato</p>
               <p class="text-lg font-black">104 g</p>
             </div>
           </div>
@@ -632,9 +529,9 @@
 
       <div class="grid md:grid-cols-3 gap-4">
         <div class="card">
-          <p class="text-sm font-semibold text-accent mb-1">Emagrecimento</p>
-          <p class="font-bold">Mulher · 30 anos · 70 kg · 1,65 m · fator 1,3</p>
-          <ul class="text-sm text-muted space-y-1 mt-2">
+          <p class="text-sm font-semibold mb-1" style="color:#e02020;">Emagrecimento</p>
+          <p class="font-bold text-sm">Mulher · 30 anos · 70 kg · 1,65 m · fator 1,3</p>
+          <ul class="text-sm space-y-1 mt-2" style="color:#666;">
             <li>TMB ≈ 1.420 kcal</li>
             <li>GET = 1.846 kcal</li>
             <li>Déficit ~20% → 1.480 kcal</li>
@@ -642,12 +539,12 @@
             <li>Gordura 0,8 g/kg → 56 g (504 kcal)</li>
             <li>Carboidrato fecha → 104 g (416 kcal)</li>
           </ul>
-          <p class="text-xs text-muted mt-3">Resumo: 1.480 kcal · 140p · 56g · 104c</p>
+          <p class="text-xs mt-3" style="color:#555;">Resumo: 1.480 kcal · 140p · 56g · 104c</p>
         </div>
         <div class="card">
-          <p class="text-sm font-semibold text-accent2 mb-1">Falso magro / recomposição</p>
-          <p class="font-bold">Homem · 28 anos · 75 kg · 1,75 m · fator 1,4</p>
-          <ul class="text-sm text-muted space-y-1 mt-2">
+          <p class="text-sm font-semibold mb-1" style="color:#e8e8e8;">Falso magro / recomposição</p>
+          <p class="font-bold text-sm">Homem · 28 anos · 75 kg · 1,75 m · fator 1,4</p>
+          <ul class="text-sm space-y-1 mt-2" style="color:#666;">
             <li>TMB ≈ 1.709 kcal</li>
             <li>GET = 2.392 kcal</li>
             <li>Déficit leve 10% → 2.150 kcal</li>
@@ -655,12 +552,12 @@
             <li>Gordura 0,9 g/kg → ~68 g (608 kcal)</li>
             <li>Carboidrato fecha → ~205 g (822 kcal)</li>
           </ul>
-          <p class="text-xs text-muted mt-3">Resumo: 2.150 kcal · 180p · 68g · 205c</p>
+          <p class="text-xs mt-3" style="color:#555;">Resumo: 2.150 kcal · 180p · 68g · 205c</p>
         </div>
         <div class="card">
-          <p class="text-sm font-semibold text-white mb-1">Hipertrofia</p>
-          <p class="font-bold">Mulher · 26 anos · 60 kg · 1,62 m · fator 1,5</p>
-          <ul class="text-sm text-muted space-y-1 mt-2">
+          <p class="text-sm font-semibold mb-1" style="color:#aaa;">Hipertrofia</p>
+          <p class="font-bold text-sm">Mulher · 26 anos · 60 kg · 1,62 m · fator 1,5</p>
+          <ul class="text-sm space-y-1 mt-2" style="color:#666;">
             <li>TMB ≈ 1.321 kcal</li>
             <li>GET = 1.982 kcal</li>
             <li>Superávit 10% → 2.180 kcal</li>
@@ -668,7 +565,7 @@
             <li>Gordura 1,0 g/kg → 60 g (540 kcal)</li>
             <li>Carboidrato fecha → 290 g (1.160 kcal)</li>
           </ul>
-          <p class="text-xs text-muted mt-3">Resumo: 2.180 kcal · 120p · 60g · 290c</p>
+          <p class="text-xs mt-3" style="color:#555;">Resumo: 2.180 kcal · 120p · 60g · 290c</p>
         </div>
       </div>
     </section>
@@ -680,92 +577,93 @@
       <div class="grid-auto mt-4">
         <div class="card">
           <p class="font-semibold mb-1">Pesar e anotar</p>
-          <p class="text-muted text-sm">Olho não é balança. Use balança e registre tudo.</p>
+          <p class="text-sm" style="color:#666;">Olho não é balança. Use balança e registre tudo.</p>
         </div>
         <div class="card">
           <p class="font-semibold mb-1">Use app ou diário</p>
-          <p class="text-muted text-sm">Controle calorias e macros para parar de jogar no escuro.</p>
+          <p class="text-sm" style="color:#666;">Controle calorias e macros para parar de jogar no escuro.</p>
         </div>
         <div class="card">
           <p class="font-semibold mb-1">Água</p>
-          <p class="text-muted text-sm">35–50 ml/kg conforme clima e treino. Hidratação é estratégia.</p>
+          <p class="text-sm" style="color:#666;">35–50 ml/kg conforme clima e treino. Hidratação é estratégia.</p>
         </div>
         <div class="card">
           <p class="font-semibold mb-1">Nutricionista</p>
-          <p class="text-muted text-sm">Planos individualizados, exames e ajustes clínicos.</p>
+          <p class="text-sm" style="color:#666;">Planos individualizados, exames e ajustes clínicos.</p>
         </div>
         <div class="card">
           <p class="font-semibold mb-1">Cafeína / pré-treino</p>
-          <p class="text-muted text-sm">2–4 mg/kg/dia, último consumo até 14h–15h. Evite energético diário; pré-treino não substitui comida nem corrige dieta ruim.</p>
+          <p class="text-sm" style="color:#666;">2–4 mg/kg/dia, último consumo até 14h–15h. Evite energético diário; pré-treino não substitui comida nem corrige dieta ruim.</p>
         </div>
         <div class="card">
           <p class="font-semibold mb-1">Álcool</p>
-          <p class="text-muted text-sm">7 kcal/g, piora recuperação e síntese proteica. Mínimo em cutting e bulk sério.</p>
+          <p class="text-sm" style="color:#666;">7 kcal/g, piora recuperação e síntese proteica. Mínimo em cutting e bulk sério.</p>
         </div>
         <div class="card">
           <p class="font-semibold mb-1">Sal e performance</p>
-          <p class="text-muted text-sm">Sal não é vilão — falta derruba força e pump. Controle sem extremos.</p>
+          <p class="text-sm" style="color:#666;">Sal não é vilão — falta derruba força e pump. Controle sem extremos.</p>
         </div>
         <div class="card">
           <p class="font-semibold mb-1">Sono</p>
-          <p class="text-muted text-sm">Macro invisível: dormir pouco aumenta fome e trava recuperação.</p>
+          <p class="text-sm" style="color:#666;">Macro invisível: dormir pouco aumenta fome e trava recuperação.</p>
         </div>
         <div class="card">
           <p class="font-semibold mb-1">Ajustes constantes</p>
-          <p class="text-muted text-sm">O corpo adapta. Reavalie macros periodicamente.</p>
+          <p class="text-sm" style="color:#666;">O corpo adapta. Reavalie macros periodicamente.</p>
         </div>
         <div class="card">
           <p class="font-semibold mb-1">Expectativa real</p>
-          <p class="text-muted text-sm">Consistência por 60–90 dias supera perfeição de uma semana.</p>
+          <p class="text-sm" style="color:#666;">Consistência por 60–90 dias supera perfeição de uma semana.</p>
         </div>
         <div class="card">
           <p class="font-semibold mb-1">Responsabilidade</p>
-          <p class="text-muted text-sm">Método funciona, mas a execução diária é do aluno.</p>
+          <p class="text-sm" style="color:#666;">Método funciona, mas a execução diária é do aluno.</p>
         </div>
       </div>
     </section>
 
     <!-- CHATGPT DIÁRIO -->
     <section class="section-shell">
-      <div class="card grid md:grid-cols-2 gap-4 items-center">
+      <div class="card grid md:grid-cols-2 gap-6 items-center">
         <div>
           <p class="tag mb-1">Tecnologia</p>
-          <h3 class="text-xl font-bold mb-2">Use o ChatGPT como diário alimentar</h3>
-          <p class="text-muted text-sm mb-3">Registre refeições por texto ou voz. Peça para fechar o dia e receba calorias, proteínas, carboidratos, gorduras e comparação com a meta.</p>
-          <ul class="text-sm text-muted space-y-1">
+          <h3 class="text-xl font-bold mb-2" style="letter-spacing:-.02em;">Use o ChatGPT como diário alimentar</h3>
+          <p class="text-sm mb-3" style="color:#666;">Registre refeições por texto ou voz. Peça para fechar o dia e receba calorias, proteínas, carboidratos, gorduras e comparação com a meta.</p>
+          <ul class="text-sm space-y-1" style="color:#666;">
             <li>• Envie cada refeição ao longo do dia.</li>
-            <li>• No fim: “Fecha meu dia com base no que eu comi hoje.”</li>
+            <li>• No fim: "Fecha meu dia com base no que eu comi hoje."</li>
             <li>• Receba totais e ajuste rápido conforme metas.</li>
           </ul>
-          <p class="text-xs text-muted mt-2">Constância > perfeição. Use medidas caseiras se não tiver peso preciso.</p>
+          <p class="text-xs mt-2" style="color:#555;">Constância > perfeição. Use medidas caseiras se não tiver peso preciso.</p>
         </div>
-        <div class="p-4 rounded-2xl bg-gradient-to-br from-[#0f0f16] to-[#0c0c12] border border-[#2a2a37]">
-          <p class="font-semibold mb-2">Exemplo de prompt</p>
-          <div class="text-sm bg-[#0b0b11] border border-[#1f1f2a] rounded-xl p-3 mb-3">
-            “Comi 100g de arroz, 150g de frango, 1 ovo e 1 banana.”<br />
-            👉 ChatGPT devolve calorias, proteínas, carboidratos e gorduras.
+        <div class="p-4 rounded-lg border" style="background:#0f0f0f; border-color:#1c1c1c;">
+          <p class="font-semibold mb-3 text-sm">Exemplo de prompt</p>
+          <div class="text-sm rounded-lg p-3 mb-3 border" style="background:#0a0a0a; border-color:#1c1c1c; color:#888;">
+            "Comi 100g de arroz, 150g de frango, 1 ovo e 1 banana."<br />
+            <span style="color:#e02020;">→</span> ChatGPT devolve calorias, proteínas, carboidratos e gorduras.
           </div>
-          <div class="text-sm bg-[#0b0b11] border border-[#1f1f2a] rounded-xl p-3">
-            “Fecha meu dia com base no que eu comi hoje.”<br />
-            👉 Receba totais + comparação com a meta.
+          <div class="text-sm rounded-lg p-3 border" style="background:#0a0a0a; border-color:#1c1c1c; color:#888;">
+            "Fecha meu dia com base no que eu comi hoje."<br />
+            <span style="color:#e02020;">→</span> Receba totais + comparação com a meta.
           </div>
         </div>
       </div>
     </section>
 
     <!-- CTA FINAL -->
-    <section class="section-shell pb-12" id="cta">
-      <div class="card text-center bg-gradient-to-r from-accent to-accent2 text-white shadow-glow">
-        <p class="text-xs font-bold uppercase tracking-[.2em]">CTA final</p>
-        <h3 class="text-2xl md:text-3xl font-black mt-2 mb-2">Quem controla, ajusta. Quem ajusta, evolui.</h3>
-        <p class="text-sm mb-4">Calcule, pese, registre e ajuste. O corpo responde ao que é medido.</p>
-        <a href="#calculadoras" class="btn-secondary bg-white/10 border-white/50 text-white hover:text-accent hover:bg-white">Começar agora</a>
+    <section class="section-shell pb-16" id="cta">
+      <div class="card text-center" style="border-color:#2a1a1a; background:#130a0a;">
+        <h3 class="text-2xl md:text-3xl font-black mb-2" style="letter-spacing:-.03em;">Quem controla, ajusta. Quem ajusta, evolui.</h3>
+        <p class="text-sm mb-5" style="color:#666;">Calcule, pese, registre e ajuste. O corpo responde ao que é medido.</p>
+        <a href="#calculadoras" class="btn-primary no-underline" style="max-width:200px;margin:0 auto;">Começar agora</a>
       </div>
     </section>
   </main>
 
-  <footer class="py-6 text-center text-muted text-sm">
-    GN TEAM · Blueprint Metabólico — material educativo. Consulte um profissional habilitado para prescrição individual.
+  <footer>
+    <div class="wrap">
+      GN TEAM · Blueprint Metabólico — material educativo. Consulte um profissional habilitado para prescrição individual.
+    </div>
   </footer>
 
   <!-- JAVASCRIPT -->
