@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-BR" class="scroll-smooth">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -336,6 +336,13 @@
         letter-spacing: -0.01em;
       }
 
+      .stat .unit {
+        display: block;
+        margin-top: 0.2rem;
+        font-size: 0.75rem;
+        color: #95a7cd;
+      }
+
       .macro-layout {
         margin-top: 1rem;
         display: grid;
@@ -583,14 +590,17 @@
                 <div class="stat">
                   <h4>TMB</h4>
                   <p id="r-tmb">—</p>
+                  <small class="unit">kcal/dia</small>
                 </div>
                 <div class="stat">
                   <h4>GET</h4>
                   <p id="r-get">—</p>
+                  <small class="unit">kcal/dia</small>
                 </div>
                 <div class="stat">
                   <h4>Calorias alvo</h4>
                   <p id="r-target">—</p>
+                  <small class="unit">kcal/dia</small>
                 </div>
               </div>
               <p id="r-goal-text" class="section-desc" style="margin-top: 0.7rem"></p>
@@ -633,18 +643,22 @@
                 <div class="stat">
                   <h4>Calorias</h4>
                   <p id="res-kcal">—</p>
+                  <small class="unit">kcal/dia</small>
                 </div>
                 <div class="stat">
                   <h4>Proteína</h4>
                   <p id="res-prot">—</p>
+                  <small class="unit">g</small>
                 </div>
                 <div class="stat">
                   <h4>Gordura</h4>
                   <p id="res-fat">—</p>
+                  <small class="unit">g</small>
                 </div>
                 <div class="stat">
                   <h4>Carboidrato</h4>
                   <p id="res-carb">—</p>
+                  <small class="unit">g</small>
                 </div>
               </div>
 
@@ -805,9 +819,9 @@
         const get = tmb * activity;
         const target = Math.round(get * (1 + goalMap[goal].pct));
 
-        qs("r-tmb").textContent = `${fmt(Math.round(tmb))} kcal`;
-        qs("r-get").textContent = `${fmt(Math.round(get))} kcal`;
-        qs("r-target").textContent = `${fmt(target)} kcal`;
+        qs("r-tmb").textContent = fmt(Math.round(tmb));
+        qs("r-get").textContent = fmt(Math.round(get));
+        qs("r-target").textContent = fmt(target);
         qs("r-goal-text").textContent = goalMap[goal].text;
         qs("c1-results").classList.remove("hidden");
 
@@ -880,10 +894,10 @@
         const pctCarb = ((carbKcal / totalKcal) * 100).toFixed(1);
         const pctFat = ((fatKcal / totalKcal) * 100).toFixed(1);
 
-        qs("res-kcal").textContent = `${fmt(kcal)} kcal`;
-        qs("res-prot").textContent = `${fmt(protG)} g`;
-        qs("res-fat").textContent = `${fmt(fatG)} g`;
-        qs("res-carb").textContent = `${fmt(carbG)} g`;
+        qs("res-kcal").textContent = fmt(kcal);
+        qs("res-prot").textContent = fmt(protG);
+        qs("res-fat").textContent = fmt(fatG);
+        qs("res-carb").textContent = fmt(carbG);
 
         qs("pct-prot").textContent = `${pctProt}%`;
         qs("pct-carb").textContent = `${pctCarb}%`;
