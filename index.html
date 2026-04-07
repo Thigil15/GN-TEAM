@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>GN TEAM — Engine Metabólico</title>
+  <title>Blueprint Metabólico · GN TEAM</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   <script>
@@ -11,18 +11,21 @@
       theme: {
         extend: {
           colors: {
-            brand: {
-              bg:    '#09090b',
-              card:  '#18181b',
-              red:   '#dc2626',
-              'red-hover': '#b91c1c',
-              border:'#27272a',
-              muted: '#71717a',
-              text:  '#fafafa',
-            }
+            night: '#050507',
+            surface: '#0c0c10',
+            panel: '#13131a',
+            border: '#1f1f2a',
+            accent: '#f05238',
+            accent2: '#f59e0b',
+            muted: '#9ca3af',
+            text: '#f5f5f6'
           },
           fontFamily: {
-            sans: ['Inter', 'system-ui', 'sans-serif'],
+            sans: ['"Space Grotesk"', 'Poppins', 'system-ui', 'sans-serif']
+          },
+          boxShadow: {
+            glow: '0 20px 70px rgba(240,82,56,0.22)',
+            card: '0 18px 40px rgba(0,0,0,0.45)'
           }
         }
       }
@@ -30,952 +33,836 @@
   </script>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet" />
   <style>
-    /* ── base ─────────────────────────────────────────── */
-    *, *::before, *::after { box-sizing: border-box; }
-    html { background: #09090b; }
-    body { background: #09090b; color: #fafafa; font-family: 'Inter', system-ui, sans-serif; }
-
-    /* ── scrollbar ───────────────────────────────────── */
-    ::-webkit-scrollbar { width: 6px; }
-    ::-webkit-scrollbar-track { background: #18181b; }
-    ::-webkit-scrollbar-thumb { background: #3f3f46; border-radius: 3px; }
-
-    /* ── glass card ──────────────────────────────────── */
-    .card {
-      background: #18181b;
-      border: 1px solid #27272a;
-      border-radius: 1rem;
-      padding: 1.75rem;
+    :root {
+      color-scheme: dark;
     }
-
-    /* ── inputs ──────────────────────────────────────── */
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: radial-gradient(120% 80% at 20% 0%, rgba(240,82,56,0.08), transparent 45%),
+                  radial-gradient(90% 70% at 80% 0%, rgba(98,45,255,0.08), transparent 45%),
+                  #050507;
+      color: #f5f5f6;
+      font-family: "Space Grotesk", Poppins, system-ui, sans-serif;
+      line-height: 1.6;
+    }
+    .wrap { max-width: 1200px; margin: 0 auto; padding: 0 1.25rem; }
+    .nav-blur {
+      position: fixed; inset: 0 auto auto 0; right: 0; height: 68px;
+      background: rgba(12,12,16,0.7); border-bottom: 1px solid #1f1f2a;
+      backdrop-filter: blur(14px); z-index: 50;
+    }
+    .card {
+      background: linear-gradient(145deg, #0f0f16, #0b0b11);
+      border: 1px solid #1f1f2a;
+      border-radius: 18px;
+      padding: 1.5rem;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+    }
+    .pill {
+      display: inline-flex; align-items: center; gap: .35rem;
+      padding: .35rem .75rem; border-radius: 999px;
+      border: 1px solid #1f1f2a; background: rgba(255,255,255,0.04);
+      font-size: .85rem; color: #f5f5f6;
+    }
+    .btn-primary {
+      display: inline-flex; align-items: center; justify-content: center; gap: .55rem;
+      background: linear-gradient(120deg, #f05238, #f59e0b);
+      color: #0c0c10; font-weight: 700; padding: .9rem 1.2rem;
+      border-radius: 12px; width: 100%; border: none; cursor: pointer;
+      transition: transform .12s ease, box-shadow .2s ease, filter .2s ease;
+      box-shadow: 0 10px 30px rgba(240,82,56,0.25);
+    }
+    .btn-primary:hover { transform: translateY(-1px); filter: brightness(1.05); }
+    .btn-secondary {
+      display: inline-flex; align-items: center; justify-content: center; gap: .5rem;
+      background: transparent; color: #f5f5f6; border: 1px solid #2a2a37;
+      padding: .85rem 1.2rem; border-radius: 12px; width: 100%; cursor: pointer;
+      transition: border-color .2s ease, color .2s ease;
+    }
+    .btn-secondary:hover { border-color: #f05238; color: #f05238; }
+    label { display: block; font-size: .8rem; font-weight: 600; color: #9ca3af; letter-spacing: .05em; text-transform: uppercase; margin-bottom: .35rem; }
     .inp {
-      width: 100%;
-      background: #09090b;
-      border: 1px solid #3f3f46;
-      border-radius: .5rem;
-      color: #fafafa;
-      padding: .55rem .85rem;
-      font-size: .9rem;
-      transition: border-color .2s;
+      width: 100%; background: #0b0b11; color: #f5f5f6;
+      border: 1px solid #2a2a37; border-radius: 10px;
+      padding: .75rem .9rem; font-size: .95rem;
+      transition: border-color .2s ease, box-shadow .2s ease;
       outline: none;
     }
-    .inp:focus { border-color: #dc2626; }
-    .inp.error { border-color: #f87171; }
-    label { display: block; margin-bottom: .35rem; font-size: .8rem; font-weight: 500; color: #a1a1aa; letter-spacing: .04em; text-transform: uppercase; }
-
-    /* ── buttons ─────────────────────────────────────── */
-    .btn-primary {
-      display: inline-flex; align-items: center; justify-content: center; gap: .5rem;
-      background: #dc2626; color: #fff; font-weight: 700; font-size: .9rem;
-      padding: .65rem 1.5rem; border-radius: .5rem; border: none; cursor: pointer;
-      transition: background .2s, transform .1s;
-      width: 100%;
+    .inp:focus { border-color: #f05238; box-shadow: 0 0 0 2px rgba(240,82,56,.25); }
+    .inp.error { border-color: #f87171; box-shadow: 0 0 0 2px rgba(248,113,113,.2); }
+    .section-heading { font-size: 1.5rem; font-weight: 800; margin-bottom: .4rem; }
+    .section-sub { color: #9ca3af; max-width: 800px; }
+    .grid-auto { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 1rem; }
+    .tag { font-size: .85rem; font-weight: 700; color: #f59e0b; letter-spacing: .05em; }
+    .divider { height: 1px; background: #1f1f2a; margin: 2.5rem 0; }
+    .halo {
+      position: absolute; width: 320px; height: 320px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(240,82,56,0.18), transparent 60%);
+      filter: blur(10px); opacity: .8; pointer-events: none;
     }
-    .btn-primary:hover:not(:disabled) { background: #b91c1c; }
-    .btn-primary:active:not(:disabled) { transform: scale(.97); }
-    .btn-primary.success { background: #16a34a; }
-
-    /* ── result boxes ─────────────────────────────────── */
-    .result-box {
-      background: #09090b;
-      border: 1px solid #27272a;
-      border-radius: .75rem;
-      padding: 1rem 1.25rem;
-      text-align: center;
+    .halo.blue { background: radial-gradient(circle, rgba(80,129,255,0.18), transparent 60%); }
+    .section-shell { position: relative; padding: 4rem 0 2rem; }
+    @media (max-width: 900px) {
+      .hero-grid { grid-template-columns: 1fr; }
+      .nav-actions { display: none; }
     }
-    .result-label { font-size: .72rem; font-weight: 600; color: #71717a; text-transform: uppercase; letter-spacing: .08em; }
-    .result-value { font-size: 1.6rem; font-weight: 800; color: #dc2626; line-height: 1.2; }
-    .result-unit  { font-size: .8rem; color: #71717a; }
-
-    /* ── tabs ─────────────────────────────────────────── */
-    .tab-btn {
-      padding: .5rem 1.25rem; border-radius: .4rem; font-size: .85rem; font-weight: 600;
-      cursor: pointer; transition: background .2s, color .2s;
-      background: transparent; color: #71717a; border: 1px solid transparent;
-    }
-    .tab-btn.active { background: #dc2626; color: #fff; border-color: #dc2626; }
-    .tab-btn:hover:not(.active) { color: #fafafa; border-color: #3f3f46; }
-    .tab-panel { display: none; }
-    .tab-panel.active { display: block; }
-
-    /* ── macro bar ──────────────────────────────────────*/
-    .macro-bar-wrap { height: 8px; background: #27272a; border-radius: 9999px; overflow: hidden; }
-    .macro-bar { height: 100%; border-radius: 9999px; transition: width .5s ease; }
-
-    /* ── highlight glow ──────────────────────────────── */
-    .glow { box-shadow: 0 0 0 2px #dc262640; }
-
-    /* ── section divider ─────────────────────────────── */
-    .section-title {
-      font-size: 1.4rem; font-weight: 800; color: #fafafa;
-    }
-    .section-title span { color: #dc2626; }
-
-    /* ── navbar blur ─────────────────────────────────── */
-    .navbar {
-      position: fixed; top: 0; left: 0; right: 0; z-index: 50;
-      background: rgba(9,9,11,.85); backdrop-filter: blur(12px);
-      border-bottom: 1px solid #27272a;
-    }
-
-    /* ── hero gradient ───────────────────────────────── */
-    .hero-gradient {
-      background: radial-gradient(ellipse 80% 50% at 50% -20%, #dc262618 0%, transparent 70%);
-    }
-
-    /* ── chart container ─────────────────────────────── */
-    .chart-wrap { position: relative; max-width: 220px; margin: 0 auto; }
-
-    /* ── separator ───────────────────────────────────── */
-    .sep { border-color: #27272a; }
-
-    /* ── tooltip ─────────────────────────────────────── */
-    .tooltip-wrap { position: relative; display: inline-block; }
-    .tooltip-wrap .tip {
-      visibility: hidden; opacity: 0; transition: opacity .2s;
-      position: absolute; bottom: calc(100% + 6px); left: 50%; transform: translateX(-50%);
-      background: #3f3f46; color: #fafafa; font-size: .72rem; padding: .3rem .6rem;
-      border-radius: .3rem; white-space: nowrap; pointer-events: none; z-index: 10;
-    }
-    .tooltip-wrap:hover .tip { visibility: visible; opacity: 1; }
-
-    /* ── example card ────────────────────────────────── */
-    .ex-profile { display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; }
-    .ex-avatar {
-      width: 48px; height: 48px; border-radius: 9999px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 1.3rem; font-weight: 800; background: #27272a; flex-shrink: 0;
-    }
-
-    /* ── fade-in animation ───────────────────────────── */
-    @keyframes fadeUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
-    .fade-up { animation: fadeUp .4s ease both; }
-
-    /* ── responsive grid ─────────────────────────────── */
     @media (max-width: 640px) {
-      .card { padding: 1.25rem; }
-      .result-value { font-size: 1.3rem; }
+      .card { padding: 1.1rem; border-radius: 14px; }
+      .section-heading { font-size: 1.25rem; }
+      .btn-primary, .btn-secondary { width: 100%; }
     }
   </style>
 </head>
 <body>
 
-<!-- ═══════════════════════════════════════════════════
-     NAVBAR
-═══════════════════════════════════════════════════ -->
-<nav class="navbar">
-  <div class="max-w-6xl mx-auto px-4 sm:px-6 flex items-center justify-between h-14">
-    <a href="#" class="flex items-center gap-2 no-underline">
-      <span class="text-xl font-black tracking-tight">
-        <span style="color:#dc2626">GN</span><span class="text-white"> TEAM</span>
-      </span>
-      <span class="hidden sm:inline text-xs font-semibold text-zinc-500 border border-zinc-700 rounded px-1.5 py-0.5 ml-1">ENGINE</span>
-    </a>
-    <div class="flex items-center gap-1">
-      <a href="#calculadora" class="tab-btn text-sm">Calculadora</a>
-      <a href="#exemplos"    class="tab-btn text-sm">Exemplos</a>
+  <!-- NAV -->
+  <header class="nav-blur">
+    <div class="wrap h-full flex items-center justify-between">
+      <a class="flex items-center gap-2 font-black tracking-tight text-lg no-underline text-white" href="#top">
+        <span class="text-accent" style="color:#f05238;">GN</span> TEAM · Blueprint Metabólico
+      </a>
+      <nav class="hidden md:flex items-center gap-3 text-sm nav-actions">
+        <a href="#calculadoras" class="text-muted hover:text-white">Calculadoras</a>
+        <a href="#tmb" class="text-muted hover:text-white">TMB & GET</a>
+        <a href="#macros" class="text-muted hover:text-white">Macros</a>
+        <a href="#regras" class="text-muted hover:text-white">Regras</a>
+      </nav>
     </div>
-  </div>
-</nav>
+  </header>
 
-<!-- ═══════════════════════════════════════════════════
-     HERO
-═══════════════════════════════════════════════════ -->
-<section class="hero-gradient pt-28 pb-16 px-4 text-center" id="top">
-  <div class="max-w-3xl mx-auto">
-    <div class="inline-flex items-center gap-2 bg-zinc-800 border border-zinc-700 rounded-full px-3 py-1 text-xs font-semibold text-zinc-400 mb-6">
-      <span class="w-2 h-2 rounded-full bg-red-600 animate-pulse inline-block"></span>
-      Plataforma de Performance Nutricional
-    </div>
-    <h1 class="text-4xl sm:text-6xl font-black tracking-tight leading-tight mb-4">
-      Engine<br><span style="color:#dc2626">Metabólico</span>
-    </h1>
-    <p class="text-zinc-400 text-base sm:text-lg max-w-xl mx-auto leading-relaxed">
-      Calcule <strong class="text-white">calorias</strong>, <strong class="text-white">macronutrientes</strong>
-      e <strong class="text-white">hidratação</strong> com precisão científica — tudo integrado e automático.
-    </p>
-    <div class="mt-8 flex flex-wrap justify-center gap-4 text-sm text-zinc-500">
-      <span class="flex items-center gap-1.5"><span class="text-red-500">■</span> Fórmula Mifflin-St Jeor</span>
-      <span class="flex items-center gap-1.5"><span class="text-red-500">■</span> Macros Automatizados</span>
-      <span class="flex items-center gap-1.5"><span class="text-red-500">■</span> Hidratação Personalizada</span>
-    </div>
-  </div>
-</section>
+  <main class="wrap pt-24" id="top">
+    <!-- HERO -->
+    <section class="section-shell">
+      <div class="halo" style="top:-80px;left:-120px;"></div>
+      <div class="halo blue" style="top:-60px;right:-80px;"></div>
 
-<!-- ═══════════════════════════════════════════════════
-     CALCULADORA
-═══════════════════════════════════════════════════ -->
-<section id="calculadora" class="max-w-6xl mx-auto px-4 sm:px-6 pb-24">
-
-  <!-- ── Step indicator ─────────────────────────────── -->
-  <div class="flex items-center gap-0 mb-10 overflow-x-auto pb-1">
-    <div class="step-indicator flex items-center gap-2 whitespace-nowrap">
-      <div class="w-7 h-7 rounded-full bg-red-600 flex items-center justify-center text-xs font-bold text-white">1</div>
-      <span class="text-sm font-semibold text-white">Gasto Energético</span>
-    </div>
-    <div class="flex-1 h-px bg-zinc-700 mx-3 min-w-4"></div>
-    <div class="step-indicator flex items-center gap-2 whitespace-nowrap">
-      <div class="w-7 h-7 rounded-full bg-zinc-700 flex items-center justify-center text-xs font-bold text-zinc-400" id="step2-circle">2</div>
-      <span class="text-sm font-semibold text-zinc-500" id="step2-label">Macronutrientes</span>
-    </div>
-    <div class="flex-1 h-px bg-zinc-700 mx-3 min-w-4"></div>
-    <div class="step-indicator flex items-center gap-2 whitespace-nowrap">
-      <div class="w-7 h-7 rounded-full bg-zinc-700 flex items-center justify-center text-xs font-bold text-zinc-400" id="step3-circle">3</div>
-      <span class="text-sm font-semibold text-zinc-500" id="step3-label">Hidratação</span>
-    </div>
-  </div>
-
-  <!-- ═══════════════════
-       SIM 1 — TDEE
-  ══════════════════════ -->
-  <div class="card mb-6 fade-up" id="sim1-card">
-    <div class="flex items-start justify-between mb-5">
-      <div>
-        <p class="text-xs font-bold text-red-500 uppercase tracking-widest mb-1">Simulador 01</p>
-        <h2 class="section-title">Gasto <span>Energético</span></h2>
-        <p class="text-zinc-500 text-sm mt-1">Calcula sua TMB e GET com base no perfil físico.</p>
-      </div>
-      <span class="text-2xl">🔥</span>
-    </div>
-
-    <div class="grid grid-cols-2 sm:grid-cols-3 gap-4 mb-5">
-      <div>
-        <label>Sexo</label>
-        <select id="s1-sex" class="inp">
-          <option value="M">Masculino</option>
-          <option value="F">Feminino</option>
-        </select>
-      </div>
-      <div>
-        <label>Idade (anos)</label>
-        <input id="s1-age" type="number" min="10" max="100" placeholder="Ex: 25" class="inp" />
-      </div>
-      <div>
-        <label>Peso (kg)</label>
-        <input id="s1-weight" type="number" min="30" max="300" step="0.1" placeholder="Ex: 80" class="inp" />
-      </div>
-      <div>
-        <label>Altura (cm)</label>
-        <input id="s1-height" type="number" min="100" max="250" placeholder="Ex: 175" class="inp" />
-      </div>
-      <div class="col-span-2 sm:col-span-2">
-        <label>Nível de Atividade (PAL)</label>
-        <select id="s1-pal" class="inp">
-          <option value="1.2">Sedentário — sem exercício</option>
-          <option value="1.375">Levemente ativo — 1–3x/sem</option>
-          <option value="1.55" selected>Moderadamente ativo — 3–5x/sem</option>
-          <option value="1.725">Muito ativo — 6–7x/sem</option>
-          <option value="1.9">Extremamente ativo — 2x/dia</option>
-        </select>
-      </div>
-    </div>
-
-    <button id="s1-btn" class="btn-primary" onclick="calcTDEE()">
-      Calcular Gasto Energético
-    </button>
-
-    <div id="s1-error" class="hidden mt-3 text-sm text-red-400 font-medium"></div>
-
-    <div id="s1-results" class="hidden mt-6">
-      <hr class="sep mb-6" />
-      <div class="grid grid-cols-2 gap-4">
-        <div class="result-box">
-          <p class="result-label">TMB</p>
-          <p class="result-value" id="r-tmb">—</p>
-          <p class="result-unit">kcal/dia</p>
-        </div>
-        <div class="result-box glow">
-          <p class="result-label">GET — Manutenção</p>
-          <p class="result-value" id="r-get">—</p>
-          <p class="result-unit">kcal/dia</p>
-        </div>
-      </div>
-      <p class="text-xs text-zinc-600 mt-4 text-center">↓ Valores propagados automaticamente para os simuladores abaixo</p>
-    </div>
-  </div>
-
-  <!-- ═══════════════════
-       SIM 2 — MACROS
-  ══════════════════════ -->
-  <div class="card mb-6 fade-up" id="sim2-card">
-    <div class="flex items-start justify-between mb-5">
-      <div>
-        <p class="text-xs font-bold text-red-500 uppercase tracking-widest mb-1">Simulador 02</p>
-        <h2 class="section-title">Macro<span>nutrientes</span></h2>
-        <p class="text-zinc-500 text-sm mt-1">Distribui proteínas, gorduras e carboidratos conforme sua estratégia.</p>
-      </div>
-      <span class="text-2xl">⚡</span>
-    </div>
-
-    <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-5">
-      <div>
-        <label>GET (kcal)</label>
-        <input id="s2-get" type="number" min="1200" placeholder="Auto" class="inp" />
-      </div>
-      <div>
-        <label>Peso (kg)</label>
-        <input id="s2-weight" type="number" min="30" step="0.1" placeholder="Auto" class="inp" />
-      </div>
-      <div class="col-span-2">
-        <label>Estratégia</label>
-        <select id="s2-strategy" class="inp" onchange="onStrategyChange()">
-          <option value="-0.20">Cutting — −20% calorias</option>
-          <option value="-0.10">Recomposição — −10% calorias</option>
-          <option value="0.00">Manutenção — 0% calorias</option>
-          <option value="0.10">Bulking — +10% calorias</option>
-          <option value="custom">Custom</option>
-        </select>
-      </div>
-      <div>
-        <label>Proteína (g/kg)</label>
-        <input id="s2-prot" type="number" min="0.5" max="4" step="0.1" value="2.2" class="inp" />
-      </div>
-      <div>
-        <label>Gordura (g/kg)</label>
-        <input id="s2-fat" type="number" min="0.3" max="3" step="0.1" value="1.0" class="inp" />
-      </div>
-      <div id="s2-custom-wrap" class="hidden col-span-2">
-        <label>Ajuste calórico (%)</label>
-        <input id="s2-custom-pct" type="number" min="-50" max="50" placeholder="Ex: -15" class="inp" />
-      </div>
-    </div>
-
-    <button id="s2-btn" class="btn-primary" onclick="calcMacros()">
-      Calcular Macros
-    </button>
-
-    <div id="s2-error" class="hidden mt-3 text-sm text-red-400 font-medium"></div>
-
-    <div id="s2-results" class="hidden mt-6">
-      <hr class="sep mb-6" />
-      <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6">
-        <div class="result-box col-span-2 sm:col-span-1">
-          <p class="result-label">Calorias Alvo</p>
-          <p class="result-value" id="r-kcal">—</p>
-          <p class="result-unit">kcal/dia</p>
-        </div>
-        <div class="result-box">
-          <p class="result-label">Proteína</p>
-          <p class="result-value" id="r-prot">—</p>
-          <p class="result-unit">gramas/dia</p>
-        </div>
-        <div class="result-box">
-          <p class="result-label">Gordura</p>
-          <p class="result-value" id="r-fat">—</p>
-          <p class="result-unit">gramas/dia</p>
-        </div>
-        <div class="result-box">
-          <p class="result-label">Carboidrato</p>
-          <p class="result-value" id="r-carb">—</p>
-          <p class="result-unit">gramas/dia</p>
-        </div>
-      </div>
-
-      <!-- Macro bars + chart -->
-      <div class="flex flex-col sm:flex-row gap-6 items-center">
-        <div class="flex-1 w-full space-y-3">
-          <div>
-            <div class="flex justify-between text-xs text-zinc-400 mb-1">
-              <span>Proteína</span><span id="pct-prot">—%</span>
-            </div>
-            <div class="macro-bar-wrap"><div class="macro-bar bg-red-600" id="bar-prot" style="width:0%"></div></div>
-          </div>
-          <div>
-            <div class="flex justify-between text-xs text-zinc-400 mb-1">
-              <span>Carboidrato</span><span id="pct-carb">—%</span>
-            </div>
-            <div class="macro-bar-wrap"><div class="macro-bar bg-blue-500" id="bar-carb" style="width:0%"></div></div>
-          </div>
-          <div>
-            <div class="flex justify-between text-xs text-zinc-400 mb-1">
-              <span>Gordura</span><span id="pct-fat">—%</span>
-            </div>
-            <div class="macro-bar-wrap"><div class="macro-bar bg-yellow-500" id="bar-fat" style="width:0%"></div></div>
-          </div>
-        </div>
-        <div class="chart-wrap">
-          <canvas id="macroChart" width="220" height="220"></canvas>
-          <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;pointer-events:none">
-            <p class="text-xs text-zinc-500">Total</p>
-            <p class="text-base font-black text-white" id="chart-center-kcal">—</p>
-            <p class="text-xs text-zinc-500">kcal</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ═══════════════════
-       SIM 3 — HYDRATION
-  ══════════════════════ -->
-  <div class="card fade-up" id="sim3-card">
-    <div class="flex items-start justify-between mb-5">
-      <div>
-        <p class="text-xs font-bold text-red-500 uppercase tracking-widest mb-1">Simulador 03</p>
-        <h2 class="section-title">Hidra<span>tação</span></h2>
-        <p class="text-zinc-500 text-sm mt-1">Calcule sua necessidade hídrica diária com base no treino e clima.</p>
-      </div>
-      <span class="text-2xl">💧</span>
-    </div>
-
-    <div class="grid grid-cols-2 sm:grid-cols-3 gap-4 mb-5">
-      <div>
-        <label>Peso (kg)</label>
-        <input id="s3-weight" type="number" min="30" step="0.1" placeholder="Auto" class="inp" />
-      </div>
-      <div>
-        <label>Tempo de Treino (h)</label>
-        <input id="s3-train" type="number" min="0" max="6" step="0.25" value="1" class="inp" />
-      </div>
-      <div>
-        <label>Clima</label>
-        <select id="s3-climate" class="inp">
-          <option value="35">Frio — 35 ml/kg</option>
-          <option value="40" selected>Temperado — 40 ml/kg</option>
-          <option value="45">Quente — 45 ml/kg</option>
-          <option value="50">Muito quente — 50 ml/kg</option>
-        </select>
-      </div>
-    </div>
-
-    <button id="s3-btn" class="btn-primary" onclick="calcHydration()">
-      Calcular Hidratação
-    </button>
-
-    <div id="s3-error" class="hidden mt-3 text-sm text-red-400 font-medium"></div>
-
-    <div id="s3-results" class="hidden mt-6">
-      <hr class="sep mb-6" />
-      <div class="grid grid-cols-3 gap-4">
-        <div class="result-box">
-          <p class="result-label">Base</p>
-          <p class="result-value" id="r-hyd-base">—</p>
-          <p class="result-unit">litros/dia</p>
-        </div>
-        <div class="result-box">
-          <p class="result-label">Treino</p>
-          <p class="result-value" id="r-hyd-train">—</p>
-          <p class="result-unit">litros/treino</p>
-        </div>
-        <div class="result-box glow">
-          <p class="result-label">Total</p>
-          <p class="result-value" id="r-hyd-total">—</p>
-          <p class="result-unit">litros/dia</p>
-        </div>
-      </div>
-      <!-- water glasses visual -->
-      <div class="mt-5">
-        <p class="text-xs text-zinc-500 mb-2 text-center">Equivalente em copos de 250ml</p>
-        <div id="glasses-display" class="flex flex-wrap justify-center gap-1.5"></div>
-      </div>
-    </div>
-  </div>
-
-</section>
-
-<!-- ═══════════════════════════════════════════════════
-     EXEMPLOS
-═══════════════════════════════════════════════════ -->
-<section id="exemplos" class="max-w-6xl mx-auto px-4 sm:px-6 pb-28">
-  <div class="mb-8 text-center">
-    <p class="text-xs font-bold text-red-500 uppercase tracking-widest mb-2">Casos Reais</p>
-    <h2 class="text-3xl font-black">Exemplos <span style="color:#dc2626">Práticos</span></h2>
-    <p class="text-zinc-500 text-sm mt-2">Veja como o Engine Metabólico se aplica a diferentes objetivos.</p>
-  </div>
-
-  <!-- Tabs -->
-  <div class="flex gap-2 mb-6 justify-center flex-wrap">
-    <button class="tab-btn active" onclick="showTab('ex-cutting', this)">🔻 Emagrecimento</button>
-    <button class="tab-btn" onclick="showTab('ex-recomp', this)">⚖️ Recomposição</button>
-    <button class="tab-btn" onclick="showTab('ex-bulk', this)">📈 Hipertrofia</button>
-  </div>
-
-  <!-- ── Cutting ──────────────────────── -->
-  <div id="ex-cutting" class="tab-panel active fade-up">
-    <div class="card">
-      <div class="ex-profile">
-        <div class="ex-avatar" style="background:#dc262620;color:#dc2626">M</div>
+      <div class="grid md:grid-cols-2 gap-10 hero-grid items-center">
         <div>
-          <p class="font-bold text-white">Carlos, 28 anos</p>
-          <p class="text-zinc-500 text-sm">Masculino · 90 kg · 178 cm · Moderadamente Ativo</p>
-          <p class="text-zinc-600 text-xs mt-0.5">Proteína 2,2 g/kg · Gordura 1,0 g/kg</p>
-        </div>
-        <span class="ml-auto text-xs font-bold text-red-500 bg-red-950 border border-red-900 rounded px-2 py-1">CUTTING</span>
-      </div>
-      <hr class="sep mb-5" />
-      <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6">
-        <div class="result-box">
-          <p class="result-label">TMB</p>
-          <p class="result-value">1.878</p>
-          <p class="result-unit">kcal</p>
-        </div>
-        <div class="result-box">
-          <p class="result-label">GET</p>
-          <p class="result-value">2.910</p>
-          <p class="result-unit">kcal</p>
-        </div>
-        <div class="result-box glow">
-          <p class="result-label">Alvo (−20%)</p>
-          <p class="result-value">2.328</p>
-          <p class="result-unit">kcal</p>
-        </div>
-        <div class="result-box">
-          <p class="result-label">Déficit</p>
-          <p class="result-value">−582</p>
-          <p class="result-unit">kcal</p>
-        </div>
-      </div>
-      <div class="flex flex-col sm:flex-row gap-6 items-center">
-        <div class="flex-1 w-full space-y-3">
-          <div>
-            <div class="flex justify-between text-xs text-zinc-400 mb-1"><span>Proteína — 198g</span><span>34.0%</span></div>
-            <div class="macro-bar-wrap"><div class="macro-bar bg-red-600" style="width:34.0%"></div></div>
+          <div class="pill mb-4">
+            <span class="w-2 h-2 bg-gradient-to-r from-[#f05238] to-[#f59e0b] rounded-full inline-block"></span>
+            Guia premium · Fitness & performance
           </div>
-          <div>
-            <div class="flex justify-between text-xs text-zinc-400 mb-1"><span>Carboidrato — 182g</span><span>31.2%</span></div>
-            <div class="macro-bar-wrap"><div class="macro-bar bg-blue-500" style="width:31.2%"></div></div>
+          <h1 class="text-4xl md:text-5xl font-black leading-tight mb-3">
+            Pare de improvisar sua dieta. <br />
+            <span class="text-transparent bg-clip-text bg-gradient-to-r from-[#f05238] to-[#f59e0b]">Calcule TMB, GET e macros do jeito certo.</span>
+          </h1>
+          <p class="text-muted text-lg mb-6">
+            Entenda TMB, fator atividade, GET e como converter calorias em gramas para emagrecer, definir ou ganhar massa com estratégia de marca premium.
+          </p>
+          <div class="flex flex-col sm:flex-row gap-3">
+            <a href="#calculadoras" class="btn-primary text-center no-underline">Calcular agora</a>
+            <a href="#macros" class="btn-secondary no-underline">Ver exemplos completos</a>
           </div>
-          <div>
-            <div class="flex justify-between text-xs text-zinc-400 mb-1"><span>Gordura — 90g</span><span>34.8%</span></div>
-            <div class="macro-bar-wrap"><div class="macro-bar bg-yellow-500" style="width:34.8%"></div></div>
+          <p class="text-xs text-muted mt-4">Material educativo — não substitui consulta com nutricionista.</p>
+        </div>
+        <div class="card relative overflow-hidden">
+          <div class="absolute inset-0 opacity-30 pointer-events-none" style="background: radial-gradient(circle at 30% 20%, rgba(240,82,56,.16), transparent 50%), radial-gradient(circle at 80% 0%, rgba(245,158,11,.14), transparent 45%);"></div>
+          <div class="relative">
+            <p class="tag mb-2">Blueprint rápido</p>
+            <h2 class="text-2xl font-bold mb-3">O que você vai dominar</h2>
+            <ul class="space-y-3 text-muted">
+              <li>✔️ Fórmula Mifflin-St Jeor para TMB</li>
+              <li>✔️ Fatores de atividade realistas (1,2 a 1,7)</li>
+              <li>✔️ Ajustes calóricos por objetivo (déficit, manutenção, superávit)</li>
+              <li>✔️ Conversão em gramas e faixas de macros por fase</li>
+              <li>✔️ Regras de hidratação, cafeína, álcool, sono e acompanhamento</li>
+              <li>✔️ Como usar o ChatGPT como diário alimentar</li>
+            </ul>
           </div>
         </div>
-        <div class="chart-wrap"><canvas id="exChart1" width="200" height="200"></canvas></div>
       </div>
-    </div>
-  </div>
+    </section>
 
-  <!-- ── Recomp ──────────────────────── -->
-  <div id="ex-recomp" class="tab-panel">
-    <div class="card">
-      <div class="ex-profile">
-        <div class="ex-avatar" style="background:#3b82f620;color:#3b82f6">F</div>
+    <!-- AVISO -->
+    <section class="section-shell" id="aviso">
+      <div class="card border border-amber-700/40 bg-gradient-to-r from-[#1b120d] to-[#0f0d0b] shadow-glow">
+        <div class="flex flex-col md:flex-row md:items-center gap-3">
+          <div class="text-3xl">⚠️</div>
+          <div>
+            <p class="tag text-amber-400 mb-1">Aviso importante</p>
+            <h3 class="text-xl font-bold mb-1">Conteúdo educativo – não substitui nutricionista.</h3>
+            <p class="text-muted">Os cálculos e exemplos são para fins informativos. Para prescrição individualizada, avaliação clínica e ajustes finos, consulte um nutricionista.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CALCULADORAS -->
+    <section class="section-shell" id="calculadoras">
+      <div class="flex items-start justify-between mb-4">
         <div>
-          <p class="font-bold text-white">Ana, 25 anos</p>
-          <p class="text-zinc-500 text-sm">Feminino · 65 kg · 165 cm · Moderadamente Ativa</p>
-          <p class="text-zinc-600 text-xs mt-0.5">Proteína 2,2 g/kg · Gordura 1,0 g/kg</p>
+          <p class="tag mb-1">Ferramentas rápidas</p>
+          <h2 class="section-heading">Calculadoras interativas</h2>
+          <p class="section-sub">TMB + GET com ajuste por objetivo e distribuição de macros com validações amigáveis. Preencha, calcule e use o botão de limpar sempre que quiser recomeçar.</p>
         </div>
-        <span class="ml-auto text-xs font-bold text-blue-400 bg-blue-950 border border-blue-900 rounded px-2 py-1">RECOMP</span>
-      </div>
-      <hr class="sep mb-5" />
-      <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6">
-        <div class="result-box">
-          <p class="result-label">TMB</p>
-          <p class="result-value">1.395</p>
-          <p class="result-unit">kcal</p>
-        </div>
-        <div class="result-box">
-          <p class="result-label">GET</p>
-          <p class="result-value">2.163</p>
-          <p class="result-unit">kcal</p>
-        </div>
-        <div class="result-box glow">
-          <p class="result-label">Alvo (−10%)</p>
-          <p class="result-value">1.947</p>
-          <p class="result-unit">kcal</p>
-        </div>
-        <div class="result-box">
-          <p class="result-label">Déficit</p>
-          <p class="result-value">−216</p>
-          <p class="result-unit">kcal</p>
+        <div class="hidden md:block text-right text-sm text-muted">
+          <p>Resultados em português e já prontos para aplicar.</p>
+          <p class="text-white font-semibold">Limpe os campos para testar novos cenários.</p>
         </div>
       </div>
-      <div class="flex flex-col sm:flex-row gap-6 items-center">
-        <div class="flex-1 w-full space-y-3">
-          <div>
-            <div class="flex justify-between text-xs text-zinc-400 mb-1"><span>Proteína — 143g</span><span>29.4%</span></div>
-            <div class="macro-bar-wrap"><div class="macro-bar bg-red-600" style="width:29.4%"></div></div>
-          </div>
-          <div>
-            <div class="flex justify-between text-xs text-zinc-400 mb-1"><span>Carboidrato — 198g</span><span>40.6%</span></div>
-            <div class="macro-bar-wrap"><div class="macro-bar bg-blue-500" style="width:40.6%"></div></div>
-          </div>
-          <div>
-            <div class="flex justify-between text-xs text-zinc-400 mb-1"><span>Gordura — 65g</span><span>30.0%</span></div>
-            <div class="macro-bar-wrap"><div class="macro-bar bg-yellow-500" style="width:30.0%"></div></div>
-          </div>
-        </div>
-        <div class="chart-wrap"><canvas id="exChart2" width="200" height="200"></canvas></div>
-      </div>
-    </div>
-  </div>
 
-  <!-- ── Bulking ──────────────────────── -->
-  <div id="ex-bulk" class="tab-panel">
-    <div class="card">
-      <div class="ex-profile">
-        <div class="ex-avatar" style="background:#22c55e20;color:#22c55e">M</div>
+      <div class="grid md:grid-cols-2 gap-5">
+        <!-- TMB / GET -->
+        <div class="card shadow-card">
+          <div class="flex items-start justify-between mb-4">
+            <div>
+              <p class="tag text-[#f05238]">TMB · GET</p>
+              <h3 class="text-xl font-bold">Calculadora de TMB + GET</h3>
+              <p class="text-muted text-sm">Usa Mifflin-St Jeor, fator atividade e ajuste por objetivo.</p>
+            </div>
+            <span class="text-2xl">🔥</span>
+          </div>
+
+          <div class="grid grid-cols-2 gap-3 mb-3">
+            <div>
+              <label>Sexo</label>
+              <select id="c1-sex" class="inp">
+                <option value="">Selecione</option>
+                <option value="M">Masculino</option>
+                <option value="F">Feminino</option>
+              </select>
+            </div>
+            <div>
+              <label>Idade (anos)</label>
+              <input id="c1-age" type="number" min="10" max="100" class="inp" placeholder="Ex: 28" />
+            </div>
+            <div>
+              <label>Peso (kg)</label>
+              <input id="c1-weight" type="number" min="30" max="300" step="0.1" class="inp" placeholder="Ex: 70.5" />
+            </div>
+            <div>
+              <label>Altura (cm)</label>
+              <input id="c1-height" type="number" min="120" max="230" class="inp" placeholder="Ex: 172" />
+            </div>
+            <div class="col-span-2">
+              <label>Fator de atividade</label>
+              <select id="c1-activity" class="inp">
+                <option value="">Escolha o que mais parece com você</option>
+                <option value="1.2">1,2 · Sedentário</option>
+                <option value="1.3">1,3 · Trabalho sentado + treino 3–5x</option>
+                <option value="1.4">1,4 · Trabalho em pé ou treino pesado</option>
+                <option value="1.5">1,5 · Trabalho ativo + treino regular</option>
+                <option value="1.65">1,6–1,7 · Atleta ou trabalho físico intenso</option>
+              </select>
+            </div>
+            <div class="col-span-2">
+              <label>Objetivo</label>
+              <select id="c1-goal" class="inp">
+                <option value="">Selecione</option>
+                <option value="cut">Emagrecimento · déficit 10–25%</option>
+                <option value="recomp">Manutenção / falso magro · manutenção ou déficit leve</option>
+                <option value="bulk">Hipertrofia · superávit 5–15%</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="flex flex-col sm:flex-row gap-3">
+            <button class="btn-primary" onclick="calcTmbGet()">Calcular TMB + GET</button>
+            <button class="btn-secondary" onclick="resetTmbGet()">Limpar</button>
+          </div>
+          <p id="c1-error" class="text-sm text-red-400 font-semibold mt-2 hidden"></p>
+
+          <div id="c1-results" class="hidden mt-5 space-y-3">
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <div class="card bg-[#0a0a10] border border-[#252535]">
+                <p class="text-xs uppercase text-muted font-semibold tracking-[.18em] mb-1">TMB</p>
+                <p class="text-2xl font-black" id="r-tmb">—</p>
+                <p class="text-muted text-sm">kcal/dia</p>
+              </div>
+              <div class="card bg-[#0a0a10] border border-[#252535]">
+                <p class="text-xs uppercase text-muted font-semibold tracking-[.18em] mb-1">GET</p>
+                <p class="text-2xl font-black" id="r-get">—</p>
+                <p class="text-muted text-sm">kcal/dia (manutenção)</p>
+              </div>
+              <div class="card bg-[#0a0a10] border border-[#252535] shadow-glow">
+                <p class="text-xs uppercase text-muted font-semibold tracking-[.18em] mb-1">Caloria sugerida</p>
+                <p class="text-2xl font-black text-[#f59e0b]" id="r-target">—</p>
+                <p class="text-muted text-sm" id="r-goal-text"></p>
+              </div>
+            </div>
+            <p class="text-xs text-muted">Copiaremos o peso e as calorias sugeridas para a calculadora de macros automaticamente.</p>
+          </div>
+        </div>
+
+        <!-- MACROS -->
+        <div class="card shadow-card" id="macros">
+          <div class="flex items-start justify-between mb-4">
+            <div>
+              <p class="tag text-[#f59e0b]">Macros</p>
+              <h3 class="text-xl font-bold">Calculadora de macronutrientes</h3>
+              <p class="text-muted text-sm">Converta calorias alvo em proteína, gordura e carboidrato.</p>
+            </div>
+            <span class="text-2xl">⚡</span>
+          </div>
+
+          <div class="grid grid-cols-2 gap-3 mb-3">
+            <div>
+              <label>Calorias alvo (kcal)</label>
+              <input id="c2-kcal" type="number" min="1000" max="7000" class="inp" placeholder="Ex: 2200" />
+            </div>
+            <div>
+              <label>Peso (kg)</label>
+              <input id="c2-weight" type="number" min="30" max="300" step="0.1" class="inp" placeholder="Ex: 70" />
+            </div>
+            <div>
+              <label>Proteína (g/kg)</label>
+              <input id="c2-prot" type="number" min="0.5" max="3.5" step="0.1" class="inp" value="2.0" />
+            </div>
+            <div>
+              <label>Gordura (g/kg)</label>
+              <input id="c2-fat" type="number" min="0.4" max="2.0" step="0.1" class="inp" value="0.8" />
+            </div>
+          </div>
+
+          <div class="flex flex-col sm:flex-row gap-3">
+            <button class="btn-primary" onclick="calcMacros()">Calcular macros</button>
+            <button class="btn-secondary" onclick="resetMacros()">Limpar</button>
+          </div>
+          <p id="c2-error" class="text-sm text-red-400 font-semibold mt-2 hidden"></p>
+
+          <div id="c2-results" class="hidden mt-5 space-y-3">
+            <div class="grid grid-cols-1 sm:grid-cols-4 gap-3">
+              <div class="card bg-[#0a0a10] border border-[#252535]">
+                <p class="text-xs uppercase text-muted font-semibold tracking-[.18em] mb-1">Calorias</p>
+                <p class="text-2xl font-black" id="res-kcal">—</p>
+                <p class="text-muted text-sm">kcal/dia</p>
+              </div>
+              <div class="card bg-[#0a0a10] border border-[#252535]">
+                <p class="text-xs uppercase text-muted font-semibold tracking-[.18em] mb-1">Proteína</p>
+                <p class="text-2xl font-black" id="res-prot">—</p>
+                <p class="text-muted text-sm" id="res-prot-kcal">— kcal</p>
+              </div>
+              <div class="card bg-[#0a0a10] border border-[#252535]">
+                <p class="text-xs uppercase text-muted font-semibold tracking-[.18em] mb-1">Gordura</p>
+                <p class="text-2xl font-black" id="res-fat">—</p>
+                <p class="text-muted text-sm" id="res-fat-kcal">— kcal</p>
+              </div>
+              <div class="card bg-[#0a0a10] border border-[#252535] shadow-glow">
+                <p class="text-xs uppercase text-muted font-semibold tracking-[.18em] mb-1">Carboidrato</p>
+                <p class="text-2xl font-black text-[#f59e0b]" id="res-carb">—</p>
+                <p class="text-muted text-sm" id="res-carb-kcal">— kcal</p>
+              </div>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-4 items-center">
+              <div class="space-y-2 text-sm text-muted">
+                <div class="flex justify-between"><span>Proteína</span><span id="pct-prot">—%</span></div>
+                <div class="h-2 rounded-full bg-[#1f1f2a] overflow-hidden"><div id="bar-prot" class="h-full rounded-full bg-gradient-to-r from-[#f05238] to-[#f59e0b]" style="width:0%"></div></div>
+                <div class="flex justify-between"><span>Carboidrato</span><span id="pct-carb">—%</span></div>
+                <div class="h-2 rounded-full bg-[#1f1f2a] overflow-hidden"><div id="bar-carb" class="h-full rounded-full bg-blue-500" style="width:0%"></div></div>
+                <div class="flex justify-between"><span>Gordura</span><span id="pct-fat">—%</span></div>
+                <div class="h-2 rounded-full bg-[#1f1f2a] overflow-hidden"><div id="bar-fat" class="h-full rounded-full bg-amber-400" style="width:0%"></div></div>
+              </div>
+              <div class="relative flex justify-center">
+                <canvas id="macroChart" width="220" height="220"></canvas>
+                <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+                  <p class="text-xs text-muted">Total</p>
+                  <p class="text-lg font-black" id="chart-center-kcal">—</p>
+                  <p class="text-xs text-muted">kcal</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- O QUE É TMB -->
+    <section class="section-shell" id="tmb">
+      <p class="tag mb-1">Fundamentos</p>
+      <h2 class="section-heading">O que é TMB e como calcular</h2>
+      <p class="section-sub mb-6">Taxa Metabólica Basal é o mínimo de calorias para manter funções vitais em repouso. Fórmula Mifflin-St Jeor (mais utilizada):</p>
+
+      <div class="grid md:grid-cols-3 gap-4">
+        <div class="card">
+          <p class="text-sm font-semibold mb-2 text-[#f05238]">Mulheres</p>
+          <p class="font-mono text-sm leading-relaxed">
+            TMB = (10 × peso kg) + (6,25 × altura cm) − (5 × idade) − 161
+          </p>
+          <p class="text-muted text-sm mt-2">Use peso, altura e idade reais. A TMB é só o ponto de partida.</p>
+        </div>
+        <div class="card">
+          <p class="text-sm font-semibold mb-2 text-[#f59e0b]">Homens</p>
+          <p class="font-mono text-sm leading-relaxed">
+            TMB = (10 × peso kg) + (6,25 × altura cm) − (5 × idade) + 5
+          </p>
+          <p class="text-muted text-sm mt-2">Não é quanto comer: é a base para multiplicar pelo fator atividade.</p>
+        </div>
+        <div class="card bg-gradient-to-br from-[#0f0f16] to-[#0a0a10] border border-[#2a2a37] shadow-glow">
+          <p class="text-sm font-semibold mb-2">Checklist rápido</p>
+          <ul class="space-y-2 text-muted text-sm">
+            <li>• TMB não considera treino.</li>
+            <li>• Escolha dados atuais, não o “ideal”.</li>
+            <li>• Próximo passo: multiplicar pelo fator atividade.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- FATOR ATIVIDADE / GET -->
+    <section class="section-shell">
+      <div class="grid md:grid-cols-2 gap-6">
+        <div class="card">
+          <p class="tag mb-1">Fator atividade</p>
+          <h3 class="text-xl font-bold mb-2">Quanto você se move no dia?</h3>
+          <p class="text-muted text-sm mb-4">Escolha o fator que mais se aproxima da rotina real — não do ideal.</p>
+          <div class="grid-auto">
+            <div class="p-3 rounded-xl bg-[#0b0b11] border border-[#1f1f2a]">
+              <p class="font-semibold">1,2</p>
+              <p class="text-muted text-sm">Totalmente sedentário</p>
+            </div>
+            <div class="p-3 rounded-xl bg-[#0b0b11] border border-[#1f1f2a]">
+              <p class="font-semibold">1,3</p>
+              <p class="text-muted text-sm">Trabalha sentado + treina 3–5x</p>
+            </div>
+            <div class="p-3 rounded-xl bg-[#0b0b11] border border-[#1f1f2a]">
+              <p class="font-semibold">1,4</p>
+              <p class="text-muted text-sm">Trabalho em pé ou treino pesado</p>
+            </div>
+            <div class="p-3 rounded-xl bg-[#0b0b11] border border-[#1f1f2a]">
+              <p class="font-semibold">1,5</p>
+              <p class="text-muted text-sm">Trabalho ativo + treino regular</p>
+            </div>
+            <div class="p-3 rounded-xl bg-[#0b0b11] border border-[#1f1f2a]">
+              <p class="font-semibold">1,6 – 1,7</p>
+              <p class="text-muted text-sm">Atleta ou trabalho físico intenso</p>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <p class="tag mb-1">GET</p>
+          <h3 class="text-xl font-bold mb-2">Gasto Energético Total</h3>
+          <p class="text-muted text-sm">GET = TMB × fator atividade. Representa as calorias médias para manter o peso. É a base para criar déficit ou superávit de forma estratégica.</p>
+          <div class="mt-4 p-4 rounded-xl bg-gradient-to-r from-[#1f1f2a] to-[#161621] border border-[#2a2a37]">
+            <p class="text-sm font-semibold">Regra visual</p>
+            <p class="text-lg font-black">GET = TMB × atividade</p>
+            <p class="text-muted text-sm mt-2">Depois de calcular, ajuste calorias conforme o objetivo.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- AJUSTE CALÓRICO -->
+    <section class="section-shell">
+      <p class="tag mb-1">Objetivo</p>
+      <h2 class="section-heading">Ajuste calórico por objetivo</h2>
+      <div class="grid md:grid-cols-3 gap-4 mt-4">
+        <div class="card">
+          <p class="text-sm font-semibold text-[#f05238] mb-1">Emagrecimento</p>
+          <p class="text-lg font-bold">Déficit de 10% a 25%</p>
+          <p class="text-muted text-sm mt-2">Déficits exagerados derrubam metabolismo e massa magra.</p>
+        </div>
+        <div class="card">
+          <p class="text-sm font-semibold text-[#f59e0b] mb-1">Manutenção / Falso magro</p>
+          <p class="text-lg font-bold">Manutenção ou déficit leve (~10%)</p>
+          <p class="text-muted text-sm mt-2">Permite recompor: reduzir gordura mantendo performance.</p>
+        </div>
+        <div class="card">
+          <p class="text-sm font-semibold text-green-400 mb-1">Hipertrofia</p>
+          <p class="text-lg font-bold">Superávit de 5% a 15%</p>
+          <p class="text-muted text-sm mt-2">Superávit controlado para ganhar músculo com mínima gordura.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAIXAS MACROS -->
+    <section class="section-shell">
+      <p class="tag mb-1">Macronutrientes</p>
+      <h2 class="section-heading">Faixas recomendadas (g/kg)</h2>
+      <div class="card mt-4 overflow-hidden">
+        <div class="grid grid-cols-4 gap-3 text-sm font-semibold text-muted uppercase tracking-[.14em] pb-2 border-b border-[#1f1f2a]">
+          <div></div><div class="text-white">Proteína</div><div class="text-white">Carboidrato</div><div class="text-white">Gordura</div>
+        </div>
+        <div class="divide-y divide-[#1f1f2a]">
+          <div class="grid grid-cols-4 gap-3 py-3 items-center">
+            <p class="font-bold text-[#f05238]">Emagrecimento</p>
+            <p>1,8 – 2,4 g/kg</p>
+            <p>1,5 – 3,0 g/kg</p>
+            <p>0,6 – 0,9 g/kg</p>
+          </div>
+          <div class="grid grid-cols-4 gap-3 py-3 items-center">
+            <p class="font-bold text-[#f59e0b]">Falso magro / definição</p>
+            <p>2,0 – 2,6 g/kg</p>
+            <p>2,5 – 4,5 g/kg</p>
+            <p>0,8 – 1,0 g/kg</p>
+          </div>
+          <div class="grid grid-cols-4 gap-3 py-3 items-center">
+            <p class="font-bold text-green-400">Hipertrofia</p>
+            <p>1,8 – 2,2 g/kg</p>
+            <p>4,0 – 6,0 g/kg</p>
+            <p>0,8 – 1,2 g/kg</p>
+          </div>
+        </div>
+        <p class="text-xs text-muted mt-3">Gordura nunca deve ser zerada: é essencial para hormônios e saúde metabólica.</p>
+      </div>
+    </section>
+
+    <!-- COMO TRANSFORMAR -->
+    <section class="section-shell">
+      <div class="grid md:grid-cols-2 gap-6">
+        <div class="card">
+          <p class="tag mb-1">Passo a passo</p>
+          <h3 class="text-xl font-bold mb-2">Como transformar calorias em gramas</h3>
+          <ul class="space-y-2 text-muted text-sm">
+            <li>1️⃣ Proteína = 4 kcal/g</li>
+            <li>2️⃣ Carboidrato = 4 kcal/g</li>
+            <li>3️⃣ Gordura = 9 kcal/g</li>
+            <li>Ordem correta: proteína → gordura → carboidrato fecha a conta.</li>
+          </ul>
+        </div>
+        <div class="card bg-gradient-to-br from-[#0f0f16] to-[#0c0c12] border border-[#2a2a37] shadow-glow">
+          <p class="tag mb-2">Exemplo resumido</p>
+          <p class="text-sm text-muted mb-3">Pessoa 70 kg · objetivo emagrecimento</p>
+          <div class="grid grid-cols-2 gap-3 text-sm">
+            <div class="p-3 rounded-xl bg-[#0b0b11] border border-[#1f1f2a]">
+              <p class="text-muted">Calorias</p>
+              <p class="text-lg font-black">1.480 kcal</p>
+            </div>
+            <div class="p-3 rounded-xl bg-[#0b0b11] border border-[#1f1f2a]">
+              <p class="text-muted">Proteína</p>
+              <p class="text-lg font-black">140 g</p>
+            </div>
+            <div class="p-3 rounded-xl bg-[#0b0b11] border border-[#1f1f2a]">
+              <p class="text-muted">Gordura</p>
+              <p class="text-lg font-black">56 g</p>
+            </div>
+            <div class="p-3 rounded-xl bg-[#0b0b11] border border-[#1f1f2a]">
+              <p class="text-muted">Carboidrato</p>
+              <p class="text-lg font-black">104 g</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- EXEMPLOS COMPLETOS -->
+    <section class="section-shell" id="exemplos">
+      <p class="tag mb-1">Casos completos</p>
+      <h2 class="section-heading">Exemplos práticos</h2>
+      <p class="section-sub mb-5">Hipotéticos e educativos: mostram TMB, fator, GET, ajuste calórico e macros.</p>
+
+      <div class="grid md:grid-cols-3 gap-4">
+        <div class="card">
+          <p class="text-sm font-semibold text-[#f05238] mb-1">Emagrecimento</p>
+          <p class="font-bold">Mulher · 30 anos · 70 kg · 1,65 m · fator 1,3</p>
+          <ul class="text-sm text-muted space-y-1 mt-2">
+            <li>TMB ≈ 1.420 kcal</li>
+            <li>GET = 1.846 kcal</li>
+            <li>Déficit ~20% → 1.480 kcal</li>
+            <li>Proteína 2,0 g/kg → 140 g (560 kcal)</li>
+            <li>Gordura 0,8 g/kg → 56 g (504 kcal)</li>
+            <li>Carboidrato fecha → 104 g (416 kcal)</li>
+          </ul>
+          <p class="text-xs text-muted mt-3">Resumo: 1.480 kcal · 140p · 56g · 104c</p>
+        </div>
+        <div class="card">
+          <p class="text-sm font-semibold text-[#f59e0b] mb-1">Falso magro / recomposição</p>
+          <p class="font-bold">Homem · 28 anos · 75 kg · 1,75 m · fator 1,4</p>
+          <ul class="text-sm text-muted space-y-1 mt-2">
+            <li>TMB ≈ 1.709 kcal</li>
+            <li>GET = 2.392 kcal</li>
+            <li>Déficit leve 10% → 2.150 kcal</li>
+            <li>Proteína 2,4 g/kg → 180 g (720 kcal)</li>
+            <li>Gordura 0,9 g/kg → ~68 g (608 kcal)</li>
+            <li>Carboidrato fecha → ~205 g (822 kcal)</li>
+          </ul>
+          <p class="text-xs text-muted mt-3">Resumo: 2.150 kcal · 180p · 68g · 205c</p>
+        </div>
+        <div class="card">
+          <p class="text-sm font-semibold text-green-400 mb-1">Hipertrofia</p>
+          <p class="font-bold">Mulher · 26 anos · 60 kg · 1,62 m · fator 1,5</p>
+          <ul class="text-sm text-muted space-y-1 mt-2">
+            <li>TMB ≈ 1.321 kcal</li>
+            <li>GET = 1.982 kcal</li>
+            <li>Superávit 10% → 2.180 kcal</li>
+            <li>Proteína 2,0 g/kg → 120 g (480 kcal)</li>
+            <li>Gordura 1,0 g/kg → 60 g (540 kcal)</li>
+            <li>Carboidrato fecha → 290 g (1.160 kcal)</li>
+          </ul>
+          <p class="text-xs text-muted mt-3">Resumo: 2.180 kcal · 120p · 60g · 290c</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- REGRAS IMPORTANTES -->
+    <section class="section-shell" id="regras">
+      <p class="tag mb-1">Regras importantes</p>
+      <h2 class="section-heading">Execução que gera resultado</h2>
+      <div class="grid-auto mt-4">
+        <div class="card">
+          <p class="font-semibold mb-1">Pesar e anotar</p>
+          <p class="text-muted text-sm">Olho não é balança. Use balança e registre tudo.</p>
+        </div>
+        <div class="card">
+          <p class="font-semibold mb-1">Use app ou diário</p>
+          <p class="text-muted text-sm">Controle calorias e macros para parar de jogar no escuro.</p>
+        </div>
+        <div class="card">
+          <p class="font-semibold mb-1">Água</p>
+          <p class="text-muted text-sm">35–50 ml/kg conforme clima e treino. Hidratação é estratégia.</p>
+        </div>
+        <div class="card">
+          <p class="font-semibold mb-1">Nutricionista</p>
+          <p class="text-muted text-sm">Planos individualizados, exames e ajustes clínicos.</p>
+        </div>
+        <div class="card">
+          <p class="font-semibold mb-1">Cafeína / pré-treino</p>
+          <p class="text-muted text-sm">2–4 mg/kg/dia, último consumo até 14h–15h. Evite energético diário; pré-treino não substitui comida nem corrige dieta ruim.</p>
+        </div>
+        <div class="card">
+          <p class="font-semibold mb-1">Álcool</p>
+          <p class="text-muted text-sm">7 kcal/g, piora recuperação e síntese proteica. Mínimo em cutting e bulk sério.</p>
+        </div>
+        <div class="card">
+          <p class="font-semibold mb-1">Sal e performance</p>
+          <p class="text-muted text-sm">Sal não é vilão — falta derruba força e pump. Controle sem extremos.</p>
+        </div>
+        <div class="card">
+          <p class="font-semibold mb-1">Sono</p>
+          <p class="text-muted text-sm">Macro invisível: dormir pouco aumenta fome e trava recuperação.</p>
+        </div>
+        <div class="card">
+          <p class="font-semibold mb-1">Ajustes constantes</p>
+          <p class="text-muted text-sm">O corpo adapta. Reavalie macros periodicamente.</p>
+        </div>
+        <div class="card">
+          <p class="font-semibold mb-1">Expectativa real</p>
+          <p class="text-muted text-sm">Consistência por 60–90 dias supera perfeição de uma semana.</p>
+        </div>
+        <div class="card">
+          <p class="font-semibold mb-1">Responsabilidade</p>
+          <p class="text-muted text-sm">Método funciona, mas a execução diária é do aluno.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- CHATGPT DIÁRIO -->
+    <section class="section-shell">
+      <div class="card grid md:grid-cols-2 gap-4 items-center">
         <div>
-          <p class="font-bold text-white">Rafael, 22 anos</p>
-          <p class="text-zinc-500 text-sm">Masculino · 75 kg · 182 cm · Muito Ativo</p>
-          <p class="text-zinc-600 text-xs mt-0.5">Proteína 2,2 g/kg · Gordura 1,0 g/kg</p>
+          <p class="tag mb-1">Tecnologia</p>
+          <h3 class="text-xl font-bold mb-2">Use o ChatGPT como diário alimentar</h3>
+          <p class="text-muted text-sm mb-3">Registre refeições por texto ou voz. Peça para fechar o dia e receba calorias, proteínas, carboidratos, gorduras e comparação com a meta.</p>
+          <ul class="text-sm text-muted space-y-1">
+            <li>• Envie cada refeição ao longo do dia.</li>
+            <li>• No fim: “Fecha meu dia com base no que eu comi hoje.”</li>
+            <li>• Receba totais e ajuste rápido conforme metas.</li>
+          </ul>
+          <p class="text-xs text-muted mt-2">Constância > perfeição. Use medidas caseiras se não tiver peso preciso.</p>
         </div>
-        <span class="ml-auto text-xs font-bold text-green-400 bg-green-950 border border-green-900 rounded px-2 py-1">BULK</span>
-      </div>
-      <hr class="sep mb-5" />
-      <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6">
-        <div class="result-box">
-          <p class="result-label">TMB</p>
-          <p class="result-value">1.783</p>
-          <p class="result-unit">kcal</p>
-        </div>
-        <div class="result-box">
-          <p class="result-label">GET</p>
-          <p class="result-value">3.075</p>
-          <p class="result-unit">kcal</p>
-        </div>
-        <div class="result-box glow">
-          <p class="result-label">Alvo (+10%)</p>
-          <p class="result-value">3.383</p>
-          <p class="result-unit">kcal</p>
-        </div>
-        <div class="result-box">
-          <p class="result-label">Superávit</p>
-          <p class="result-value">+308</p>
-          <p class="result-unit">kcal</p>
-        </div>
-      </div>
-      <div class="flex flex-col sm:flex-row gap-6 items-center">
-        <div class="flex-1 w-full space-y-3">
-          <div>
-            <div class="flex justify-between text-xs text-zinc-400 mb-1"><span>Proteína — 165g</span><span>19.5%</span></div>
-            <div class="macro-bar-wrap"><div class="macro-bar bg-red-600" style="width:19.5%"></div></div>
+        <div class="p-4 rounded-2xl bg-gradient-to-br from-[#0f0f16] to-[#0c0c12] border border-[#2a2a37]">
+          <p class="font-semibold mb-2">Exemplo de prompt</p>
+          <div class="text-sm bg-[#0b0b11] border border-[#1f1f2a] rounded-xl p-3 mb-3">
+            “Comi 100g de arroz, 150g de frango, 1 ovo e 1 banana.”<br />
+            👉 ChatGPT devolve calorias, proteínas, carboidratos e gorduras.
           </div>
-          <div>
-            <div class="flex justify-between text-xs text-zinc-400 mb-1"><span>Carboidrato — 512g</span><span>60.5%</span></div>
-            <div class="macro-bar-wrap"><div class="macro-bar bg-blue-500" style="width:60.5%"></div></div>
-          </div>
-          <div>
-            <div class="flex justify-between text-xs text-zinc-400 mb-1"><span>Gordura — 75g</span><span>20.0%</span></div>
-            <div class="macro-bar-wrap"><div class="macro-bar bg-yellow-500" style="width:20.0%"></div></div>
+          <div class="text-sm bg-[#0b0b11] border border-[#1f1f2a] rounded-xl p-3">
+            “Fecha meu dia com base no que eu comi hoje.”<br />
+            👉 Receba totais + comparação com a meta.
           </div>
         </div>
-        <div class="chart-wrap"><canvas id="exChart3" width="200" height="200"></canvas></div>
       </div>
-    </div>
-  </div>
-</section>
+    </section>
 
-<!-- ═══════════════════════════════════════════════════
-     FOOTER
-═══════════════════════════════════════════════════ -->
-<footer class="border-t border-zinc-800 py-8 text-center text-zinc-600 text-sm px-4">
-  <p class="font-black text-base mb-1">
-    <span style="color:#dc2626">GN</span><span class="text-white"> TEAM</span>
-    <span class="text-zinc-600 font-normal"> · Engine Metabólico</span>
-  </p>
-  <p>Plataforma de cálculo nutricional para performance e saúde.</p>
-  <p class="mt-1 text-xs text-zinc-700">Os cálculos têm fins educativos. Consulte um profissional de saúde.</p>
-</footer>
+    <!-- CTA FINAL -->
+    <section class="section-shell pb-12" id="cta">
+      <div class="card text-center bg-gradient-to-r from-[#f05238] to-[#f59e0b] text-[#0c0c10] shadow-glow">
+        <p class="text-xs font-bold uppercase tracking-[.2em]">CTA final</p>
+        <h3 class="text-2xl md:text-3xl font-black mt-2 mb-2">Quem controla, ajusta. Quem ajusta, evolui.</h3>
+        <p class="text-sm mb-4">Calcule, pese, registre e ajuste. O corpo responde ao que é medido.</p>
+        <a href="#calculadoras" class="btn-secondary bg-white/10 border-white/50 text-white hover:text-[#0c0c10] hover:bg-white">Começar agora</a>
+      </div>
+    </section>
+  </main>
 
-<!-- ═══════════════════════════════════════════════════
-     JAVASCRIPT
-═══════════════════════════════════════════════════ -->
-<script>
-/* ──────────────────────────────────────────────────────
-   UTILITIES
-────────────────────────────────────────────────────── */
-function $(id) { return document.getElementById(id); }
-function numVal(id) { return parseFloat($(id).value); }
+  <footer class="border-t border-[#1f1f2a] py-6 text-center text-muted text-sm">
+    GN TEAM · Blueprint Metabólico — material educativo. Consulte um profissional habilitado para prescrição individual.
+  </footer>
 
-function showError(errId, msg) {
-  const el = $(errId);
-  el.textContent = msg;
-  el.classList.remove('hidden');
-}
-function hideError(errId) { $(errId).classList.add('hidden'); }
+  <!-- JAVASCRIPT -->
+  <script>
+    const qs = (id) => document.getElementById(id);
+    let macroChartInstance = null;
 
-function markSuccess(btnId) {
-  const btn = $(btnId);
-  btn.textContent = 'Calculado ✔';
-  btn.classList.add('success');
-  setTimeout(() => {
-    btn.textContent = btn.dataset.label;
-    btn.classList.remove('success');
-  }, 2500);
-}
+    const goalMap = {
+      cut:   { pct: -0.20, text: 'Déficit moderado (10–25%) para emagrecimento.' },
+      recomp:{ pct: -0.10, text: 'Manutenção ou déficit leve (~10%) para recomposição.' },
+      bulk:  { pct:  0.10, text: 'Superávit controlado (5–15%) para hipertrofia.' }
+    };
 
-function setInputError(id, hasError) {
-  const el = $(id);
-  if (hasError) el.classList.add('error');
-  else el.classList.remove('error');
-}
+    const fmt = (n, d = 0) => isNaN(n) ? '—' : n.toLocaleString('pt-BR', { minimumFractionDigits: d, maximumFractionDigits: d });
 
-function fmt(n, dec = 0) {
-  if (isNaN(n) || n === null) return '—';
-  return n.toLocaleString('pt-BR', { minimumFractionDigits: dec, maximumFractionDigits: dec });
-}
-
-/* store original button labels */
-document.addEventListener('DOMContentLoaded', () => {
-  ['s1-btn','s2-btn','s3-btn'].forEach(id => {
-    const el = $(id);
-    if (el) el.dataset.label = el.textContent.trim();
-  });
-  initExampleCharts();
-  activateSteps(0);
-});
-
-/* step indicators */
-function activateSteps(completed) {
-  const steps = [
-    { circle: 'step2-circle', label: 'step2-label' },
-    { circle: 'step3-circle', label: 'step3-label' },
-  ];
-  steps.forEach((s, i) => {
-    const done = i < completed;
-    $(s.circle).className = `w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold ${done ? 'bg-red-600 text-white' : 'bg-zinc-700 text-zinc-400'}`;
-    $(s.label).className = `text-sm font-semibold ${done ? 'text-white' : 'text-zinc-500'}`;
-  });
-}
-
-/* ──────────────────────────────────────────────────────
-   SIMULATOR 1 — TDEE (Mifflin-St Jeor)
-────────────────────────────────────────────────────── */
-function calcTDEE() {
-  hideError('s1-error');
-
-  const sex    = $('s1-sex').value;
-  const age    = numVal('s1-age');
-  const weight = numVal('s1-weight');
-  const height = numVal('s1-height');
-  const pal    = numVal('s1-pal');
-
-  let valid = true;
-
-  [['s1-age', age, 10, 100], ['s1-weight', weight, 30, 300], ['s1-height', height, 100, 250]].forEach(([id, v, min, max]) => {
-    const bad = isNaN(v) || v < min || v > max;
-    setInputError(id, bad);
-    if (bad) valid = false;
-  });
-
-  if (!valid) {
-    showError('s1-error', '⚠ Preencha todos os campos com valores válidos.');
-    return;
-  }
-
-  /* Mifflin-St Jeor */
-  let tmb;
-  if (sex === 'M') {
-    tmb = 10 * weight + 6.25 * height - 5 * age + 5;
-  } else {
-    tmb = 10 * weight + 6.25 * height - 5 * age - 161;
-  }
-  const get = tmb * pal;
-
-  $('r-tmb').textContent = fmt(Math.round(tmb));
-  $('r-get').textContent = fmt(Math.round(get));
-  $('s1-results').classList.remove('hidden');
-
-  /* propagate to sim2 and sim3 */
-  $('s2-get').value    = Math.round(get);
-  $('s2-weight').value = weight;
-  $('s3-weight').value = weight;
-
-  markSuccess('s1-btn');
-  activateSteps(1);
-}
-
-/* ──────────────────────────────────────────────────────
-   SIMULATOR 2 — MACROS
-────────────────────────────────────────────────────── */
-let macroChartInstance = null;
-
-function onStrategyChange() {
-  const val = $('s2-strategy').value;
-  $('s2-custom-wrap').classList.toggle('hidden', val !== 'custom');
-}
-
-function calcMacros() {
-  hideError('s2-error');
-
-  const get    = numVal('s2-get');
-  const weight = numVal('s2-weight');
-  const protPg = numVal('s2-prot');
-  const fatPg  = numVal('s2-fat');
-  const strat  = $('s2-strategy').value;
-
-  let valid = true;
-  [['s2-get', get, 1200, 10000], ['s2-weight', weight, 30, 300]].forEach(([id, v, min, max]) => {
-    const bad = isNaN(v) || v < min || v > max;
-    setInputError(id, bad);
-    if (bad) valid = false;
-  });
-
-  if (isNaN(protPg) || protPg < 0.5 || protPg > 4)  { setInputError('s2-prot', true); valid = false; } else setInputError('s2-prot', false);
-  if (isNaN(fatPg)  || fatPg  < 0.3 || fatPg  > 3)  { setInputError('s2-fat',  true); valid = false; } else setInputError('s2-fat',  false);
-
-  if (!valid) {
-    showError('s2-error', '⚠ Verifique os campos destacados com valores inválidos.');
-    return;
-  }
-
-  let pct;
-  if (strat === 'custom') {
-    pct = numVal('s2-custom-pct') / 100;
-    if (isNaN(pct) || pct < -0.5 || pct > 0.5) {
-      showError('s2-error', '⚠ O ajuste custom deve estar entre −50% e +50%.');
-      return;
+    function setError(elId, hasError) {
+      const el = qs(elId);
+      if (!el) return;
+      el.classList.toggle('error', hasError);
     }
-  } else {
-    pct = parseFloat(strat);
-  }
 
-  const targetKcal = Math.round(get * (1 + pct));
-  const protG = Math.round(weight * protPg);
-  const fatG  = Math.round(weight * fatPg);
-  const protKcal = protG * 4;
-  const fatKcal  = fatG  * 9;
-  const carbKcal = targetKcal - protKcal - fatKcal;
+    function calcTmbGet() {
+      ['c1-error'].forEach(id => qs(id).classList.add('hidden'));
 
-  if (carbKcal < 0) {
-    showError('s2-error', '⚠ Carboidratos ficaram negativos. Reduza proteína ou gordura, ou aumente as calorias alvo.');
-    return;
-  }
+      const sex = qs('c1-sex').value;
+      const age = parseFloat(qs('c1-age').value);
+      const weight = parseFloat(qs('c1-weight').value);
+      const height = parseFloat(qs('c1-height').value);
+      const activity = parseFloat(qs('c1-activity').value);
+      const goal = qs('c1-goal').value;
 
-  const carbG = Math.round(carbKcal / 4);
-  const totalKcal = protKcal + fatKcal + carbKcal;
-
-  const pctProt = ((protKcal / totalKcal) * 100).toFixed(1);
-  const pctCarb = ((carbKcal / totalKcal) * 100).toFixed(1);
-  const pctFat  = ((fatKcal  / totalKcal) * 100).toFixed(1);
-
-  $('r-kcal').textContent = fmt(targetKcal);
-  $('r-prot').textContent = fmt(protG);
-  $('r-fat').textContent  = fmt(fatG);
-  $('r-carb').textContent = fmt(carbG);
-
-  /* bars */
-  $('bar-prot').style.width = pctProt + '%';
-  $('bar-carb').style.width = pctCarb + '%';
-  $('bar-fat').style.width  = pctFat  + '%';
-  $('pct-prot').textContent = pctProt + '%';
-  $('pct-carb').textContent = pctCarb + '%';
-  $('pct-fat').textContent  = pctFat  + '%';
-
-  /* chart */
-  $('chart-center-kcal').textContent = fmt(targetKcal);
-  renderMacroChart('macroChart', [protKcal, carbKcal, fatKcal], false);
-
-  $('s2-results').classList.remove('hidden');
-  markSuccess('s2-btn');
-  activateSteps(2);
-}
-
-function renderMacroChart(canvasId, data, isExample) {
-  const ctx = $(canvasId).getContext('2d');
-
-  if (canvasId === 'macroChart') {
-    if (macroChartInstance) macroChartInstance.destroy();
-    macroChartInstance = buildDoughnut(ctx, data);
-  } else {
-    buildDoughnut(ctx, data);
-  }
-}
-
-function buildDoughnut(ctx, data) {
-  return new Chart(ctx, {
-    type: 'doughnut',
-    data: {
-      labels: ['Proteína', 'Carboidrato', 'Gordura'],
-      datasets: [{
-        data,
-        backgroundColor: ['#dc2626','#3b82f6','#eab308'],
-        borderColor: '#18181b',
-        borderWidth: 3,
-        hoverOffset: 6,
-      }]
-    },
-    options: {
-      cutout: '68%',
-      plugins: {
-        legend: { display: false },
-        tooltip: {
-          callbacks: {
-            label: (item) => ` ${item.label}: ${fmt(item.raw)} kcal`
-          }
+      let valid = true;
+      [
+        { id: 'c1-sex', value: sex },
+        { id: 'c1-age', value: age, min: 10, max: 100 },
+        { id: 'c1-weight', value: weight, min: 30, max: 300 },
+        { id: 'c1-height', value: height, min: 120, max: 230 },
+        { id: 'c1-activity', value: activity, min: 1.1, max: 2.0 },
+        { id: 'c1-goal', value: goal },
+      ].forEach(({ id, value, min, max }) => {
+        let bad;
+        if (min !== undefined) {
+          bad = isNaN(value) || value < min || value > max;
+        } else {
+          bad = !value;
         }
-      },
-      animation: { animateRotate: true, duration: 600 }
+        setError(id, bad);
+        if (bad) valid = false;
+      });
+
+      if (!valid) {
+        qs('c1-error').textContent = 'Preencha todos os campos com valores válidos.';
+        qs('c1-error').classList.remove('hidden');
+        qs('c1-results').classList.add('hidden');
+        return;
+      }
+
+      let tmb;
+      if (sex === 'M') tmb = 10 * weight + 6.25 * height - 5 * age + 5;
+      else            tmb = 10 * weight + 6.25 * height - 5 * age - 161;
+      const get = tmb * activity;
+      const { pct, text } = goalMap[goal];
+      const target = Math.round(get * (1 + pct));
+
+      qs('r-tmb').textContent = fmt(Math.round(tmb));
+      qs('r-get').textContent = fmt(Math.round(get));
+      qs('r-target').textContent = fmt(target);
+      qs('r-goal-text').textContent = text;
+      qs('c1-results').classList.remove('hidden');
+
+      // Propaga para macros
+      qs('c2-kcal').value = target;
+      qs('c2-weight').value = weight;
     }
-  });
-}
 
-/* ──────────────────────────────────────────────────────
-   SIMULATOR 3 — HYDRATION
-────────────────────────────────────────────────────── */
-function calcHydration() {
-  hideError('s3-error');
+    function resetTmbGet() {
+      ['c1-sex','c1-age','c1-weight','c1-height','c1-activity','c1-goal'].forEach(id => {
+        const el = qs(id);
+        if (el.tagName === 'SELECT') el.selectedIndex = 0;
+        else el.value = '';
+        setError(id, false);
+      });
+      qs('c1-error').classList.add('hidden');
+      qs('c1-results').classList.add('hidden');
+      ['r-tmb','r-get','r-target','r-goal-text'].forEach(id => qs(id).textContent = '—');
+    }
 
-  const weight  = numVal('s3-weight');
-  const train   = numVal('s3-train');
-  const climate = numVal('s3-climate');
+    function calcMacros() {
+      ['c2-error'].forEach(id => qs(id).classList.add('hidden'));
 
-  let valid = true;
-  if (isNaN(weight) || weight < 30 || weight > 300) { setInputError('s3-weight', true); valid = false; } else setInputError('s3-weight', false);
-  if (isNaN(train)  || train  < 0  || train  > 6)  { setInputError('s3-train',  true); valid = false; } else setInputError('s3-train',  false);
+      const kcal = parseFloat(qs('c2-kcal').value);
+      const weight = parseFloat(qs('c2-weight').value);
+      const protKg = parseFloat(qs('c2-prot').value);
+      const fatKg = parseFloat(qs('c2-fat').value);
 
-  if (!valid) {
-    showError('s3-error', '⚠ Verifique os campos com valores inválidos.');
-    return;
-  }
+      let valid = true;
+      [['c2-kcal', kcal, 1000, 7000], ['c2-weight', weight, 30, 300], ['c2-prot', protKg, 0.5, 3.5], ['c2-fat', fatKg, 0.4, 2.0]].forEach(([id, val, min, max]) => {
+        const bad = isNaN(val) || val < min || val > max;
+        setError(id, bad);
+        if (bad) valid = false;
+      });
 
-  const baseL  = (weight * climate) / 1000;          // litros base
-  const trainL = train * 0.5;                         // 500ml/h
-  const totalL = baseL + trainL;
+      if (!valid) {
+        qs('c2-error').textContent = 'Confira os campos destacados: valores fora da faixa permitida.';
+        qs('c2-error').classList.remove('hidden');
+        qs('c2-results').classList.add('hidden');
+        return;
+      }
 
-  $('r-hyd-base').textContent  = fmt(baseL, 2);
-  $('r-hyd-train').textContent = fmt(trainL, 2);
-  $('r-hyd-total').textContent = fmt(totalL, 2);
+      const protG = Math.round(weight * protKg);
+      const fatG = Math.round(weight * fatKg);
+      const protKcal = protG * 4;
+      const fatKcal = fatG * 9;
+      const carbKcal = kcal - protKcal - fatKcal;
 
-  /* glasses visual */
-  const glasses = Math.round(totalL / 0.25);
-  const glassesEl = $('glasses-display');
-  glassesEl.innerHTML = '';
-  for (let i = 0; i < Math.min(glasses, 20); i++) {
-    const g = document.createElement('span');
-    g.textContent = '💧';
-    g.style.fontSize = '1.3rem';
-    g.title = `Copo ${i + 1}`;
-    glassesEl.appendChild(g);
-  }
-  if (glasses > 20) {
-    const more = document.createElement('span');
-    more.textContent = `+${glasses - 20} copos`;
-    more.className = 'text-xs text-zinc-500 self-center';
-    glassesEl.appendChild(more);
-  }
+      if (carbKcal < 0) {
+        qs('c2-error').textContent = 'Carboidratos ficaram negativos. Aumente calorias ou reduza proteína/gordura.';
+        qs('c2-error').classList.remove('hidden');
+        qs('c2-results').classList.add('hidden');
+        return;
+      }
 
-  $('s3-results').classList.remove('hidden');
-  markSuccess('s3-btn');
-}
+      const carbG = Math.round(carbKcal / 4);
+      const total = protKcal + fatKcal + carbKcal;
+      const pctProt = ((protKcal / total) * 100).toFixed(1);
+      const pctCarb = ((carbKcal / total) * 100).toFixed(1);
+      const pctFat = ((fatKcal / total) * 100).toFixed(1);
 
-/* ──────────────────────────────────────────────────────
-   EXAMPLE TABS
-────────────────────────────────────────────────────── */
-function showTab(tabId, btn) {
-  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-  $(tabId).classList.add('active');
-  btn.classList.add('active');
-  $(tabId).classList.add('fade-up');
-  setTimeout(() => $(tabId).classList.remove('fade-up'), 400);
-}
+      qs('res-kcal').textContent = fmt(kcal);
+      qs('res-prot').textContent = `${fmt(protG)} g`;
+      qs('res-fat').textContent = `${fmt(fatG)} g`;
+      qs('res-carb').textContent = `${fmt(carbG)} g`;
+      qs('res-prot-kcal').textContent = `${fmt(protKcal)} kcal`;
+      qs('res-fat-kcal').textContent = `${fmt(fatKcal)} kcal`;
+      qs('res-carb-kcal').textContent = `${fmt(carbKcal)} kcal`;
 
-/* ──────────────────────────────────────────────────────
-   EXAMPLE CHARTS
-────────────────────────────────────────────────────── */
-function initExampleCharts() {
-  /* Carlos — Cutting: prot 198g=792kcal, carb 182g=726kcal, fat 90g=810kcal  → total 2328 kcal */
-  buildDoughnut($('exChart1').getContext('2d'), [792, 726, 810]);
-  /* Ana — Recomp: prot 143g=572kcal, carb 198g=790kcal, fat 65g=585kcal  → total 1947 kcal */
-  buildDoughnut($('exChart2').getContext('2d'), [572, 790, 585]);
-  /* Rafael — Bulk: prot 165g=660kcal, carb 512g=2048kcal, fat 75g=675kcal → total 3383 kcal */
-  buildDoughnut($('exChart3').getContext('2d'), [660, 2048, 675]);
-}
-</script>
+      qs('pct-prot').textContent = pctProt + '%';
+      qs('pct-carb').textContent = pctCarb + '%';
+      qs('pct-fat').textContent = pctFat + '%';
+      qs('bar-prot').style.width = pctProt + '%';
+      qs('bar-carb').style.width = pctCarb + '%';
+      qs('bar-fat').style.width = pctFat + '%';
+      qs('chart-center-kcal').textContent = fmt(kcal);
+
+      renderMacroChart([protKcal, carbKcal, fatKcal]);
+      qs('c2-results').classList.remove('hidden');
+    }
+
+    function resetMacros() {
+      ['c2-kcal','c2-weight'].forEach(id => qs(id).value = '');
+      qs('c2-prot').value = '2.0';
+      qs('c2-fat').value = '0.8';
+      ['c2-error'].forEach(id => qs(id).classList.add('hidden'));
+      qs('c2-results').classList.add('hidden');
+      ['res-kcal','res-prot','res-fat','res-carb','res-prot-kcal','res-fat-kcal','res-carb-kcal','pct-prot','pct-carb','pct-fat','chart-center-kcal'].forEach(id => qs(id).textContent = '—');
+      ['bar-prot','bar-carb','bar-fat'].forEach(id => qs(id).style.width = '0%');
+      if (macroChartInstance) macroChartInstance.destroy();
+    }
+
+    function renderMacroChart(data) {
+      const ctx = qs('macroChart').getContext('2d');
+      if (macroChartInstance) macroChartInstance.destroy();
+      macroChartInstance = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+          labels: ['Proteína', 'Carboidrato', 'Gordura'],
+          datasets: [{
+            data,
+            backgroundColor: ['#f05238', '#3b82f6', '#f59e0b'],
+            borderColor: '#0c0c10',
+            borderWidth: 3,
+            hoverOffset: 6
+          }]
+        },
+        options: {
+          cutout: '70%',
+          plugins: { legend: { display: false } },
+          animation: { duration: 500 }
+        }
+      });
+    }
+  </script>
 </body>
 </html>
