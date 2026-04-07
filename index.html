@@ -1,1013 +1,1096 @@
 <!DOCTYPE html>
-<html lang="pt-BR" class="scroll-smooth">
+<html lang="pt-BR">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>GN TEAM · Blueprint Metabólico</title>
-    <meta
-      name="description"
-      content="Calculadoras de TMB, GET e macronutrientes com visual moderno, limpo e objetivo."
-    />
+    <meta name="description" content="Plataforma de planejamento nutricional guiada. Calcule TMB, GET e macronutrientes em um fluxo preciso e obtenha um diagnóstico personalizado ao seu objetivo." />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
-      rel="stylesheet"
-    />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
     <script defer src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <style>
+      /* === Design Tokens === */
       :root {
         color-scheme: dark;
-        --bg: #0a0000;
-        --panel: #160000;
-        --panel-2: #1a0202;
-        --border: #3d1010;
-        --text: #f5eded;
-        --muted: #c49a9a;
-        --primary: #e63946;
-        --primary-strong: #c1121f;
-        --danger: #ff6b6b;
-        --radius: 14px;
+        --bg: #090909;
+        --surface: #131313;
+        --surface-2: #191919;
+        --surface-3: #202020;
+        --border: rgba(220,38,38,.2);
+        --border-s: rgba(255,255,255,.07);
+        --text: #f0f0f0;
+        --muted: #888;
+        --subtle: #4a4a4a;
+        --red: #dc2626;
+        --red-dk: #b91c1c;
+        --red-gl: rgba(220,38,38,.13);
+        --amber: #d97706;
+        --purple: #7c3aed;
+        --r-sm: 8px;
+        --r: 14px;
+        --r-lg: 20px;
+        --ease: cubic-bezier(.4,0,.2,1);
+        --tr: .2s var(--ease);
       }
-
-      * {
-        box-sizing: border-box;
-      }
-
-      html {
-        scroll-behavior: smooth;
-      }
-
+      /* === Reset === */
+      *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+      html { scroll-behavior: smooth; }
       body {
-        margin: 0;
         font-family: "Inter", system-ui, -apple-system, sans-serif;
-        background: radial-gradient(circle at top, #1a0000 0%, var(--bg) 45%);
+        background: var(--bg);
+        background-image: radial-gradient(ellipse 90% 50% at 50% -5%, rgba(220,38,38,.1) 0%, transparent 65%);
         color: var(--text);
         line-height: 1.6;
+        min-height: 100vh;
       }
-
-      .container {
-        width: min(1120px, 100% - 2.5rem);
-        margin-inline: auto;
+      img, svg { display: block; max-width: 100%; }
+      input, select, button { font: inherit; }
+      a { color: inherit; }
+      /* === Layout === */
+      .wrap { width: min(1080px, 100% - 2rem); margin-inline: auto; }
+      .wizard-c { max-width: 700px; margin-inline: auto; }
+      /* === Header === */
+      .hdr {
+        position: sticky; top: 0; z-index: 50;
+        background: rgba(9,9,9,.82);
+        backdrop-filter: blur(14px);
+        -webkit-backdrop-filter: blur(14px);
+        border-bottom: 1px solid var(--border-s);
       }
-
-      .header {
-        position: sticky;
-        top: 0;
-        z-index: 30;
-        backdrop-filter: blur(10px);
-        background: rgb(10 0 0 / 85%);
-        border-bottom: 1px solid rgb(180 50 50 / 20%);
+      .hdr-in { display: flex; align-items: center; justify-content: space-between; height: 62px; gap: 1rem; }
+      .logo { text-decoration: none; font-weight: 900; font-size: 1.05rem; letter-spacing: -.03em; color: var(--text); flex-shrink: 0; }
+      .logo .ac { color: var(--red); }
+      .legal { font-size: .68rem; color: var(--subtle); text-align: right; max-width: 340px; line-height: 1.45; }
+      .legal strong { color: var(--muted); font-weight: 600; }
+      /* === Hero === */
+      .hero { text-align: center; padding: 4.5rem 0 2.5rem; }
+      .pill {
+        display: inline-flex; align-items: center; gap: .45rem;
+        background: var(--red-gl); border: 1px solid var(--border); border-radius: 999px;
+        padding: .32rem .85rem; font-size: .72rem; font-weight: 700;
+        color: #f08a8a; letter-spacing: .06em; text-transform: uppercase; margin-bottom: 1.1rem;
       }
-
-      .header-inner {
-        min-height: 70px;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 1rem;
+      .hero-h {
+        font-size: clamp(2rem,5vw,3.6rem); font-weight: 900;
+        letter-spacing: -.045em; line-height: 1.05; margin-bottom: 1rem;
       }
-
-      .logo {
-        color: var(--text);
-        text-decoration: none;
-        font-weight: 800;
-        letter-spacing: -0.02em;
+      .hero-h .hl { color: var(--red); }
+      .hero-s { font-size: clamp(.95rem,2vw,1.1rem); color: var(--muted); max-width: 52ch; margin-inline: auto; margin-bottom: 2rem; }
+      .hero-cta { display: flex; gap: .75rem; justify-content: center; flex-wrap: wrap; }
+      .hero-trust {
+        display: flex; justify-content: center; gap: 2.5rem; flex-wrap: wrap;
+        margin-top: 2.5rem; padding-top: 2rem; border-top: 1px solid var(--border-s);
       }
-
-      .logo span {
-        color: var(--primary);
-      }
-
-      .nav-notice {
-        display: flex;
-        flex-direction: column;
-        gap: 0.2rem;
-        max-width: 520px;
-        text-align: right;
-      }
-
-      .nav-notice-title {
-        font-size: 0.78rem;
-        font-weight: 800;
-        color: var(--primary);
-        letter-spacing: 0.04em;
-        text-transform: uppercase;
-      }
-
-      .nav-notice-text {
-        font-size: 0.72rem;
-        color: var(--muted);
-        line-height: 1.4;
-      }
-
-      .nav {
-        display: flex;
-        align-items: center;
-        gap: 1.25rem;
-      }
-
-      .nav a {
-        text-decoration: none;
-        color: var(--muted);
-        font-size: 0.92rem;
-      }
-
-      .nav a:hover,
-      .nav a:focus-visible {
-        color: var(--text);
-      }
-
-      .hero {
-        padding: 5rem 0 3rem;
-      }
-
-      .hero-grid {
-        display: grid;
-        grid-template-columns: 1.2fr 0.8fr;
-        gap: 1.2rem;
-      }
-
-      .badge {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.4rem;
-        border: 1px solid var(--border);
-        border-radius: 999px;
-        color: #f0d0d0;
-        background: rgb(230 57 70 / 12%);
-        font-size: 0.78rem;
-        padding: 0.35rem 0.75rem;
-      }
-
-      .title {
-        margin: 0.8rem 0;
-        font-size: clamp(2rem, 4vw, 3.2rem);
-        line-height: 1.1;
-        letter-spacing: -0.03em;
-      }
-
-      .subtitle {
-        margin: 0;
-        max-width: 60ch;
-        color: var(--muted);
-      }
-
-      .cta-row {
-        margin-top: 1.4rem;
-        display: flex;
-        flex-wrap: wrap;
-        gap: 0.75rem;
-      }
-
+      .tr-item { text-align: center; }
+      .tr-val { font-size: 1.1rem; font-weight: 800; color: var(--red); letter-spacing: -.02em; }
+      .tr-lbl { font-size: .72rem; color: var(--muted); margin-top: .1rem; }
+      /* === Buttons === */
       .btn {
-        border: 0;
-        cursor: pointer;
-        border-radius: 10px;
-        font-weight: 700;
-        text-decoration: none;
-        font-size: 0.92rem;
-        padding: 0.78rem 1rem;
-        transition: 0.2s;
+        display: inline-flex; align-items: center; justify-content: center; gap: .4rem;
+        border: none; cursor: pointer; border-radius: var(--r-sm); font-weight: 700;
+        font-size: .93rem; padding: .72rem 1.4rem; text-decoration: none;
+        transition: var(--tr); white-space: nowrap; user-select: none;
       }
-
-      .btn-primary {
-        color: #fff;
-        background: var(--primary);
+      .btn:active { transform: scale(.98); }
+      .btn-p { background: var(--red); color: #fff; }
+      .btn-p:hover, .btn-p:focus-visible { background: var(--red-dk); box-shadow: 0 4px 20px rgba(220,38,38,.35); transform: translateY(-1px); }
+      .btn-g { background: transparent; color: var(--muted); border: 1px solid var(--border-s); }
+      .btn-g:hover, .btn-g:focus-visible { border-color: var(--border); color: var(--text); }
+      .btn-o { background: transparent; color: var(--red); border: 1px solid var(--border); }
+      .btn-o:hover, .btn-o:focus-visible { background: var(--red-gl); }
+      .btn-lg { padding: .85rem 1.9rem; font-size: .97rem; border-radius: var(--r); }
+      .btn-sm { padding: .45rem .9rem; font-size: .82rem; }
+      /* === Wizard === */
+      .wizard { padding: .5rem 0 5rem; }
+      /* Step indicator */
+      .si {
+        display: flex; align-items: center; justify-content: center;
+        margin-bottom: 2.5rem; overflow-x: auto; padding: .25rem .5rem; scrollbar-width: none;
       }
-
-      .btn-primary:hover,
-      .btn-primary:focus-visible {
-        background: var(--primary-strong);
+      .si::-webkit-scrollbar { display: none; }
+      .si-item { display: flex; flex-direction: column; align-items: center; gap: .35rem; flex-shrink: 0; }
+      .si-dot {
+        width: 30px; height: 30px; border-radius: 50%; display: flex;
+        align-items: center; justify-content: center; font-size: .75rem; font-weight: 700;
+        border: 2px solid var(--border-s); background: var(--surface); color: var(--subtle);
+        transition: var(--tr);
       }
-
-      .btn-ghost {
-        color: #f0d8d8;
-        border: 1px solid var(--border);
-        background: transparent;
+      .si-item.active .si-dot { border-color: var(--red); color: var(--red); box-shadow: 0 0 0 4px var(--red-gl); }
+      .si-item.done .si-dot { background: var(--red); border-color: var(--red); color: #fff; }
+      .si-lbl { font-size: .64rem; font-weight: 600; text-transform: uppercase; letter-spacing: .05em; color: var(--subtle); transition: var(--tr); }
+      .si-item.active .si-lbl { color: var(--muted); }
+      .si-item.done .si-lbl { color: var(--red); }
+      .si-line { width: 44px; height: 2px; background: var(--border-s); margin-bottom: 1.1rem; flex-shrink: 0; transition: background var(--tr); }
+      .si-line.done { background: var(--red); }
+      /* Step panel */
+      .sp {
+        background: linear-gradient(160deg, var(--surface) 0%, #111 100%);
+        border: 1px solid var(--border); border-radius: var(--r-lg);
+        padding: 2rem; outline: none;
       }
-
-      .btn-ghost:hover,
-      .btn-ghost:focus-visible {
-        border-color: #8b2020;
-        color: var(--text);
+      .sp-hd { margin-bottom: 1.75rem; }
+      .s-tag { display: inline-flex; align-items: center; gap: .4rem; font-size: .67rem; font-weight: 700; color: var(--red); text-transform: uppercase; letter-spacing: .08em; margin-bottom: .45rem; }
+      .s-tag-n { width: 17px; height: 17px; border-radius: 50%; background: var(--red); color: #fff; display: flex; align-items: center; justify-content: center; font-size: .62rem; }
+      .s-title { font-size: clamp(1.3rem,3vw,1.65rem); font-weight: 800; letter-spacing: -.03em; line-height: 1.2; }
+      .s-desc { margin-top: .3rem; color: var(--muted); font-size: .88rem; }
+      /* Grid */
+      .fg { display: grid; gap: 1rem; }
+      .fg-2 { grid-template-columns: repeat(2,1fr); }
+      .fg-3 { grid-template-columns: repeat(3,1fr); }
+      /* Field label */
+      .fl { display: flex; align-items: center; gap: .3rem; font-size: .75rem; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; margin-bottom: .42rem; }
+      .fh { font-size: .68rem; color: var(--subtle); font-weight: 400; text-transform: none; letter-spacing: 0; }
+      /* Input */
+      .fi {
+        width: 100%; background: var(--bg); border: 1.5px solid var(--border-s);
+        border-radius: var(--r-sm); color: var(--text); font-size: .97rem;
+        padding: .72rem .9rem; outline: none;
+        transition: border-color var(--tr), box-shadow var(--tr);
+        appearance: none; -webkit-appearance: none;
       }
-
-      .panel {
-        background: linear-gradient(180deg, var(--panel), var(--panel-2));
-        border: 1px solid var(--border);
-        border-radius: var(--radius);
-        padding: 1.2rem;
+      .fi::placeholder { color: var(--subtle); }
+      .fi:hover { border-color: rgba(220,38,38,.3); }
+      .fi:focus { border-color: var(--red); box-shadow: 0 0 0 3px var(--red-gl); }
+      .fi.err { border-color: #ef4444; box-shadow: 0 0 0 3px rgba(239,68,68,.13); }
+      .ferr { margin-top: .3rem; font-size: .76rem; color: #ef4444; font-weight: 500; }
+      /* Radio cards */
+      .rcg { display: grid; gap: .55rem; }
+      .rcg-2 { grid-template-columns: repeat(2,1fr); }
+      .rcg-3 { grid-template-columns: repeat(3,1fr); }
+      .rc { position: relative; }
+      .rc input { position: absolute; opacity: 0; width: 0; height: 0; pointer-events: none; }
+      .rc-l {
+        display: flex; align-items: flex-start; gap: .7rem;
+        padding: .8rem .95rem; border: 1.5px solid var(--border-s); border-radius: var(--r-sm);
+        cursor: pointer; transition: var(--tr); background: var(--bg); user-select: none;
       }
-
-      .highlights {
-        margin: 1rem 0 0;
-        padding: 0;
-        list-style: none;
-        display: grid;
-        gap: 0.5rem;
+      .rc-l:hover { border-color: rgba(220,38,38,.3); background: rgba(220,38,38,.04); }
+      .rc input:checked + .rc-l { border-color: var(--red); background: rgba(220,38,38,.09); }
+      .rc input:focus-visible + .rc-l { box-shadow: 0 0 0 3px var(--red-gl); }
+      .rc-l::after {
+        content: ''; width: 16px; height: 16px; border-radius: 50%;
+        border: 2px solid var(--border-s); flex-shrink: 0; margin-left: auto;
+        align-self: center; transition: var(--tr);
       }
-
-      .highlights li {
-        font-size: 0.9rem;
-        color: #f0d8d8;
+      .rc input:checked + .rc-l::after { border-color: var(--red); background: var(--red); box-shadow: inset 0 0 0 3px var(--bg); }
+      .rc-ic { font-size: 1.35rem; line-height: 1; flex-shrink: 0; margin-top: .05rem; }
+      .rc-bd { flex: 1; }
+      .rc-nm { font-weight: 700; font-size: .9rem; line-height: 1.2; }
+      .rc-sb { font-size: .75rem; color: var(--muted); margin-top: .15rem; line-height: 1.4; }
+      /* Range */
+      .rr { display: flex; align-items: center; gap: .75rem; }
+      .rr .fi { width: 90px; flex-shrink: 0; text-align: center; }
+      input[type="range"] {
+        -webkit-appearance: none; appearance: none; width: 100%; height: 5px;
+        border-radius: 999px; background: var(--surface-3); outline: none; cursor: pointer; border: none; padding: 0;
       }
-
-      .section {
-        padding: 3rem 0;
+      input[type="range"]::-webkit-slider-thumb {
+        -webkit-appearance: none; appearance: none; width: 19px; height: 19px; border-radius: 50%;
+        background: var(--red); border: 2.5px solid var(--bg); box-shadow: 0 0 0 2px var(--red);
+        cursor: pointer; transition: transform var(--tr);
       }
-
-      .section-head {
-        margin-bottom: 1.2rem;
+      input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.25); }
+      input[type="range"]::-moz-range-thumb { width: 19px; height: 19px; border-radius: 50%; background: var(--red); border: 2.5px solid var(--bg); cursor: pointer; }
+      /* Step nav */
+      .sn { display: flex; align-items: center; justify-content: space-between; margin-top: 2rem; gap: .75rem; }
+      .sn-r { display: flex; gap: .75rem; margin-left: auto; }
+      /* === Step 3 Metrics === */
+      .mrow { display: grid; grid-template-columns: repeat(3,1fr); gap: .7rem; margin-bottom: 1.25rem; }
+      .mc { background: var(--bg); border: 1px solid var(--border-s); border-radius: var(--r); padding: 1rem; text-align: center; }
+      .mc.feat { border-color: var(--border); background: linear-gradient(135deg,rgba(220,38,38,.1),rgba(220,38,38,.04)); }
+      .mc-l { font-size: .67rem; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--subtle); margin-bottom: .35rem; }
+      .mc-v { font-size: 1.75rem; font-weight: 900; letter-spacing: -.035em; line-height: 1; }
+      .mc.feat .mc-v { color: var(--red); }
+      .mc-u { font-size: .7rem; color: var(--muted); margin-top: .2rem; }
+      /* Goal band */
+      .gband { display: flex; align-items: flex-start; gap: .7rem; background: var(--surface-2); border-left: 3px solid var(--red); border-radius: 0 var(--r-sm) var(--r-sm) 0; padding: .9rem 1rem; margin-bottom: 1.25rem; }
+      .gband-ic { font-size: 1.15rem; flex-shrink: 0; margin-top: .05rem; }
+      .gband-t { font-size: .88rem; color: var(--muted); line-height: 1.5; }
+      .gband-t strong { color: var(--text); }
+      /* Preview box */
+      .pvbox { background: var(--surface-2); border: 1px solid var(--border-s); border-radius: var(--r-sm); padding: .85rem 1rem; font-size: .88rem; color: var(--muted); margin-top: 1.5rem; }
+      .pvbox .pvl { font-size: .67rem; font-weight: 700; text-transform: uppercase; letter-spacing: .07em; color: var(--subtle); margin-bottom: .4rem; }
+      /* Divider */
+      .dvd { height: 1px; background: var(--border-s); margin: 1.25rem 0; }
+      /* === Diagnosis === */
+      .diag { background: var(--bg); border: 1px solid var(--border); border-radius: var(--r-lg); overflow: hidden; }
+      .dh {
+        background: linear-gradient(135deg,rgba(220,38,38,.14) 0%,transparent 100%);
+        border-bottom: 1px solid var(--border-s); padding: 1.4rem 1.75rem;
+        display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem;
       }
-
-      .kicker {
-        margin: 0;
-        color: #e8a0a0;
-        font-size: 0.78rem;
-        text-transform: uppercase;
-        letter-spacing: 0.08em;
-        font-weight: 700;
+      .dh-l { font-size: .67rem; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--red); margin-bottom: .2rem; }
+      .dh-n { font-size: 1.15rem; font-weight: 800; letter-spacing: -.02em; line-height: 1.3; }
+      .db { padding: 1.5rem 1.75rem; display: grid; gap: 1.5rem; }
+      .ds-l { font-size: .67rem; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--subtle); margin-bottom: .8rem; display: flex; align-items: center; gap: .5rem; }
+      .ds-l::after { content: ''; flex: 1; height: 1px; background: var(--border-s); }
+      /* Macro bars + chart */
+      .mlayout { display: grid; grid-template-columns: 1fr 180px; gap: 1.5rem; align-items: center; }
+      .mbar { margin-bottom: .85rem; }
+      .mbar:last-child { margin-bottom: 0; }
+      .mb-h { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: .28rem; }
+      .mb-nm { font-size: .83rem; font-weight: 600; }
+      .mb-i { font-size: .78rem; color: var(--muted); }
+      .mb-tr { height: 7px; background: var(--surface-3); border-radius: 999px; overflow: hidden; }
+      .mb-f { height: 100%; border-radius: 999px; width: 0; transition: width .65s var(--ease); }
+      .mb-f.p { background: linear-gradient(90deg,#b91c1c,#ef4444); }
+      .mb-f.c { background: linear-gradient(90deg,#b45309,#f59e0b); }
+      .mb-f.f { background: linear-gradient(90deg,#5b21b6,#8b5cf6); }
+      /* Donut */
+      .cw { position: relative; display: flex; align-items: center; justify-content: center; }
+      .cc { position: absolute; text-align: center; pointer-events: none; }
+      .cc-v { font-size: 1.05rem; font-weight: 900; line-height: 1; }
+      .cc-l { font-size: .62rem; color: var(--muted); }
+      /* Macro summary */
+      .msum { display: grid; grid-template-columns: repeat(4,1fr); gap: .6rem; }
+      .mcd { background: var(--surface-2); border: 1px solid var(--border-s); border-radius: var(--r-sm); padding: .85rem; text-align: center; }
+      .mcd.kcal  { border-top: 3px solid var(--red); }
+      .mcd.prot  { border-top: 3px solid #ef4444; }
+      .mcd.carb  { border-top: 3px solid var(--amber); }
+      .mcd.fat   { border-top: 3px solid var(--purple); }
+      .mcd-l { font-size: .65rem; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--subtle); margin-bottom: .3rem; }
+      .mcd-v { font-size: 1.25rem; font-weight: 900; letter-spacing: -.02em; }
+      .mcd-u { font-size: .68rem; color: var(--muted); }
+      /* Tips */
+      .tgrid { display: grid; grid-template-columns: repeat(2,1fr); gap: .7rem; }
+      .tip { background: var(--surface-2); border: 1px solid var(--border-s); border-radius: var(--r-sm); padding: .85rem 1rem; display: flex; gap: .7rem; align-items: flex-start; }
+      .tip-i { font-size: 1.05rem; flex-shrink: 0; margin-top: .05rem; }
+      .tip-t { font-size: .83rem; color: var(--muted); line-height: 1.5; }
+      .tip-t strong { color: var(--text); font-weight: 600; }
+      /* === Info sections === */
+      .isec { padding: 4rem 0; border-top: 1px solid var(--border-s); }
+      .sec-ey { font-size: .68rem; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--red); margin-bottom: .4rem; }
+      .sec-t { font-size: clamp(1.3rem,2.5vw,1.85rem); font-weight: 800; letter-spacing: -.03em; margin-bottom: .4rem; }
+      .sec-d { color: var(--muted); font-size: .92rem; max-width: 55ch; }
+      .icards { display: grid; grid-template-columns: repeat(3,1fr); gap: 1rem; margin-top: 2rem; }
+      .icard { background: var(--surface); border: 1px solid var(--border-s); border-radius: var(--r); padding: 1.25rem; }
+      .icard-ic { width: 38px; height: 38px; border-radius: var(--r-sm); background: var(--red-gl); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 1.1rem; margin-bottom: .85rem; }
+      .icard-t { font-size: .92rem; font-weight: 700; margin-bottom: .6rem; }
+      .icard-ul { list-style: none; display: grid; gap: .28rem; }
+      .icard-ul li { font-size: .82rem; color: var(--muted); padding-left: .95rem; position: relative; line-height: 1.4; }
+      .icard-ul li::before { content: '·'; position: absolute; left: 0; color: var(--red); font-weight: 900; }
+      .rcards { display: grid; grid-template-columns: repeat(4,1fr); gap: 1rem; margin-top: 2rem; }
+      .rcard { background: var(--surface); border: 1px solid var(--border-s); border-radius: var(--r); padding: 1.25rem; }
+      .rcard-n { font-size: 2rem; font-weight: 900; color: rgba(220,38,38,.18); letter-spacing: -.06em; line-height: 1; margin-bottom: .5rem; }
+      .rcard-t { font-size: .9rem; font-weight: 700; margin-bottom: .3rem; }
+      .rcard-d { font-size: .82rem; color: var(--muted); line-height: 1.5; }
+      /* === Footer === */
+      .ftr { border-top: 1px solid var(--border-s); padding: 2rem 0; }
+      .ftr-in { display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
+      .ftr-b { font-weight: 900; font-size: .88rem; letter-spacing: -.02em; }
+      .ftr-b .ac { color: var(--red); }
+      .ftr-d { font-size: .75rem; color: var(--subtle); max-width: 55ch; line-height: 1.5; }
+      /* === Toast === */
+      .toast { position: fixed; bottom: 1.5rem; right: 1.5rem; background: var(--surface-3); border: 1px solid var(--border-s); border-radius: var(--r-sm); padding: .7rem 1.15rem; font-size: .85rem; font-weight: 600; color: var(--text); display: flex; align-items: center; gap: .5rem; box-shadow: 0 8px 32px rgba(0,0,0,.6); z-index: 200; transition: opacity .3s, transform .3s; }
+      .toast[hidden] { opacity: 0; transform: translateY(12px); pointer-events: none; }
+      /* === Utils === */
+      .hidden { display: none !important; }
+      .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+      /* === Animations === */
+      @keyframes sldIn  { from { opacity:0; transform:translateX(18px); } to { opacity:1; transform:none; } }
+      @keyframes sldBk  { from { opacity:0; transform:translateX(-18px); } to { opacity:1; transform:none; } }
+      .a-in { animation: sldIn .28s var(--ease) both; }
+      .a-bk { animation: sldBk .28s var(--ease) both; }
+      /* === Responsive === */
+      @media (max-width: 768px) {
+        .hero { padding: 2.5rem 0 1.5rem; }
+        .hero-trust { gap: 1.25rem; }
+        .sp { padding: 1.25rem; }
+        .fg-2, .fg-3 { grid-template-columns: 1fr; }
+        .rcg-2, .rcg-3 { grid-template-columns: 1fr; }
+        .mrow { grid-template-columns: 1fr; }
+        .mlayout { grid-template-columns: 1fr; }
+        .cw { display: none; }
+        .msum { grid-template-columns: repeat(2,1fr); }
+        .tgrid { grid-template-columns: 1fr; }
+        .icards { grid-template-columns: 1fr; }
+        .rcards { grid-template-columns: repeat(2,1fr); }
+        .dh { padding: 1.1rem 1.25rem; }
+        .db { padding: 1.1rem 1.25rem; }
+        .legal { display: none; }
+        .si-line { width: 22px; }
+        .si-lbl { display: none; }
       }
-
-      .section-title {
-        margin: 0.2rem 0;
-        font-size: clamp(1.4rem, 2.4vw, 2rem);
-      }
-
-      .section-desc {
-        margin: 0;
-        color: var(--muted);
-      }
-
-      .calc-grid,
-      .info-grid,
-      .rule-grid {
-        display: grid;
-        gap: 1rem;
-      }
-
-      .calc-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-      }
-
-      .info-grid {
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-      }
-
-      .rule-grid {
-        grid-template-columns: repeat(4, minmax(0, 1fr));
-      }
-
-      .label {
-        display: block;
-        margin-bottom: 0.3rem;
-        font-size: 0.77rem;
-        text-transform: uppercase;
-        letter-spacing: 0.06em;
-        color: #e8a0a0;
-        font-weight: 600;
-      }
-
-      .field,
-      select,
-      input {
-        width: 100%;
-        background: #130000;
-        border: 1px solid #3d1010;
-        border-radius: 9px;
-        color: var(--text);
-        font-size: 0.95rem;
-        padding: 0.74rem 0.85rem;
-        outline: none;
-      }
-
-      .field:focus,
-      select:focus,
-      input:focus {
-        border-color: var(--primary);
-      }
-
-      .error {
-        border-color: var(--danger) !important;
-      }
-
-      .field-grid {
-        display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 0.8rem;
-      }
-
-      .field-span {
-        grid-column: 1 / -1;
-      }
-
-      .actions {
-        margin-top: 0.8rem;
-        display: flex;
-        gap: 0.7rem;
-        flex-wrap: wrap;
-      }
-
-      .actions .btn {
-        flex: 1;
-        min-width: 170px;
-      }
-
-      .error-text {
-        margin: 0.7rem 0 0;
-        color: var(--danger);
-        font-size: 0.88rem;
-        font-weight: 600;
-      }
-
-      .hidden {
-        display: none;
-      }
-
-      .stats {
-        margin-top: 0.9rem;
-        display: grid;
-        gap: 0.7rem;
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-      }
-
-      .stats.macros {
-        grid-template-columns: repeat(4, minmax(0, 1fr));
-      }
-
-      .stat {
-        background: #150000;
-        border: 1px solid #3d1010;
-        border-radius: 10px;
-        padding: 0.85rem;
-      }
-
-      .stat h4 {
-        margin: 0;
-        color: #d09090;
-        font-size: 0.7rem;
-        letter-spacing: 0.08em;
-        text-transform: uppercase;
-      }
-
-      .stat p {
-        margin: 0.15rem 0 0;
-        font-size: 1.25rem;
-        font-weight: 800;
-        letter-spacing: -0.01em;
-      }
-
-      .stat .unit {
-        display: block;
-        margin-top: 0.2rem;
-        font-size: 0.75rem;
-        color: #d09090;
-      }
-
-      .macro-layout {
-        margin-top: 1rem;
-        display: grid;
-        grid-template-columns: 1fr 260px;
-        gap: 1rem;
-        align-items: center;
-      }
-
-      .bar {
-        margin-bottom: 0.75rem;
-      }
-
-      .bar-row {
-        display: flex;
-        justify-content: space-between;
-        font-size: 0.84rem;
-        color: #afc0e2;
-        margin-bottom: 0.25rem;
-      }
-
-      .bar-track {
-        border-radius: 999px;
-        height: 8px;
-        background: #2a0000;
-        overflow: hidden;
-      }
-
-      .bar-fill {
-        height: 100%;
-        width: 0;
-      }
-
-      .bar-fill.protein {
-        background: #e63946;
-      }
-
-      .bar-fill.carb {
-        background: #f0d8d8;
-      }
-
-      .bar-fill.fat {
-        background: #8b4040;
-      }
-
-      .chart-wrap {
-        position: relative;
-        display: grid;
-        place-items: center;
-      }
-
-      .chart-center {
-        position: absolute;
-        text-align: center;
-        pointer-events: none;
-      }
-
-      .chart-center small {
-        display: block;
-        font-size: 0.75rem;
-        color: #9db0da;
-      }
-
-      .chart-center strong {
-        display: block;
-        font-size: 1.1rem;
-      }
-
-      .simple-card {
-        background: #121a28;
-        border: 1px solid #293550;
-        border-radius: 12px;
-        padding: 1rem;
-      }
-
-      .simple-card h3 {
-        margin: 0 0 0.5rem;
-      }
-
-      .simple-card p,
-      .simple-card li {
-        margin: 0;
-        color: var(--muted);
-        font-size: 0.92rem;
-      }
-
-      .simple-card ul {
-        margin: 0;
-        padding-left: 1rem;
-        display: grid;
-        gap: 0.35rem;
-      }
-
-      .footer {
-        border-top: 1px solid rgb(180 50 50 / 20%);
-        margin-top: 2rem;
-        padding: 1.2rem 0 2rem;
-        color: #c49a9a;
-        font-size: 0.86rem;
-        text-align: center;
-      }
-
-      @media (max-width: 1024px) {
-        .hero-grid,
-        .calc-grid,
-        .info-grid {
-          grid-template-columns: 1fr;
-        }
-
-        .rule-grid {
-          grid-template-columns: repeat(2, minmax(0, 1fr));
-        }
-      }
-
-      @media (max-width: 820px) {
-        .nav-notice-text {
-          display: none;
-        }
-
-        .nav-notice {
-          max-width: 50vw;
-        }
-
-        .nav {
-          display: flex;
-          gap: 0.7rem;
-          max-width: 48vw;
-          overflow-x: auto;
-          white-space: nowrap;
-        }
-
-        .stats,
-        .stats.macros,
-        .field-grid {
-          grid-template-columns: 1fr;
-        }
-
-        .macro-layout {
-          grid-template-columns: 1fr;
-        }
-      }
-
-      @media (max-width: 520px) {
-        .container {
-          width: min(1120px, 100% - 1.25rem);
-        }
-
-        .hero {
-          padding-top: 4rem;
-        }
+      @media (max-width: 480px) {
+        .rcards { grid-template-columns: 1fr; }
+        .sn { flex-direction: column-reverse; }
+        .sn-r { width: 100%; }
+        .sn-r .btn { flex: 1; }
+        .btn-lg { width: 100%; justify-content: center; }
+        .hero-cta { flex-direction: column; align-items: center; }
       }
     </style>
   </head>
   <body>
-    <header class="header">
-      <div class="container header-inner">
-        <a class="logo" href="#top"><span>GN</span> TEAM</a>
-        <div class="nav-notice" aria-label="Aviso importante">
-          <span class="nav-notice-title">⚠️ AVISO IMPORTANTE</span>
-          <span class="nav-notice-text">Este conteúdo tem finalidade exclusivamente educativa e informativa. Os cálculos, exemplos e estratégias apresentados não substituem consulta, avaliação ou acompanhamento com nutricionista, que é o profissional legalmente habilitado para prescrever planos alimentares individualizados, avaliar exames, histórico clínico e necessidades específicas.</span>
-        </div>
+
+    <!-- HEADER -->
+    <header class="hdr">
+      <div class="wrap hdr-in">
+        <a class="logo" href="#" aria-label="GN Team · Blueprint Metabólico">
+          <span class="ac">GN</span> TEAM
+        </a>
+        <p class="legal">
+          <strong>Conteúdo educativo.</strong> Não substitui acompanhamento de nutricionista habilitado.
+        </p>
       </div>
     </header>
 
-    <main id="top">
-      <section class="hero container">
-        <div class="hero-grid">
-          <div class="panel">
-            <div class="badge">Visual novo · Moderno · Limpo</div>
-            <h1 class="title">Planeje dieta sem adivinhação: TMB, GET e macros em minutos.</h1>
-            <p class="subtitle">
-              Site totalmente refeito do zero com visual moderno, responsivo e organizado. Informe os dados,
-              calcule sua meta calórica e transforme em macronutrientes com clareza.
-            </p>
-            <div class="cta-row">
-              <a class="btn btn-primary" href="#calculadoras">Começar agora</a>
-              <a class="btn btn-ghost" href="#fundamentos">Entender o método</a>
+    <main>
+
+      <!-- HERO -->
+      <section class="hero wrap" aria-labelledby="hero-h">
+        <div class="pill">⚡ Blueprint Metabólico · v2</div>
+        <h1 class="hero-h" id="hero-h">
+          Seu plano nutricional<br>em <span class="hl">5 minutos.</span>
+        </h1>
+        <p class="hero-s">
+          Calcule TMB, GET e macronutrientes em um fluxo guiado e receba um diagnóstico personalizado ao seu objetivo.
+        </p>
+        <div class="hero-cta">
+          <a class="btn btn-p btn-lg" href="#wizard">Começar agora →</a>
+          <a class="btn btn-g btn-lg" href="#fundamentos">Ver fundamentos</a>
+        </div>
+        <div class="hero-trust" aria-label="Credenciais da ferramenta">
+          <div class="tr-item">
+            <div class="tr-val">Mifflin-St Jeor</div>
+            <div class="tr-lbl">Fórmula de referência científica</div>
+          </div>
+          <div class="tr-item">
+            <div class="tr-val">3 objetivos</div>
+            <div class="tr-lbl">Emagrecer · Manter · Hipertrofiar</div>
+          </div>
+          <div class="tr-item">
+            <div class="tr-val">100% gratuito</div>
+            <div class="tr-lbl">Sem cadastro necessário</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- WIZARD -->
+      <section class="wizard wrap" id="wizard" aria-label="Calculadora guiada">
+        <div class="wizard-c">
+
+          <!-- Step Indicator -->
+          <nav class="si" aria-label="Progresso do formulário">
+            <div class="si-item active" id="si-1">
+              <div class="si-dot">1</div>
+              <span class="si-lbl">Você</span>
+            </div>
+            <div class="si-line" id="sl-1"></div>
+            <div class="si-item" id="si-2">
+              <div class="si-dot">2</div>
+              <span class="si-lbl">Rotina</span>
+            </div>
+            <div class="si-line" id="sl-2"></div>
+            <div class="si-item" id="si-3">
+              <div class="si-dot">3</div>
+              <span class="si-lbl">Calorias</span>
+            </div>
+            <div class="si-line" id="sl-3"></div>
+            <div class="si-item" id="si-4">
+              <div class="si-dot">4</div>
+              <span class="si-lbl">Macros</span>
+            </div>
+            <div class="si-line" id="sl-4"></div>
+            <div class="si-item" id="si-5">
+              <div class="si-dot">5</div>
+              <span class="si-lbl">Diagnóstico</span>
+            </div>
+          </nav>
+
+          <!-- STEP 1 -->
+          <div class="sp a-in" id="step-1" tabindex="-1" role="group" aria-labelledby="st1-t">
+            <div class="sp-hd">
+              <div class="s-tag"><span class="s-tag-n">1</span> Dados pessoais</div>
+              <h2 class="s-title" id="st1-t">Vamos começar com <em>você</em></h2>
+              <p class="s-desc">Esses dados são a base do seu cálculo metabólico.</p>
+            </div>
+            <div style="margin-bottom:1.1rem">
+              <div class="fl">Sexo biológico</div>
+              <div class="rcg rcg-2">
+                <label class="rc">
+                  <input type="radio" name="sex" value="M" id="sex-m" />
+                  <span class="rc-l">
+                    <span class="rc-ic">♂</span>
+                    <span class="rc-bd"><span class="rc-nm">Masculino</span></span>
+                  </span>
+                </label>
+                <label class="rc">
+                  <input type="radio" name="sex" value="F" id="sex-f" />
+                  <span class="rc-l">
+                    <span class="rc-ic">♀</span>
+                    <span class="rc-bd"><span class="rc-nm">Feminino</span></span>
+                  </span>
+                </label>
+              </div>
+              <p class="ferr hidden" id="err-sex">Selecione o sexo biológico.</p>
+            </div>
+            <div class="fg fg-3">
+              <div>
+                <label class="fl" for="age">Idade <span class="fh">(10–100 anos)</span></label>
+                <input class="fi" id="age" type="number" min="10" max="100" placeholder="28" inputmode="numeric" />
+                <p class="ferr hidden" id="err-age">Idade inválida (10–100).</p>
+              </div>
+              <div>
+                <label class="fl" for="weight">Peso <span class="fh">(kg)</span></label>
+                <input class="fi" id="weight" type="number" min="30" max="300" step="0.1" placeholder="75.5" inputmode="decimal" />
+                <p class="ferr hidden" id="err-weight">Peso inválido (30–300 kg).</p>
+              </div>
+              <div>
+                <label class="fl" for="height">Altura <span class="fh">(cm)</span></label>
+                <input class="fi" id="height" type="number" min="120" max="230" placeholder="172" inputmode="numeric" />
+                <p class="ferr hidden" id="err-height">Altura inválida (120–230 cm).</p>
+              </div>
+            </div>
+            <div class="sn">
+              <span></span>
+              <div class="sn-r">
+                <button class="btn btn-p btn-lg" id="btn-1-next">Continuar →</button>
+              </div>
             </div>
           </div>
-          <aside class="panel" aria-label="Resumo do que você encontra">
-            <h2 class="section-title" style="font-size: 1.2rem">O que você encontra aqui</h2>
-            <ul class="highlights">
-              <li>✓ Calculadora TMB + GET com ajuste por objetivo.</li>
-              <li>✓ Calculadora de macronutrientes com gráfico dinâmico.</li>
-              <li>✓ Interface clara e totalmente formatada para uso rápido.</li>
-              <li>✓ Conteúdo educativo para execução consistente.</li>
-            </ul>
-          </aside>
-        </div>
-      </section>
 
-      <section class="section container" id="calculadoras">
-        <div class="section-head">
-          <p class="kicker">Ferramentas</p>
-          <h2 class="section-title">Calculadoras interativas</h2>
-          <p class="section-desc">Preencha os campos, calcule e ajuste com base no objetivo.</p>
-        </div>
-
-        <div class="calc-grid">
-          <article class="panel" aria-labelledby="title-c1">
-            <h3 id="title-c1" class="section-title" style="font-size: 1.15rem">TMB + GET</h3>
-            <p class="section-desc" style="margin-bottom: 0.8rem">
-              Fórmula Mifflin-St Jeor, fator de atividade e ajuste para emagrecimento, recomposição ou hipertrofia.
-            </p>
-
-            <div class="field-grid">
-              <div>
-                <label class="label" for="c1-sex">Sexo</label>
-                <select id="c1-sex" class="field">
-                  <option value="">Selecione</option>
-                  <option value="M">Masculino</option>
-                  <option value="F">Feminino</option>
-                </select>
+          <!-- STEP 2 -->
+          <div class="sp hidden" id="step-2" tabindex="-1" role="group" aria-labelledby="st2-t">
+            <div class="sp-hd">
+              <div class="s-tag"><span class="s-tag-n">2</span> Rotina &amp; Objetivo</div>
+              <h2 class="s-title" id="st2-t">Como é a sua <em>rotina</em>?</h2>
+              <p class="s-desc">Escolha o nível de atividade e o que você quer alcançar.</p>
+            </div>
+            <div style="margin-bottom:1.25rem">
+              <div class="fl">Nível de atividade física</div>
+              <div class="rcg">
+                <label class="rc">
+                  <input type="radio" name="activity" value="1.2" />
+                  <span class="rc-l">
+                    <span class="rc-ic">🛋️</span>
+                    <span class="rc-bd">
+                      <span class="rc-nm">Sedentário</span>
+                      <span class="rc-sb">Trabalho sentado, pouca ou nenhuma atividade física (×1,2)</span>
+                    </span>
+                  </span>
+                </label>
+                <label class="rc">
+                  <input type="radio" name="activity" value="1.3" />
+                  <span class="rc-l">
+                    <span class="rc-ic">🚶</span>
+                    <span class="rc-bd">
+                      <span class="rc-nm">Levemente ativo</span>
+                      <span class="rc-sb">Trabalho sentado + treino 3–5× por semana (×1,3)</span>
+                    </span>
+                  </span>
+                </label>
+                <label class="rc">
+                  <input type="radio" name="activity" value="1.4" />
+                  <span class="rc-l">
+                    <span class="rc-ic">🏋️</span>
+                    <span class="rc-bd">
+                      <span class="rc-nm">Moderadamente ativo</span>
+                      <span class="rc-sb">Trabalho em pé ou treino pesado diário (×1,4)</span>
+                    </span>
+                  </span>
+                </label>
+                <label class="rc">
+                  <input type="radio" name="activity" value="1.5" />
+                  <span class="rc-l">
+                    <span class="rc-ic">🏃</span>
+                    <span class="rc-bd">
+                      <span class="rc-nm">Muito ativo</span>
+                      <span class="rc-sb">Rotina ativa com treino intenso diário (×1,5)</span>
+                    </span>
+                  </span>
+                </label>
+                <label class="rc">
+                  <input type="radio" name="activity" value="1.65" />
+                  <span class="rc-l">
+                    <span class="rc-ic">🥇</span>
+                    <span class="rc-bd">
+                      <span class="rc-nm">Atleta / Trabalho físico intenso</span>
+                      <span class="rc-sb">Alta demanda física constante todos os dias (×1,65)</span>
+                    </span>
+                  </span>
+                </label>
               </div>
-              <div>
-                <label class="label" for="c1-age">Idade (anos)</label>
-                <input id="c1-age" class="field" type="number" min="10" max="100" placeholder="Ex: 28" />
+              <p class="ferr hidden" id="err-activity">Selecione o nível de atividade.</p>
+            </div>
+            <div>
+              <div class="fl">Objetivo principal</div>
+              <div class="rcg rcg-3">
+                <label class="rc">
+                  <input type="radio" name="goal" value="cut" />
+                  <span class="rc-l" style="flex-direction:column;align-items:center;text-align:center;gap:.4rem">
+                    <span class="rc-ic">🔥</span>
+                    <span class="rc-bd">
+                      <span class="rc-nm">Emagrecer</span>
+                      <span class="rc-sb">Déficit de 10–25%</span>
+                    </span>
+                  </span>
+                </label>
+                <label class="rc">
+                  <input type="radio" name="goal" value="recomp" />
+                  <span class="rc-l" style="flex-direction:column;align-items:center;text-align:center;gap:.4rem">
+                    <span class="rc-ic">⚖️</span>
+                    <span class="rc-bd">
+                      <span class="rc-nm">Recomposição</span>
+                      <span class="rc-sb">Déficit leve ~10%</span>
+                    </span>
+                  </span>
+                </label>
+                <label class="rc">
+                  <input type="radio" name="goal" value="bulk" />
+                  <span class="rc-l" style="flex-direction:column;align-items:center;text-align:center;gap:.4rem">
+                    <span class="rc-ic">💪</span>
+                    <span class="rc-bd">
+                      <span class="rc-nm">Hipertrofia</span>
+                      <span class="rc-sb">Superávit de 5–15%</span>
+                    </span>
+                  </span>
+                </label>
               </div>
-              <div>
-                <label class="label" for="c1-weight">Peso (kg)</label>
-                <input id="c1-weight" class="field" type="number" min="30" max="300" step="0.1" placeholder="Ex: 70" />
-              </div>
-              <div>
-                <label class="label" for="c1-height">Altura (cm)</label>
-                <input id="c1-height" class="field" type="number" min="120" max="230" placeholder="Ex: 172" />
-              </div>
-              <div class="field-span">
-                <label class="label" for="c1-activity">Fator de atividade</label>
-                <select id="c1-activity" class="field">
-                  <option value="">Escolha</option>
-                  <option value="1.2">1,2 · Sedentário</option>
-                  <option value="1.3">1,3 · Trabalho sentado + treina 3–5x/semana</option>
-                  <option value="1.4">1,4 · Trabalho em pé / treino pesado</option>
-                  <option value="1.5">1,5 · Rotina ativa + treino regular</option>
-                  <option value="1.65">1,6–1,7 · Atleta ou trabalho físico intenso</option>
-                </select>
-              </div>
-              <div class="field-span">
-                <label class="label" for="c1-goal">Objetivo</label>
-                <select id="c1-goal" class="field">
-                  <option value="">Selecione</option>
-                  <option value="cut">Emagrecimento · déficit 10–25%</option>
-                  <option value="recomp">Manutenção / falso magro · manutenção ou déficit leve</option>
-                  <option value="bulk">Hipertrofia · superávit 5–15%</option>
-                </select>
+              <p class="ferr hidden" id="err-goal">Selecione um objetivo.</p>
+            </div>
+            <div class="sn">
+              <button class="btn btn-g" id="btn-2-back">← Voltar</button>
+              <div class="sn-r">
+                <button class="btn btn-p btn-lg" id="btn-2-next">Ver minha meta →</button>
               </div>
             </div>
+          </div>
 
-            <div class="actions">
-              <button class="btn btn-primary" type="button" onclick="calcTmbGet()">Calcular TMB + GET</button>
-              <button class="btn btn-ghost" type="button" onclick="resetTmbGet()">Limpar</button>
+          <!-- STEP 3 -->
+          <div class="sp hidden" id="step-3" tabindex="-1" role="group" aria-labelledby="st3-t">
+            <div class="sp-hd">
+              <div class="s-tag"><span class="s-tag-n">3</span> Meta calórica</div>
+              <h2 class="s-title" id="st3-t">Sua <em>meta de calorias</em></h2>
+              <p class="s-desc">Calculado pela fórmula Mifflin-St Jeor com seu fator de atividade.</p>
             </div>
-            <p id="c1-error" class="error-text hidden" aria-live="polite"></p>
-
-            <div id="c1-results" class="hidden">
-              <div class="stats">
-                <div class="stat">
-                  <h4>TMB</h4>
-                  <p id="r-tmb">—</p>
-                  <small class="unit">kcal/dia</small>
-                </div>
-                <div class="stat">
-                  <h4>GET</h4>
-                  <p id="r-get">—</p>
-                  <small class="unit">kcal/dia</small>
-                </div>
-                <div class="stat">
-                  <h4>Calorias alvo</h4>
-                  <p id="r-target">—</p>
-                  <small class="unit">kcal/dia</small>
-                </div>
+            <div class="mrow">
+              <div class="mc">
+                <div class="mc-l">TMB</div>
+                <div class="mc-v" id="r3-tmb">—</div>
+                <div class="mc-u">kcal/dia · metabolismo basal</div>
               </div>
-              <p id="r-goal-text" class="section-desc" style="margin-top: 0.7rem"></p>
-            </div>
-          </article>
-
-          <article class="panel" aria-labelledby="title-c2">
-            <h3 id="title-c2" class="section-title" style="font-size: 1.15rem">Macronutrientes</h3>
-            <p class="section-desc" style="margin-bottom: 0.8rem">
-              Defina proteína e gordura por kg e feche os carboidratos automaticamente.
-            </p>
-
-            <div class="field-grid">
-              <div>
-                <label class="label" for="c2-kcal">Calorias alvo (kcal)</label>
-                <input id="c2-kcal" class="field" type="number" min="1000" max="7000" placeholder="Ex: 2200" />
+              <div class="mc">
+                <div class="mc-l">GET</div>
+                <div class="mc-v" id="r3-get">—</div>
+                <div class="mc-u">kcal/dia · gasto total</div>
               </div>
-              <div>
-                <label class="label" for="c2-weight">Peso (kg)</label>
-                <input id="c2-weight" class="field" type="number" min="30" max="300" step="0.1" placeholder="Ex: 70" />
-              </div>
-              <div>
-                <label class="label" for="c2-prot">Proteína (g/kg)</label>
-                <input id="c2-prot" class="field" type="number" min="0.5" max="3.5" step="0.1" value="2.0" />
-              </div>
-              <div>
-                <label class="label" for="c2-fat">Gordura (g/kg)</label>
-                <input id="c2-fat" class="field" type="number" min="0.4" max="2.0" step="0.1" value="0.8" />
+              <div class="mc feat">
+                <div class="mc-l">Calorias alvo</div>
+                <div class="mc-v" id="r3-target">—</div>
+                <div class="mc-u">kcal/dia · sua meta</div>
               </div>
             </div>
-
-            <div class="actions">
-              <button class="btn btn-primary" type="button" onclick="calcMacros()">Calcular macros</button>
-              <button class="btn btn-ghost" type="button" onclick="resetMacros()">Limpar</button>
+            <div class="gband" id="r3-band">
+              <span class="gband-ic" id="r3-band-ic">🎯</span>
+              <p class="gband-t" id="r3-band-t"></p>
             </div>
-            <p id="c2-error" class="error-text hidden" aria-live="polite"></p>
-
-            <div id="c2-results" class="hidden">
-              <div class="stats macros">
-                <div class="stat">
-                  <h4>Calorias</h4>
-                  <p id="res-kcal">—</p>
-                  <small class="unit">kcal/dia</small>
-                </div>
-                <div class="stat">
-                  <h4>Proteína</h4>
-                  <p id="res-prot">—</p>
-                  <small class="unit">g</small>
-                </div>
-                <div class="stat">
-                  <h4>Gordura</h4>
-                  <p id="res-fat">—</p>
-                  <small class="unit">g</small>
-                </div>
-                <div class="stat">
-                  <h4>Carboidrato</h4>
-                  <p id="res-carb">—</p>
-                  <small class="unit">g</small>
-                </div>
+            <div class="dvd"></div>
+            <div>
+              <div class="fl">Ajustar meta calórica <span class="fh">(opcional)</span></div>
+              <div class="fg fg-2">
+                <input class="fi" id="target-kcal" type="number" min="1000" max="7000" placeholder="Ex: 2200" />
               </div>
+            </div>
+            <div class="sn">
+              <button class="btn btn-g" id="btn-3-back">← Voltar</button>
+              <div class="sn-r">
+                <button class="btn btn-p btn-lg" id="btn-3-next">Distribuir macros →</button>
+              </div>
+            </div>
+          </div>
 
-              <div class="macro-layout">
+          <!-- STEP 4 -->
+          <div class="sp hidden" id="step-4" tabindex="-1" role="group" aria-labelledby="st4-t">
+            <div class="sp-hd">
+              <div class="s-tag"><span class="s-tag-n">4</span> Distribuição de macros</div>
+              <h2 class="s-title" id="st4-t">Como distribuir <em>seus macros</em>?</h2>
+              <p class="s-desc">Defina proteína e gordura por kg. Os carboidratos fecham automaticamente.</p>
+            </div>
+            <div style="margin-bottom:1.5rem">
+              <label class="fl" for="prot-kg">Proteína por kg <span class="fh">· recomendado: 1,8–2,5 g/kg</span></label>
+              <div class="rr">
+                <input class="fi" id="prot-kg" type="number" min="0.5" max="3.5" step="0.1" value="2.0" />
+                <input id="prot-range" type="range" min="0.5" max="3.5" step="0.1" value="2.0" aria-label="Proteína por kg" />
+              </div>
+              <p class="ferr hidden" id="err-prot">Informe entre 0,5 e 3,5 g/kg.</p>
+            </div>
+            <div style="margin-bottom:.5rem">
+              <label class="fl" for="fat-kg">Gordura por kg <span class="fh">· recomendado: 0,7–1,2 g/kg</span></label>
+              <div class="rr">
+                <input class="fi" id="fat-kg" type="number" min="0.4" max="2.0" step="0.1" value="0.8" />
+                <input id="fat-range" type="range" min="0.4" max="2.0" step="0.1" value="0.8" aria-label="Gordura por kg" />
+              </div>
+              <p class="ferr hidden" id="err-fat">Informe entre 0,4 e 2,0 g/kg.</p>
+            </div>
+            <div class="pvbox" id="macro-preview">
+              <div class="pvl">Prévia dos macros</div>
+              <div id="macro-preview-txt" style="color:var(--muted)">Preencha os campos para ver a prévia.</div>
+            </div>
+            <div class="sn">
+              <button class="btn btn-g" id="btn-4-back">← Voltar</button>
+              <div class="sn-r">
+                <button class="btn btn-p btn-lg" id="btn-4-next">Ver diagnóstico →</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- STEP 5 -->
+          <div class="sp hidden" id="step-5" tabindex="-1" role="region" aria-labelledby="st5-t">
+            <div class="sp-hd">
+              <div class="s-tag"><span class="s-tag-n">✓</span> Diagnóstico completo</div>
+              <h2 class="s-title" id="st5-t">Seu <em>Blueprint Metabólico</em></h2>
+              <p class="s-desc">Resumo completo, personalizado ao seu perfil e objetivo.</p>
+            </div>
+            <div class="diag">
+              <div class="dh">
                 <div>
-                  <div class="bar">
-                    <div class="bar-row"><span>Proteína</span><span id="pct-prot">—%</span></div>
-                    <div class="bar-track"><div class="bar-fill protein" id="bar-prot"></div></div>
-                  </div>
-                  <div class="bar">
-                    <div class="bar-row"><span>Carboidrato</span><span id="pct-carb">—%</span></div>
-                    <div class="bar-track"><div class="bar-fill carb" id="bar-carb"></div></div>
-                  </div>
-                  <div class="bar">
-                    <div class="bar-row"><span>Gordura</span><span id="pct-fat">—%</span></div>
-                    <div class="bar-track"><div class="bar-fill fat" id="bar-fat"></div></div>
+                  <div class="dh-l">Perfil analisado</div>
+                  <div class="dh-n" id="d-profile">—</div>
+                </div>
+                <button class="btn btn-sm btn-o" id="btn-copy">📋 Copiar resultado</button>
+              </div>
+              <div class="db">
+                <div>
+                  <div class="ds-l">📊 Resumo calórico</div>
+                  <div class="mrow">
+                    <div class="mc"><div class="mc-l">TMB</div><div class="mc-v" id="d-tmb">—</div><div class="mc-u">kcal/dia</div></div>
+                    <div class="mc"><div class="mc-l">GET</div><div class="mc-v" id="d-get">—</div><div class="mc-u">kcal/dia</div></div>
+                    <div class="mc feat"><div class="mc-l">Meta</div><div class="mc-v" id="d-target">—</div><div class="mc-u">kcal/dia</div></div>
                   </div>
                 </div>
-
-                <div class="chart-wrap">
-                  <canvas id="macroChart" width="240" height="240"></canvas>
-                  <div class="chart-center">
-                    <small>Total</small>
-                    <strong id="chart-center-kcal">—</strong>
-                    <small>kcal</small>
+                <div>
+                  <div class="ds-l">🥩 Distribuição de macros</div>
+                  <div class="mlayout">
+                    <div>
+                      <div class="mbar">
+                        <div class="mb-h"><span class="mb-nm">🥩 Proteína</span><span class="mb-i"><span id="d-prot">—</span>g · <span id="d-pct-prot">—</span>%</span></div>
+                        <div class="mb-tr"><div class="mb-f p" id="dbar-prot"></div></div>
+                      </div>
+                      <div class="mbar">
+                        <div class="mb-h"><span class="mb-nm">🍚 Carboidrato</span><span class="mb-i"><span id="d-carb">—</span>g · <span id="d-pct-carb">—</span>%</span></div>
+                        <div class="mb-tr"><div class="mb-f c" id="dbar-carb"></div></div>
+                      </div>
+                      <div class="mbar">
+                        <div class="mb-h"><span class="mb-nm">🥑 Gordura</span><span class="mb-i"><span id="d-fat">—</span>g · <span id="d-pct-fat">—</span>%</span></div>
+                        <div class="mb-tr"><div class="mb-f f" id="dbar-fat"></div></div>
+                      </div>
+                    </div>
+                    <div class="cw">
+                      <canvas id="macroChart" width="170" height="170" aria-label="Gráfico de macros" role="img"></canvas>
+                      <div class="cc">
+                        <div class="cc-v" id="d-chart-kcal">—</div>
+                        <div class="cc-l">kcal</div>
+                      </div>
+                    </div>
                   </div>
+                </div>
+                <div class="msum">
+                  <div class="mcd kcal"><div class="mcd-l">Calorias</div><div class="mcd-v" id="ds-kcal">—</div><div class="mcd-u">kcal/dia</div></div>
+                  <div class="mcd prot"><div class="mcd-l">Proteína</div><div class="mcd-v" id="ds-prot">—</div><div class="mcd-u">g/dia</div></div>
+                  <div class="mcd carb"><div class="mcd-l">Carboidrato</div><div class="mcd-v" id="ds-carb">—</div><div class="mcd-u">g/dia</div></div>
+                  <div class="mcd fat"><div class="mcd-l">Gordura</div><div class="mcd-v" id="ds-fat">—</div><div class="mcd-u">g/dia</div></div>
+                </div>
+                <div>
+                  <div class="ds-l">💡 Interpretação &amp; recomendações</div>
+                  <div class="tgrid" id="diag-tips"></div>
                 </div>
               </div>
             </div>
+            <div class="sn" style="margin-top:1.5rem">
+              <button class="btn btn-g" id="btn-5-back">← Ajustar macros</button>
+              <div class="sn-r">
+                <button class="btn btn-o" id="btn-restart">↺ Recalcular do zero</button>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- FUNDAMENTOS -->
+      <section class="isec wrap" id="fundamentos" aria-labelledby="fund-t">
+        <p class="sec-ey">Fundamentos</p>
+        <h2 class="sec-t" id="fund-t">A base técnica simplificada</h2>
+        <p class="sec-d">Entenda os conceitos por trás dos cálculos para usar os resultados com segurança.</p>
+        <div class="icards">
+          <article class="icard">
+            <div class="icard-ic">🔬</div>
+            <h3 class="icard-t">TMB — Mifflin-St Jeor</h3>
+            <ul class="icard-ul">
+              <li>Homens: (10×kg) + (6,25×cm) − (5×idade) + 5</li>
+              <li>Mulheres: (10×kg) + (6,25×cm) − (5×idade) − 161</li>
+              <li>Representa o consumo mínimo em repouso absoluto</li>
+              <li>É o ponto de partida, não a meta final</li>
+            </ul>
+          </article>
+          <article class="icard">
+            <div class="icard-ic">⚡</div>
+            <h3 class="icard-t">GET — Gasto Energético Total</h3>
+            <ul class="icard-ul">
+              <li>GET = TMB × fator de atividade física</li>
+              <li>Manutenção de peso acontece nesse valor</li>
+              <li>Déficit ou superávit são calculados a partir dele</li>
+              <li>Fator varia de 1,2 (sedentário) a 1,65 (atleta)</li>
+            </ul>
+          </article>
+          <article class="icard">
+            <div class="icard-ic">🧱</div>
+            <h3 class="icard-t">Macronutrientes</h3>
+            <ul class="icard-ul">
+              <li>Proteína: 4 kcal por grama</li>
+              <li>Carboidrato: 4 kcal por grama</li>
+              <li>Gordura: 9 kcal por grama</li>
+              <li>Carboidratos fecham o total automaticamente</li>
+            </ul>
           </article>
         </div>
       </section>
 
-      <section class="section container" id="fundamentos">
-        <div class="section-head">
-          <p class="kicker">Fundamentos</p>
-          <h2 class="section-title">Base técnica simplificada</h2>
-          <p class="section-desc">Conceitos essenciais para usar os cálculos com segurança e consistência.</p>
-        </div>
-
-        <div class="info-grid">
-          <article class="simple-card">
-            <h3>TMB (Mifflin-St Jeor)</h3>
-            <ul>
-              <li>Mulheres: (10 × peso) + (6,25 × altura) − (5 × idade) − 161</li>
-              <li>Homens: (10 × peso) + (6,25 × altura) − (5 × idade) + 5</li>
-              <li>TMB é o ponto de partida, não a meta final.</li>
-            </ul>
+      <!-- REGRAS -->
+      <section class="isec wrap" id="regras" aria-labelledby="reg-t" style="padding-top:0;border-top:none">
+        <p class="sec-ey">Execução</p>
+        <h2 class="sec-t" id="reg-t">Resultado vem da consistência</h2>
+        <p class="sec-d">Os números são o ponto de partida. O que importa é a aplicação consistente.</p>
+        <div class="rcards">
+          <article class="rcard">
+            <div class="rcard-n">01</div>
+            <h3 class="rcard-t">Registro diário</h3>
+            <p class="rcard-d">Pesar e anotar o que come reduz margem de erro e acelera ajustes reais.</p>
           </article>
-          <article class="simple-card">
-            <h3>GET</h3>
-            <ul>
-              <li>GET = TMB × fator de atividade.</li>
-              <li>Representa calorias para manutenção do peso.</li>
-              <li>A partir dele você cria déficit ou superávit.</li>
-            </ul>
+          <article class="rcard">
+            <div class="rcard-n">02</div>
+            <h3 class="rcard-t">Hidratação</h3>
+            <p class="rcard-d">35–50 ml/kg por dia, ajustando conforme intensidade do treino e clima.</p>
           </article>
-          <article class="simple-card">
-            <h3>Macros</h3>
-            <ul>
-              <li>Proteína: 4 kcal/g</li>
-              <li>Carboidrato: 4 kcal/g</li>
-              <li>Gordura: 9 kcal/g</li>
-            </ul>
+          <article class="rcard">
+            <div class="rcard-n">03</div>
+            <h3 class="rcard-t">Sono de qualidade</h3>
+            <p class="rcard-d">7–9 horas por noite melhora recuperação muscular, fome e performance.</p>
+          </article>
+          <article class="rcard">
+            <div class="rcard-n">04</div>
+            <h3 class="rcard-t">Reavaliação periódica</h3>
+            <p class="rcard-d">Reavalie dados e ajuste metas a cada 2–4 semanas para manter progresso.</p>
           </article>
         </div>
       </section>
 
-      <section class="section container" id="regras">
-        <div class="section-head">
-          <p class="kicker">Regras de execução</p>
-          <h2 class="section-title">Resultado vem da consistência</h2>
-          <p class="section-desc">Use os números como guia, acompanhe e ajuste periodicamente.</p>
-        </div>
-
-        <div class="rule-grid">
-          <article class="simple-card">
-            <h3>Registro diário</h3>
-            <p>Pesar e anotar reduz erro e acelera ajustes.</p>
-          </article>
-          <article class="simple-card">
-            <h3>Hidratação</h3>
-            <p>35–50 ml/kg por dia, conforme treino e clima.</p>
-          </article>
-          <article class="simple-card">
-            <h3>Sono</h3>
-            <p>Dormir bem melhora recuperação, fome e performance.</p>
-          </article>
-          <article class="simple-card">
-            <h3>Ajustes</h3>
-            <p>Reavalie dados e metas a cada 2–4 semanas.</p>
-          </article>
-        </div>
-      </section>
     </main>
 
-    <footer class="footer">
-      <div class="container">
-        GN TEAM · Blueprint Metabólico — conteúdo educativo. Para prescrição individual, consulte profissional habilitado.
+    <!-- FOOTER -->
+    <footer class="ftr">
+      <div class="wrap ftr-in">
+        <div class="ftr-b"><span class="ac">GN</span> TEAM · Blueprint Metabólico</div>
+        <p class="ftr-d">Conteúdo com finalidade exclusivamente educativa e informativa. Não substitui consulta, avaliação ou prescrição de nutricionista habilitado.</p>
       </div>
     </footer>
 
+    <!-- Toast -->
+    <div class="toast" id="toast" hidden role="status" aria-live="polite">
+      <span id="toast-msg"></span>
+    </div>
+
     <script>
-      const qs = (id) => document.getElementById(id);
-      let macroChartInstance = null;
-      const MIFFLIN_WEIGHT_FACTOR = 10;
-      const MIFFLIN_HEIGHT_FACTOR = 6.25;
-      const MIFFLIN_AGE_FACTOR = 5;
-      const MALE_OFFSET = 5;
-      const FEMALE_OFFSET = 161;
-      const KCAL_PER_GRAM_PROTEIN = 4;
-      const KCAL_PER_GRAM_CARB = 4;
-      const KCAL_PER_GRAM_FAT = 9;
+      'use strict';
 
-      const goalMap = {
-        cut: { pct: -0.2, text: "Déficit moderado (10–25%) para emagrecimento." },
-        recomp: { pct: -0.1, text: "Manutenção ou déficit leve (~10%) para recomposição / falso magro." },
-        bulk: { pct: 0.1, text: "Superávit controlado (5–15%) para hipertrofia." },
+      /* --- Constants --- */
+      const KCAL = { P: 4, C: 4, F: 9 };
+      const MF   = { W: 10, H: 6.25, A: 5, MALE: 5, FEMALE: 161 };
+      const GOALS = {
+        cut:   { pct: -.2,  icon: '🔥', label: 'Emagrecimento', desc: 'Déficit de ~20% abaixo do GET para perda de gordura consistente.' },
+        recomp:{ pct: -.1,  icon: '⚖️', label: 'Recomposição',  desc: 'Déficit leve de ~10% para recomposição corporal sem perder massa.' },
+        bulk:  { pct:  .10, icon: '💪', label: 'Hipertrofia',   desc: 'Superávit controlado de ~10% acima do GET para ganho de massa.' },
       };
+      const SK = 'gnteam-v2';
 
-      const fmt = (value, digits = 0) =>
-        Number.isFinite(value)
-          ? value.toLocaleString("pt-BR", {
-              minimumFractionDigits: digits,
-              maximumFractionDigits: digits,
-            })
-          : "—";
+      /* --- State --- */
+      const S = { step:1, sex:null, age:null, weight:null, height:null,
+                  activity:null, goal:null, tmb:null, tdee:null, targetKcal:null,
+                  protKg:2.0, fatKg:0.8, macros:null };
 
-      const setError = (id, hasError) => {
-        const el = qs(id);
-        if (!el) return;
-        el.classList.toggle("error", hasError);
-      };
+      /* --- Helpers --- */
+      const $  = id => document.getElementById(id);
+      const fmt = (v, d=0) => Number.isFinite(v) ? v.toLocaleString('pt-BR',{minimumFractionDigits:d,maximumFractionDigits:d}) : '—';
 
-      function calcTmbGet() {
-        qs("c1-error").classList.add("hidden");
+      let toastT = null;
+      function toast(msg) {
+        const t = $('toast'); $('toast-msg').textContent = msg;
+        t.hidden = false; clearTimeout(toastT);
+        toastT = setTimeout(() => t.hidden = true, 3000);
+      }
 
-        const sex = qs("c1-sex").value;
-        const age = Number.parseInt(qs("c1-age").value, 10);
-        const weight = Number.parseFloat(qs("c1-weight").value);
-        const height = Number.parseInt(qs("c1-height").value, 10);
-        const activity = Number.parseFloat(qs("c1-activity").value);
-        const goal = qs("c1-goal").value;
-
-        let valid = true;
-        [
-          { id: "c1-sex", bad: !sex },
-          { id: "c1-age", bad: !Number.isFinite(age) || age < 10 || age > 100 },
-          { id: "c1-weight", bad: !Number.isFinite(weight) || weight < 30 || weight > 300 },
-          { id: "c1-height", bad: !Number.isFinite(height) || height < 120 || height > 230 },
-          { id: "c1-activity", bad: !Number.isFinite(activity) || activity < 1.1 || activity > 2 },
-          { id: "c1-goal", bad: !goal },
-        ].forEach(({ id, bad }) => {
-          setError(id, bad);
-          if (bad) valid = false;
-        });
-
-        if (!valid) {
-          qs("c1-error").textContent = "Preencha todos os campos com valores válidos.";
-          qs("c1-error").classList.remove("hidden");
-          qs("c1-results").classList.add("hidden");
-          return;
+      /* --- Step indicator --- */
+      function updateSI(to) {
+        for (let i=1; i<=5; i++) {
+          const el = $(`si-${i}`); if (!el) continue;
+          el.classList.remove('active','done');
+          if (i < to) el.classList.add('done');
+          else if (i === to) el.classList.add('active');
         }
-
-        const baseTmb = MIFFLIN_WEIGHT_FACTOR * weight + MIFFLIN_HEIGHT_FACTOR * height - MIFFLIN_AGE_FACTOR * age;
-        const tmb = sex === "M" ? baseTmb + MALE_OFFSET : baseTmb - FEMALE_OFFSET;
-        const get = tmb * activity;
-        const target = Math.round(get * (1 + goalMap[goal].pct));
-
-        qs("r-tmb").textContent = fmt(Math.round(tmb));
-        qs("r-get").textContent = fmt(Math.round(get));
-        qs("r-target").textContent = fmt(target);
-        qs("r-goal-text").textContent = goalMap[goal].text;
-        qs("c1-results").classList.remove("hidden");
-
-        qs("c2-kcal").value = target;
-        qs("c2-weight").value = weight;
+        for (let i=1; i<=4; i++) {
+          const l = $(`sl-${i}`); if (l) l.classList.toggle('done', i < to);
+        }
       }
 
-      function resetTmbGet() {
-        ["c1-sex", "c1-age", "c1-weight", "c1-height", "c1-activity", "c1-goal"].forEach((id) => {
-          const el = qs(id);
-          if (el.tagName === "SELECT") {
-            el.selectedIndex = 0;
-          } else {
-            el.value = "";
-          }
-          setError(id, false);
-        });
-
-        ["r-tmb", "r-get", "r-target"].forEach((id) => {
-          qs(id).textContent = "—";
-        });
-        qs("r-goal-text").textContent = "";
-        qs("c1-error").classList.add("hidden");
-        qs("c1-results").classList.add("hidden");
+      /* --- Navigate --- */
+      function goTo(n, dir='fwd') {
+        const prev = $(`step-${S.step}`), next = $(`step-${n}`);
+        prev.classList.add('hidden'); prev.classList.remove('a-in','a-bk');
+        next.classList.remove('hidden','a-in','a-bk');
+        void next.offsetWidth;
+        next.classList.add(dir==='fwd' ? 'a-in' : 'a-bk');
+        S.step = n; updateSI(n); next.focus();
+        window.scrollTo({ top: $('wizard').offsetTop - 80, behavior:'smooth' });
       }
 
+      /* --- Validation --- */
+      function setErr(id, show, msg) {
+        const e=$(`err-${id}`); if(e){ if(msg) e.textContent=msg; e.classList.toggle('hidden',!show); }
+        const i=$(id)||document.querySelector(`[name="${id}"]`);
+        if(i && i.type!=='radio') i.classList.toggle('err',show);
+      }
+      function clr(ids) { ids.forEach(id=>setErr(id,false)); }
+
+      function v1() {
+        let ok=true; clr(['sex','age','weight','height']);
+        if(!document.querySelector('[name="sex"]:checked'))             { setErr('sex',true);    ok=false; }
+        const a=Number($('age').value);
+        if(!a||a<10||a>100)                                            { setErr('age',true);    ok=false; }
+        const w=Number($('weight').value);
+        if(!w||w<30||w>300)                                            { setErr('weight',true); ok=false; }
+        const h=Number($('height').value);
+        if(!h||h<120||h>230)                                           { setErr('height',true); ok=false; }
+        return ok;
+      }
+      function v2() {
+        let ok=true; clr(['activity','goal']);
+        if(!document.querySelector('[name="activity"]:checked')) { setErr('activity',true); ok=false; }
+        if(!document.querySelector('[name="goal"]:checked'))     { setErr('goal',true);     ok=false; }
+        return ok;
+      }
+      function v4() {
+        let ok=true; clr(['prot','fat']);
+        const p=Number($('prot-kg').value), f=Number($('fat-kg').value);
+        if(!p||p<.5||p>3.5) { setErr('prot',true); ok=false; }
+        if(!f||f<.4||f>2)   { setErr('fat',true);  ok=false; }
+        return ok;
+      }
+
+      /* --- Calc --- */
+      function calcMetab() {
+        const {sex,age,weight,height,activity,goal} = S;
+        const base = MF.W*weight + MF.H*height - MF.A*age;
+        S.tmb = Math.round(sex==='M' ? base+MF.MALE : base-MF.FEMALE);
+        S.tdee = Math.round(S.tmb * activity);
+        S.targetKcal = Math.round(S.tdee * (1 + GOALS[goal].pct));
+      }
       function calcMacros() {
-        qs("c2-error").classList.add("hidden");
-
-        const kcal = Number.parseFloat(qs("c2-kcal").value);
-        const weight = Number.parseFloat(qs("c2-weight").value);
-        const protKg = Number.parseFloat(qs("c2-prot").value);
-        const fatKg = Number.parseFloat(qs("c2-fat").value);
-
-        let valid = true;
-        [
-          { id: "c2-kcal", bad: !Number.isFinite(kcal) || kcal < 1000 || kcal > 7000 },
-          { id: "c2-weight", bad: !Number.isFinite(weight) || weight < 30 || weight > 300 },
-          { id: "c2-prot", bad: !Number.isFinite(protKg) || protKg < 0.5 || protKg > 3.5 },
-          { id: "c2-fat", bad: !Number.isFinite(fatKg) || fatKg < 0.4 || fatKg > 2 },
-        ].forEach(({ id, bad }) => {
-          setError(id, bad);
-          if (bad) valid = false;
-        });
-
-        if (!valid) {
-          qs("c2-error").textContent = "Confira os campos destacados: valores fora da faixa permitida.";
-          qs("c2-error").classList.remove("hidden");
-          qs("c2-results").classList.add("hidden");
-          return;
-        }
-
-        const protG = Math.round(weight * protKg);
-        const fatG = Math.round(weight * fatKg);
-        const protKcal = protG * KCAL_PER_GRAM_PROTEIN;
-        const fatKcal = fatG * KCAL_PER_GRAM_FAT;
-        const carbKcal = kcal - protKcal - fatKcal;
-
-        if (carbKcal < 0) {
-          qs("c2-error").textContent = "Carboidratos ficaram negativos. Aumente calorias ou reduza proteína/gordura.";
-          qs("c2-error").classList.remove("hidden");
-          qs("c2-results").classList.add("hidden");
-          return;
-        }
-
-        const carbG = Math.round(carbKcal / KCAL_PER_GRAM_CARB);
-        const totalKcal = protKcal + fatKcal + carbKcal;
-
-        const pctProt = ((protKcal / totalKcal) * 100).toFixed(1);
-        const pctCarb = ((carbKcal / totalKcal) * 100).toFixed(1);
-        const pctFat = ((fatKcal / totalKcal) * 100).toFixed(1);
-
-        qs("res-kcal").textContent = fmt(kcal);
-        qs("res-prot").textContent = fmt(protG);
-        qs("res-fat").textContent = fmt(fatG);
-        qs("res-carb").textContent = fmt(carbG);
-
-        qs("pct-prot").textContent = `${pctProt}%`;
-        qs("pct-carb").textContent = `${pctCarb}%`;
-        qs("pct-fat").textContent = `${pctFat}%`;
-
-        qs("bar-prot").style.width = `${pctProt}%`;
-        qs("bar-carb").style.width = `${pctCarb}%`;
-        qs("bar-fat").style.width = `${pctFat}%`;
-
-        qs("chart-center-kcal").textContent = fmt(kcal);
-        renderMacroChart([protKcal, carbKcal, fatKcal]);
-
-        qs("c2-results").classList.remove("hidden");
+        const {weight,targetKcal,protKg,fatKg} = S;
+        const pG=Math.round(weight*protKg), fG=Math.round(weight*fatKg);
+        const pK=pG*KCAL.P, fK=fG*KCAL.F, cK=targetKcal-pK-fK;
+        const cG=Math.max(0,Math.round(cK/KCAL.C));
+        const tot=pK+fK+Math.max(0,cK);
+        S.macros = {
+          pG, fG, cG, cK,
+          pPct: tot ? +((pK/tot)*100).toFixed(1) : 0,
+          cPct: tot ? +((Math.max(0,cK)/tot)*100).toFixed(1) : 0,
+          fPct: tot ? +((fK/tot)*100).toFixed(1) : 0,
+          tot: Math.round(tot),
+        };
       }
 
-      function resetMacros() {
-        qs("c2-kcal").value = "";
-        qs("c2-weight").value = "";
-        qs("c2-prot").value = "2.0";
-        qs("c2-fat").value = "0.8";
+      /* --- Render step 3 --- */
+      function renderStep3() {
+        calcMetab();
+        $('r3-tmb').textContent = fmt(S.tmb);
+        $('r3-get').textContent = fmt(S.tdee);
+        $('r3-target').textContent = fmt(S.targetKcal);
+        $('target-kcal').value = S.targetKcal;
+        const cfg=GOALS[S.goal], diff=Math.abs(S.targetKcal-S.tdee),
+              dir=S.targetKcal<S.tdee?'abaixo':'acima';
+        $('r3-band-ic').textContent = cfg.icon;
+        $('r3-band-t').innerHTML =
+          `<strong>${cfg.label}:</strong> ${cfg.desc} Isso representa <strong>${fmt(diff)} kcal ${dir}</strong> do seu GET.`;
+      }
 
-        ["c2-kcal", "c2-weight", "c2-prot", "c2-fat"].forEach((id) => setError(id, false));
+      /* --- Preview --- */
+      function preview() {
+        const w=S.weight, k=Number($('target-kcal')?.value)||S.targetKcal,
+              p=Number($('prot-kg').value), f=Number($('fat-kg').value);
+        if(!w||!k||!p||!f) return;
+        const pG=Math.round(w*p), fG=Math.round(w*f), cK=k-pG*KCAL.P-fG*KCAL.F, cG=Math.round(cK/KCAL.C);
+        const el=$('macro-preview-txt');
+        if(cK<0) { el.innerHTML='<span style="color:#ef4444">⚠️ Carboidratos negativos — reduza proteína ou gordura.</span>'; return; }
+        el.innerHTML=`🥩 <strong>${fmt(pG)}g</strong> proteína · 🍚 <strong>${fmt(cG)}g</strong> carboidrato · 🥑 <strong>${fmt(fG)}g</strong> gordura`;
+      }
 
-        ["res-kcal", "res-prot", "res-fat", "res-carb", "pct-prot", "pct-carb", "pct-fat", "chart-center-kcal"].forEach(
-          (id) => {
-            qs(id).textContent = "—";
+      /* --- Chart --- */
+      let chartI=null;
+      function renderChart(data) {
+        if(typeof Chart==='undefined') return;
+        const ctx=$('macroChart').getContext('2d');
+        if(chartI) chartI.destroy();
+        chartI=new Chart(ctx,{
+          type:'doughnut',
+          data:{ labels:['Proteína','Carboidrato','Gordura'], datasets:[{ data, backgroundColor:['#dc2626','#d97706','#7c3aed'], borderColor:'transparent', borderWidth:0 }] },
+          options:{ cutout:'70%', plugins:{ legend:{display:false}, tooltip:{enabled:false} }, animation:{duration:600} },
+        });
+      }
+
+      /* --- Tips --- */
+      function buildTips(cK) {
+        const {goal,weight,targetKcal,tdee}=S, cfg=GOALS[goal],
+              wMin=fmt(Math.round(weight*35)), wMax=fmt(Math.round(weight*45)),
+              diff=fmt(Math.abs(targetKcal-tdee));
+        const all=[
+          {i:'💧',t:`<strong>Hidratação:</strong> Beba pelo menos <strong>${wMin}–${wMax} ml/dia</strong> de água.`},
+          {i:cfg.icon,t:`<strong>${cfg.label}:</strong> ${cfg.desc}`},
+          {i:'📅',t:`<strong>Reavalie em 2–4 semanas</strong> e ajuste as calorias conforme a evolução do peso.`},
+          {i:'🌙',t:`<strong>Sono:</strong> 7–9h por noite é fundamental para recuperação e controle hormonal.`},
+        ];
+        if(goal==='cut')   all.push({i:'🥩',t:`<strong>Alta proteína:</strong> Ingestão elevada de proteína preserva massa muscular no déficit.`});
+        if(goal==='bulk')  all.push({i:'🍽️',t:`<strong>Superávit de ${diff} kcal:</strong> Evite excessos — ganho limpo minimiza acúmulo de gordura.`});
+        if(goal==='recomp')all.push({i:'⚖️',t:`<strong>Paciência:</strong> Recomposição é mais lenta — foque em consistência e progressão no treino.`});
+        if(cK<0)           all.unshift({i:'⚠️',t:`<strong>Atenção:</strong> Carboidratos negativos. Reduza proteína/gordura ou aumente as calorias alvo.`});
+        $('diag-tips').innerHTML=all.slice(0,4).map(o=>`<div class="tip"><span class="tip-i">${o.i}</span><p class="tip-t">${o.t}</p></div>`).join('');
+      }
+
+      /* --- Render diagnosis --- */
+      function renderDiag() {
+        const cust=Number($('target-kcal').value);
+        if(cust>=1000&&cust<=7000) S.targetKcal=cust;
+        S.protKg=Number($('prot-kg').value); S.fatKg=Number($('fat-kg').value);
+        calcMacros();
+        const {sex,age,weight,height,goal,tmb,tdee,targetKcal,macros}=S,
+              {pG,fG,cG,pPct,cPct,fPct,cK}=macros, cfg=GOALS[goal];
+        $('d-profile').textContent=`${sex==='M'?'Masculino':'Feminino'} · ${age} anos · ${fmt(weight,1)} kg · ${height} cm · ${cfg.label}`;
+        $('d-tmb').textContent=fmt(tmb); $('d-get').textContent=fmt(tdee); $('d-target').textContent=fmt(targetKcal);
+        $('d-prot').textContent=fmt(pG); $('d-pct-prot').textContent=pPct;
+        $('d-carb').textContent=fmt(cG); $('d-pct-carb').textContent=cPct;
+        $('d-fat').textContent=fmt(fG);  $('d-pct-fat').textContent=fPct;
+        requestAnimationFrame(()=>{
+          $('dbar-prot').style.width=`${pPct}%`;
+          $('dbar-carb').style.width=`${cPct}%`;
+          $('dbar-fat').style.width=`${fPct}%`;
+        });
+        $('ds-kcal').textContent=fmt(targetKcal); $('ds-prot').textContent=fmt(pG);
+        $('ds-carb').textContent=fmt(cG); $('ds-fat').textContent=fmt(fG);
+        $('d-chart-kcal').textContent=fmt(targetKcal);
+        renderChart([pG*KCAL.P, cG*KCAL.C, fG*KCAL.F]);
+        buildTips(cK);
+      }
+
+      /* --- Copy --- */
+      function copyRes() {
+        const {sex,age,weight,height,goal,tmb,tdee,targetKcal,macros}=S,
+              {pG,fG,cG}=macros, cfg=GOALS[goal];
+        const txt=[
+          '📊 GN TEAM · Blueprint Metabólico',
+          '─────────────────────────────────',
+          `Perfil: ${sex==='M'?'Masculino':'Feminino'}, ${age} anos, ${fmt(weight,1)} kg, ${height} cm`,
+          `Objetivo: ${cfg.label}`,
+          '',
+          `TMB:             ${fmt(tmb)} kcal/dia`,
+          `GET:             ${fmt(tdee)} kcal/dia`,
+          `Meta calórica:   ${fmt(targetKcal)} kcal/dia`,
+          '',
+          'Macronutrientes:',
+          `  Proteína:    ${fmt(pG)} g/dia`,
+          `  Carboidrato: ${fmt(cG)} g/dia`,
+          `  Gordura:     ${fmt(fG)} g/dia`,
+          '─────────────────────────────────',
+          'Conteúdo educativo · GN TEAM',
+        ].join('\n');
+        navigator.clipboard.writeText(txt).then(()=>toast('📋 Resultado copiado!')).catch(()=>toast('❌ Não foi possível copiar.'));
+      }
+
+      /* --- Storage --- */
+      function save() {
+        try { localStorage.setItem(SK,JSON.stringify({sex:S.sex,age:S.age,weight:S.weight,height:S.height,activity:S.activity,goal:S.goal,protKg:S.protKg,fatKg:S.fatKg})); } catch{}
+      }
+      function load() {
+        try {
+          const d=JSON.parse(localStorage.getItem(SK)||'null'); if(!d) return;
+          if(d.sex)     { const r=document.querySelector(`[name="sex"][value="${d.sex}"]`);      if(r) r.checked=true; }
+          if(d.age)     $('age').value=d.age;
+          if(d.weight)  $('weight').value=d.weight;
+          if(d.height)  $('height').value=d.height;
+          if(d.activity){ const r=document.querySelector(`[name="activity"][value="${d.activity}"]`); if(r) r.checked=true; }
+          if(d.goal)    { const r=document.querySelector(`[name="goal"][value="${d.goal}"]`);     if(r) r.checked=true; }
+          if(d.protKg)  { $('prot-kg').value=d.protKg; $('prot-range').value=d.protKg; }
+          if(d.fatKg)   { $('fat-kg').value=d.fatKg;   $('fat-range').value=d.fatKg; }
+        } catch{}
+      }
+
+      /* --- Slider sync --- */
+      function sync(rId,iId) {
+        const r=$(rId),i=$(iId);
+        r.addEventListener('input',()=>{i.value=r.value;preview();});
+        i.addEventListener('input',()=>{r.value=i.value;preview();});
+      }
+
+      /* --- Restart --- */
+      function restart() {
+        document.querySelectorAll('[name="sex"],[name="activity"],[name="goal"]').forEach(r=>r.checked=false);
+        ['age','weight','height'].forEach(id=>{const e=$(id);if(e)e.value='';});
+        $('prot-kg').value=2.0; $('prot-range').value=2.0;
+        $('fat-kg').value=0.8;  $('fat-range').value=0.8;
+        Object.assign(S,{sex:null,age:null,weight:null,height:null,activity:null,goal:null,tmb:null,tdee:null,targetKcal:null,protKg:2.0,fatKg:0.8,macros:null});
+        if(chartI){chartI.destroy();chartI=null;}
+        goTo(1,'bk');
+      }
+
+      /* --- Init --- */
+      function init() {
+        load();
+
+        $('btn-1-next').addEventListener('click',()=>{
+          if(!v1()) return;
+          S.sex=document.querySelector('[name="sex"]:checked').value;
+          S.age=Number($('age').value); S.weight=Number($('weight').value); S.height=Number($('height').value);
+          goTo(2);
+        });
+
+        $('btn-2-back').addEventListener('click',()=>goTo(1,'bk'));
+        $('btn-2-next').addEventListener('click',()=>{
+          if(!v2()) return;
+          S.activity=Number(document.querySelector('[name="activity"]:checked').value);
+          S.goal=document.querySelector('[name="goal"]:checked').value;
+          renderStep3(); goTo(3);
+        });
+
+        $('btn-3-back').addEventListener('click',()=>goTo(2,'bk'));
+        $('btn-3-next').addEventListener('click',()=>{
+          const c=Number($('target-kcal').value);
+          if(c>=1000&&c<=7000) S.targetKcal=c;
+          preview(); goTo(4);
+        });
+
+        $('btn-4-back').addEventListener('click',()=>goTo(3,'bk'));
+        $('btn-4-next').addEventListener('click',()=>{
+          if(!v4()) return;
+          const pG=Math.round(S.weight*Number($('prot-kg').value)), fG=Math.round(S.weight*Number($('fat-kg').value));
+          if(S.targetKcal-pG*KCAL.P-fG*KCAL.F<0){
+            setErr('prot',true,'Carboidratos negativos — reduza proteína ou gordura.');
+            setErr('fat',true,''); return;
           }
-        );
-
-        ["bar-prot", "bar-carb", "bar-fat"].forEach((id) => {
-          qs(id).style.width = "0%";
+          renderDiag(); save(); goTo(5);
         });
 
-        qs("c2-error").classList.add("hidden");
-        qs("c2-results").classList.add("hidden");
+        $('btn-5-back').addEventListener('click',()=>goTo(4,'bk'));
+        $('btn-copy').addEventListener('click',copyRes);
+        $('btn-restart').addEventListener('click',restart);
+        sync('prot-range','prot-kg');
+        sync('fat-range','fat-kg');
 
-        if (macroChartInstance) {
-          macroChartInstance.destroy();
-          macroChartInstance = null;
-        }
-      }
-
-      function renderMacroChart(data) {
-        const ctx = qs("macroChart").getContext("2d");
-
-        if (macroChartInstance) {
-          macroChartInstance.destroy();
-        }
-
-        macroChartInstance = new Chart(ctx, {
-          type: "doughnut",
-          data: {
-            labels: ["Proteína", "Carboidrato", "Gordura"],
-            datasets: [
-              {
-                data,
-                backgroundColor: ["#e63946", "#f0d8d8", "#8b4040"],
-                borderColor: "#0a0000",
-                borderWidth: 3,
-              },
-            ],
-          },
-          options: {
-            cutout: "68%",
-            plugins: { legend: { display: false } },
-          },
+        document.querySelector('a[href="#wizard"]')?.addEventListener('click',e=>{
+          e.preventDefault(); $('wizard').scrollIntoView({behavior:'smooth',block:'start'});
         });
       }
+
+      document.addEventListener('DOMContentLoaded', init);
     </script>
   </body>
 </html>
