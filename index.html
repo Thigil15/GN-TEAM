@@ -803,12 +803,12 @@
         recomp:{ pct: -.1,  icon: '⚖️', label: 'Recomposição',  desc: 'Déficit leve de ~10% para recomposição corporal sem perder massa.' },
         bulk:  { pct:  .10, icon: '💪', label: 'Hipertrofia',   desc: 'Superávit controlado de ~10% acima do GET para ganho de massa.' },
       };
-      const SK = 'gnteam-v2';
+      const STORAGE_KEY = 'gnteam-v2';
 
       /* --- State --- */
-      const S = { step:1, sex:null, age:null, weight:null, height:null,
-                  activity:null, goal:null, tmb:null, tdee:null, targetKcal:null,
-                  protKg:2.0, fatKg:0.8, macros:null };
+      const state = { step:1, sex:null, age:null, weight:null, height:null,
+                      activity:null, goal:null, tmb:null, tdee:null, targetKcal:null,
+                      protKg:2.0, fatKg:0.8, macros:null };
 
       /* --- Helpers --- */
       const $  = id => document.getElementById(id);
@@ -836,12 +836,13 @@
 
       /* --- Navigate --- */
       function goTo(n, dir='fwd') {
-        const prev = $(`step-${S.step}`), next = $(`step-${n}`);
+        const prev = $(`step-${state.step}`), next = $(`step-${n}`);
         prev.classList.add('hidden'); prev.classList.remove('a-in','a-bk');
         next.classList.remove('hidden','a-in','a-bk');
+        // Force DOM reflow so CSS transition restarts after class removal
         void next.offsetWidth;
         next.classList.add(dir==='fwd' ? 'a-in' : 'a-bk');
-        S.step = n; updateSI(n); next.focus();
+        state.step = n; updateSI(n); next.focus();
         window.scrollTo({ top: $('wizard').offsetTop - 80, behavior:'smooth' });
       }
 
@@ -851,10 +852,10 @@
         const i=$(id)||document.querySelector(`[name="${id}"]`);
         if(i && i.type!=='radio') i.classList.toggle('err',show);
       }
-      function clr(ids) { ids.forEach(id=>setErr(id,false)); }
+      function clearErrors(ids) { ids.forEach(id=>setErr(id,false)); }
 
       function v1() {
-        let ok=true; clr(['sex','age','weight','height']);
+        let ok=true; clearErrors(['sex','age','weight','height']);
         if(!document.querySelector('[name="sex"]:checked'))             { setErr('sex',true);    ok=false; }
         const a=Number($('age').value);
         if(!a||a<10||a>100)                                            { setErr('age',true);    ok=false; }
@@ -865,13 +866,13 @@
         return ok;
       }
       function v2() {
-        let ok=true; clr(['activity','goal']);
+        let ok=true; clearErrors(['activity','goal']);
         if(!document.querySelector('[name="activity"]:checked')) { setErr('activity',true); ok=false; }
         if(!document.querySelector('[name="goal"]:checked'))     { setErr('goal',true);     ok=false; }
         return ok;
       }
       function v4() {
-        let ok=true; clr(['prot','fat']);
+        let ok=true; clearErrors(['prot','fat']);
         const p=Number($('prot-kg').value), f=Number($('fat-kg').value);
         if(!p||p<.5||p>3.5) { setErr('prot',true); ok=false; }
         if(!f||f<.4||f>2)   { setErr('fat',true);  ok=false; }
@@ -880,19 +881,19 @@
 
       /* --- Calc --- */
       function calcMetab() {
-        const {sex,age,weight,height,activity,goal} = S;
+        const {sex,age,weight,height,activity,goal} = state;
         const base = MF.W*weight + MF.H*height - MF.A*age;
-        S.tmb = Math.round(sex==='M' ? base+MF.MALE : base-MF.FEMALE);
-        S.tdee = Math.round(S.tmb * activity);
-        S.targetKcal = Math.round(S.tdee * (1 + GOALS[goal].pct));
+        state.tmb = Math.round(sex==='M' ? base+MF.MALE : base-MF.FEMALE);
+        state.tdee = Math.round(state.tmb * activity);
+        state.targetKcal = Math.round(state.tdee * (1 + GOALS[goal].pct));
       }
       function calcMacros() {
-        const {weight,targetKcal,protKg,fatKg} = S;
+        const {weight,targetKcal,protKg,fatKg} = state;
         const pG=Math.round(weight*protKg), fG=Math.round(weight*fatKg);
         const pK=pG*KCAL.P, fK=fG*KCAL.F, cK=targetKcal-pK-fK;
         const cG=Math.max(0,Math.round(cK/KCAL.C));
         const tot=pK+fK+Math.max(0,cK);
-        S.macros = {
+        state.macros = {
           pG, fG, cG, cK,
           pPct: tot ? +((pK/tot)*100).toFixed(1) : 0,
           cPct: tot ? +((Math.max(0,cK)/tot)*100).toFixed(1) : 0,
@@ -904,12 +905,12 @@
       /* --- Render step 3 --- */
       function renderStep3() {
         calcMetab();
-        $('r3-tmb').textContent = fmt(S.tmb);
-        $('r3-get').textContent = fmt(S.tdee);
-        $('r3-target').textContent = fmt(S.targetKcal);
-        $('target-kcal').value = S.targetKcal;
-        const cfg=GOALS[S.goal], diff=Math.abs(S.targetKcal-S.tdee),
-              dir=S.targetKcal<S.tdee?'abaixo':'acima';
+        $('r3-tmb').textContent = fmt(state.tmb);
+        $('r3-get').textContent = fmt(state.tdee);
+        $('r3-target').textContent = fmt(state.targetKcal);
+        $('target-kcal').value = state.targetKcal;
+        const cfg=GOALS[state.goal], diff=Math.abs(state.targetKcal-state.tdee),
+              dir=state.targetKcal<state.tdee?'abaixo':'acima';
         $('r3-band-ic').textContent = cfg.icon;
         $('r3-band-t').innerHTML =
           `<strong>${cfg.label}:</strong> ${cfg.desc} Isso representa <strong>${fmt(diff)} kcal ${dir}</strong> do seu GET.`;
@@ -917,7 +918,7 @@
 
       /* --- Preview --- */
       function preview() {
-        const w=S.weight, k=Number($('target-kcal')?.value)||S.targetKcal,
+        const w=state.weight, k=Number($('target-kcal')?.value)||state.targetKcal,
               p=Number($('prot-kg').value), f=Number($('fat-kg').value);
         if(!w||!k||!p||!f) return;
         const pG=Math.round(w*p), fG=Math.round(w*f), cK=k-pG*KCAL.P-fG*KCAL.F, cG=Math.round(cK/KCAL.C);
@@ -941,7 +942,7 @@
 
       /* --- Tips --- */
       function buildTips(cK) {
-        const {goal,weight,targetKcal,tdee}=S, cfg=GOALS[goal],
+        const {goal,weight,targetKcal,tdee}=state, cfg=GOALS[goal],
               wMin=fmt(Math.round(weight*35)), wMax=fmt(Math.round(weight*45)),
               diff=fmt(Math.abs(targetKcal-tdee));
         const all=[
@@ -960,10 +961,10 @@
       /* --- Render diagnosis --- */
       function renderDiag() {
         const cust=Number($('target-kcal').value);
-        if(cust>=1000&&cust<=7000) S.targetKcal=cust;
-        S.protKg=Number($('prot-kg').value); S.fatKg=Number($('fat-kg').value);
+        if(cust>=1000&&cust<=7000) state.targetKcal=cust;
+        state.protKg=Number($('prot-kg').value); state.fatKg=Number($('fat-kg').value);
         calcMacros();
-        const {sex,age,weight,height,goal,tmb,tdee,targetKcal,macros}=S,
+        const {sex,age,weight,height,goal,tmb,tdee,targetKcal,macros}=state,
               {pG,fG,cG,pPct,cPct,fPct,cK}=macros, cfg=GOALS[goal];
         $('d-profile').textContent=`${sex==='M'?'Masculino':'Feminino'} · ${age} anos · ${fmt(weight,1)} kg · ${height} cm · ${cfg.label}`;
         $('d-tmb').textContent=fmt(tmb); $('d-get').textContent=fmt(tdee); $('d-target').textContent=fmt(targetKcal);
@@ -984,7 +985,7 @@
 
       /* --- Copy --- */
       function copyRes() {
-        const {sex,age,weight,height,goal,tmb,tdee,targetKcal,macros}=S,
+        const {sex,age,weight,height,goal,tmb,tdee,targetKcal,macros}=state,
               {pG,fG,cG}=macros, cfg=GOALS[goal];
         const txt=[
           '📊 GN TEAM · Blueprint Metabólico',
@@ -1003,16 +1004,25 @@
           '─────────────────────────────────',
           'Conteúdo educativo · GN TEAM',
         ].join('\n');
-        navigator.clipboard.writeText(txt).then(()=>toast('📋 Resultado copiado!')).catch(()=>toast('❌ Não foi possível copiar.'));
+        navigator.clipboard.writeText(txt)
+          .then(()=>toast('📋 Resultado copiado!'))
+          .catch(()=>toast('❌ Não foi possível copiar. Tente em conexão HTTPS.'));
       }
 
       /* --- Storage --- */
       function save() {
-        try { localStorage.setItem(SK,JSON.stringify({sex:S.sex,age:S.age,weight:S.weight,height:S.height,activity:S.activity,goal:S.goal,protKg:S.protKg,fatKg:S.fatKg})); } catch{}
+        try {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify({
+            sex:state.sex, age:state.age, weight:state.weight, height:state.height,
+            activity:state.activity, goal:state.goal, protKg:state.protKg, fatKg:state.fatKg,
+          }));
+        } catch (err) {
+          /* localStorage may be unavailable in private browsing — fail silently */
+        }
       }
       function load() {
         try {
-          const d=JSON.parse(localStorage.getItem(SK)||'null'); if(!d) return;
+          const d=JSON.parse(localStorage.getItem(STORAGE_KEY)||'null'); if(!d) return;
           if(d.sex)     { const r=document.querySelector(`[name="sex"][value="${d.sex}"]`);      if(r) r.checked=true; }
           if(d.age)     $('age').value=d.age;
           if(d.weight)  $('weight').value=d.weight;
@@ -1021,7 +1031,9 @@
           if(d.goal)    { const r=document.querySelector(`[name="goal"][value="${d.goal}"]`);     if(r) r.checked=true; }
           if(d.protKg)  { $('prot-kg').value=d.protKg; $('prot-range').value=d.protKg; }
           if(d.fatKg)   { $('fat-kg').value=d.fatKg;   $('fat-range').value=d.fatKg; }
-        } catch{}
+        } catch (err) {
+          /* localStorage may be unavailable — fail silently */
+        }
       }
 
       /* --- Slider sync --- */
@@ -1037,7 +1049,8 @@
         ['age','weight','height'].forEach(id=>{const e=$(id);if(e)e.value='';});
         $('prot-kg').value=2.0; $('prot-range').value=2.0;
         $('fat-kg').value=0.8;  $('fat-range').value=0.8;
-        Object.assign(S,{sex:null,age:null,weight:null,height:null,activity:null,goal:null,tmb:null,tdee:null,targetKcal:null,protKg:2.0,fatKg:0.8,macros:null});
+        Object.assign(state,{sex:null,age:null,weight:null,height:null,activity:null,goal:null,
+                              tmb:null,tdee:null,targetKcal:null,protKg:2.0,fatKg:0.8,macros:null});
         if(chartI){chartI.destroy();chartI=null;}
         goTo(1,'bk');
       }
@@ -1048,31 +1061,34 @@
 
         $('btn-1-next').addEventListener('click',()=>{
           if(!v1()) return;
-          S.sex=document.querySelector('[name="sex"]:checked').value;
-          S.age=Number($('age').value); S.weight=Number($('weight').value); S.height=Number($('height').value);
+          state.sex=document.querySelector('[name="sex"]:checked').value;
+          state.age=Number($('age').value);
+          state.weight=Number($('weight').value);
+          state.height=Number($('height').value);
           goTo(2);
         });
 
         $('btn-2-back').addEventListener('click',()=>goTo(1,'bk'));
         $('btn-2-next').addEventListener('click',()=>{
           if(!v2()) return;
-          S.activity=Number(document.querySelector('[name="activity"]:checked').value);
-          S.goal=document.querySelector('[name="goal"]:checked').value;
+          state.activity=Number(document.querySelector('[name="activity"]:checked').value);
+          state.goal=document.querySelector('[name="goal"]:checked').value;
           renderStep3(); goTo(3);
         });
 
         $('btn-3-back').addEventListener('click',()=>goTo(2,'bk'));
         $('btn-3-next').addEventListener('click',()=>{
           const c=Number($('target-kcal').value);
-          if(c>=1000&&c<=7000) S.targetKcal=c;
+          if(c>=1000&&c<=7000) state.targetKcal=c;
           preview(); goTo(4);
         });
 
         $('btn-4-back').addEventListener('click',()=>goTo(3,'bk'));
         $('btn-4-next').addEventListener('click',()=>{
           if(!v4()) return;
-          const pG=Math.round(S.weight*Number($('prot-kg').value)), fG=Math.round(S.weight*Number($('fat-kg').value));
-          if(S.targetKcal-pG*KCAL.P-fG*KCAL.F<0){
+          const pG=Math.round(state.weight*Number($('prot-kg').value));
+          const fG=Math.round(state.weight*Number($('fat-kg').value));
+          if(state.targetKcal-pG*KCAL.P-fG*KCAL.F<0){
             setErr('prot',true,'Carboidratos negativos — reduza proteína ou gordura.');
             setErr('fat',true,''); return;
           }
