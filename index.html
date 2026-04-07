@@ -18,14 +18,14 @@
     <style>
       :root {
         color-scheme: dark;
-        --bg: #0a0d14;
-        --panel: #131a24;
-        --panel-2: #171f2b;
-        --border: #263042;
-        --text: #ecf1fb;
-        --muted: #8c9ab5;
-        --primary: #4f7cff;
-        --primary-strong: #3d68ea;
+        --bg: #0a0000;
+        --panel: #160000;
+        --panel-2: #1a0202;
+        --border: #3d1010;
+        --text: #f5eded;
+        --muted: #c49a9a;
+        --primary: #e63946;
+        --primary-strong: #c1121f;
         --danger: #ff6b6b;
         --radius: 14px;
       }
@@ -41,7 +41,7 @@
       body {
         margin: 0;
         font-family: "Inter", system-ui, -apple-system, sans-serif;
-        background: radial-gradient(circle at top, #111a2b 0%, var(--bg) 45%);
+        background: radial-gradient(circle at top, #1a0000 0%, var(--bg) 45%);
         color: var(--text);
         line-height: 1.6;
       }
@@ -56,8 +56,8 @@
         top: 0;
         z-index: 30;
         backdrop-filter: blur(10px);
-        background: rgb(10 13 20 / 75%);
-        border-bottom: 1px solid rgb(140 154 181 / 14%);
+        background: rgb(10 0 0 / 85%);
+        border-bottom: 1px solid rgb(180 50 50 / 20%);
       }
 
       .header-inner {
@@ -77,6 +77,28 @@
 
       .logo span {
         color: var(--primary);
+      }
+
+      .nav-notice {
+        display: flex;
+        flex-direction: column;
+        gap: 0.2rem;
+        max-width: 520px;
+        text-align: right;
+      }
+
+      .nav-notice-title {
+        font-size: 0.78rem;
+        font-weight: 800;
+        color: var(--primary);
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+      }
+
+      .nav-notice-text {
+        font-size: 0.72rem;
+        color: var(--muted);
+        line-height: 1.4;
       }
 
       .nav {
@@ -112,8 +134,8 @@
         gap: 0.4rem;
         border: 1px solid var(--border);
         border-radius: 999px;
-        color: #b2c1de;
-        background: rgb(79 124 255 / 12%);
+        color: #f0d0d0;
+        background: rgb(230 57 70 / 12%);
         font-size: 0.78rem;
         padding: 0.35rem 0.75rem;
       }
@@ -160,14 +182,14 @@
       }
 
       .btn-ghost {
-        color: #c6d5f2;
+        color: #f0d8d8;
         border: 1px solid var(--border);
         background: transparent;
       }
 
       .btn-ghost:hover,
       .btn-ghost:focus-visible {
-        border-color: #4e5f83;
+        border-color: #8b2020;
         color: var(--text);
       }
 
@@ -188,7 +210,7 @@
 
       .highlights li {
         font-size: 0.9rem;
-        color: #c6d5f2;
+        color: #f0d8d8;
       }
 
       .section {
@@ -201,7 +223,7 @@
 
       .kicker {
         margin: 0;
-        color: #9eb3dd;
+        color: #e8a0a0;
         font-size: 0.78rem;
         text-transform: uppercase;
         letter-spacing: 0.08em;
@@ -243,7 +265,7 @@
         font-size: 0.77rem;
         text-transform: uppercase;
         letter-spacing: 0.06em;
-        color: #9eb3dd;
+        color: #e8a0a0;
         font-weight: 600;
       }
 
@@ -251,8 +273,8 @@
       select,
       input {
         width: 100%;
-        background: #0f1623;
-        border: 1px solid #2b3750;
+        background: #130000;
+        border: 1px solid #3d1010;
         border-radius: 9px;
         color: var(--text);
         font-size: 0.95rem;
@@ -315,15 +337,15 @@
       }
 
       .stat {
-        background: #101827;
-        border: 1px solid #2b3750;
+        background: #150000;
+        border: 1px solid #3d1010;
         border-radius: 10px;
         padding: 0.85rem;
       }
 
       .stat h4 {
         margin: 0;
-        color: #95a7cd;
+        color: #d09090;
         font-size: 0.7rem;
         letter-spacing: 0.08em;
         text-transform: uppercase;
@@ -340,7 +362,7 @@
         display: block;
         margin-top: 0.2rem;
         font-size: 0.75rem;
-        color: #95a7cd;
+        color: #d09090;
       }
 
       .macro-layout {
@@ -366,7 +388,7 @@
       .bar-track {
         border-radius: 999px;
         height: 8px;
-        background: #27334b;
+        background: #2a0000;
         overflow: hidden;
       }
 
@@ -376,15 +398,15 @@
       }
 
       .bar-fill.protein {
-        background: #4f7cff;
+        background: #e63946;
       }
 
       .bar-fill.carb {
-        background: #c6d5f2;
+        background: #f0d8d8;
       }
 
       .bar-fill.fat {
-        background: #7f8ba4;
+        background: #8b4040;
       }
 
       .chart-wrap {
@@ -436,10 +458,10 @@
       }
 
       .footer {
-        border-top: 1px solid rgb(140 154 181 / 17%);
+        border-top: 1px solid rgb(180 50 50 / 20%);
         margin-top: 2rem;
         padding: 1.2rem 0 2rem;
-        color: #8091b6;
+        color: #c49a9a;
         font-size: 0.86rem;
         text-align: center;
       }
@@ -457,6 +479,14 @@
       }
 
       @media (max-width: 820px) {
+        .nav-notice-text {
+          display: none;
+        }
+
+        .nav-notice {
+          max-width: 50vw;
+        }
+
         .nav {
           display: flex;
           gap: 0.7rem;
@@ -490,12 +520,11 @@
   <body>
     <header class="header">
       <div class="container header-inner">
-        <a class="logo" href="#top"><span>GN</span> TEAM · Blueprint Metabólico</a>
-        <nav class="nav" aria-label="Navegação principal">
-          <a href="#calculadoras">Calculadoras</a>
-          <a href="#fundamentos">Fundamentos</a>
-          <a href="#regras">Regras</a>
-        </nav>
+        <a class="logo" href="#top"><span>GN</span> TEAM</a>
+        <div class="nav-notice" aria-label="Aviso importante">
+          <span class="nav-notice-title">⚠️ AVISO IMPORTANTE</span>
+          <span class="nav-notice-text">Este conteúdo tem finalidade exclusivamente educativa e informativa. Os cálculos, exemplos e estratégias apresentados não substituem consulta, avaliação ou acompanhamento com nutricionista, que é o profissional legalmente habilitado para prescrever planos alimentares individualizados, avaliar exames, histórico clínico e necessidades específicas.</span>
+        </div>
       </div>
     </header>
 
@@ -967,8 +996,8 @@
             datasets: [
               {
                 data,
-                backgroundColor: ["#4f7cff", "#c6d5f2", "#7f8ba4"],
-                borderColor: "#0f1623",
+                backgroundColor: ["#e63946", "#f0d8d8", "#8b4040"],
+                borderColor: "#0a0000",
                 borderWidth: 3,
               },
             ],
