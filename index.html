@@ -486,7 +486,7 @@
   <body>
     <header class="header">
       <div class="container header-inner">
-        <a class="logo" href="#top"><span>GN</span> TEAM · Blueprint</a>
+        <a class="logo" href="#top"><span>GN</span> TEAM · Blueprint Metabólico</a>
         <nav class="nav" aria-label="Navegação principal">
           <a href="#calculadoras">Calculadoras</a>
           <a href="#fundamentos">Fundamentos</a>
@@ -815,7 +815,8 @@
           return;
         }
 
-        const tmb = sex === "M" ? 10 * weight + 6.25 * height - 5 * age + 5 : 10 * weight + 6.25 * height - 5 * age - 161;
+        const baseTmb = 10 * weight + 6.25 * height - 5 * age;
+        const tmb = sex === "M" ? baseTmb + 5 : baseTmb - 161;
         const get = tmb * activity;
         const target = Math.round(get * (1 + goalMap[goal].pct));
 
