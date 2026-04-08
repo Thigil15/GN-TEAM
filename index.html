@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>GN TEAM · Blueprint Metabólico</title>
-    <meta name="description" content="Plataforma de planejamento nutricional guiada. Calcule TMB, GET e macronutrientes em um fluxo preciso e obtenha um diagnóstico personalizado ao seu objetivo." />
+    <meta name="description" content="Ferramenta educativa de cálculo metabólico. Calcule TMB, GET e macronutrientes em um fluxo guiado. Conteúdo meramente informativo — não substitui avaliação de nutricionista habilitado." />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
@@ -85,6 +85,12 @@
       .tr-item { text-align: center; }
       .tr-val { font-size: 1.1rem; font-weight: 800; color: var(--red); letter-spacing: -.02em; }
       .tr-lbl { font-size: .72rem; color: var(--muted); margin-top: .1rem; }
+      .hero-disclaimer {
+        margin-top: 1.75rem; padding: .9rem 1.25rem; max-width: 62ch; margin-inline: auto;
+        background: rgba(220,38,38,.07); border: 1px solid rgba(220,38,38,.25); border-radius: var(--r-sm);
+        font-size: .82rem; color: var(--muted); line-height: 1.6; text-align: center;
+      }
+      .hero-disclaimer strong { color: var(--text); }
       /* === Buttons === */
       .btn {
         display: inline-flex; align-items: center; justify-content: center; gap: .4rem;
@@ -342,10 +348,10 @@
       <section class="hero wrap" aria-labelledby="hero-h">
         <div class="pill">⚡ Blueprint Metabólico · v2</div>
         <h1 class="hero-h" id="hero-h">
-          Seu plano nutricional<br>em <span class="hl">5 minutos.</span>
+          Calcule seus <em>macros</em><br>em <span class="hl">5 minutos.</span>
         </h1>
         <p class="hero-s">
-          Calcule TMB, GET e macronutrientes em um fluxo guiado e receba um diagnóstico personalizado ao seu objetivo.
+          Calcule TMB, GET e macronutrientes em um fluxo guiado e obtenha uma estimativa educativa baseada nos seus dados. Não substitui consulta com nutricionista.
         </p>
         <div class="hero-cta">
           <a class="btn btn-p btn-lg" href="#wizard">Começar agora →</a>
@@ -365,6 +371,7 @@
             <div class="tr-lbl">Sem cadastro necessário</div>
           </div>
         </div>
+        <p class="hero-disclaimer">⚠️ <strong>Ferramenta educativa.</strong> Esta calculadora fornece estimativas com base em fórmulas científicas de referência. Os resultados são meramente informativos e <strong>não substituem a avaliação, orientação ou prescrição de um nutricionista habilitado.</strong> Consulte sempre um profissional de saúde antes de fazer alterações na sua alimentação.</p>
       </section>
 
       <!-- WIZARD -->
@@ -395,7 +402,7 @@
             <div class="si-line" id="sl-4"></div>
             <div class="si-item" id="si-5">
               <div class="si-dot">5</div>
-              <span class="si-lbl">Diagnóstico</span>
+              <span class="si-lbl">Resultado</span>
             </div>
           </nav>
 
@@ -631,7 +638,7 @@
             <div class="sn">
               <button class="btn btn-g" id="btn-4-back">← Voltar</button>
               <div class="sn-r">
-                <button class="btn btn-p btn-lg" id="btn-4-next">Ver diagnóstico →</button>
+                <button class="btn btn-p btn-lg" id="btn-4-next">Ver resultado →</button>
               </div>
             </div>
           </div>
@@ -639,9 +646,9 @@
           <!-- STEP 5 -->
           <div class="sp hidden" id="step-5" tabindex="-1" role="region" aria-labelledby="st5-t">
             <div class="sp-hd">
-              <div class="s-tag"><span class="s-tag-n">✓</span> Diagnóstico completo</div>
+              <div class="s-tag"><span class="s-tag-n">✓</span> Cálculo concluído</div>
               <h2 class="s-title" id="st5-t">Seu <em>Blueprint Metabólico</em></h2>
-              <p class="s-desc">Resumo completo, personalizado ao seu perfil e objetivo.</p>
+              <p class="s-desc">Estimativa educativa baseada nos dados informados. Este conteúdo é meramente informativo e <strong>não substitui avaliação, orientação ou prescrição de nutricionista habilitado.</strong></p>
             </div>
             <div class="diag">
               <div class="dh">
